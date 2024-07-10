@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Link.Application.Features.Mediator.Results.LinkResults;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Queries.LinkQueries
 {
-    public class GetByUserIdLinkQuery:IRequest
+    public class GetByUserIdLinkQuery:IRequest<List<GetByUserIdLinkQueryResult>>
     {
         public GetByUserIdLinkQuery(int ıd)
         {

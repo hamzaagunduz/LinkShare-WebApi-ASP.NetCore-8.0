@@ -17,9 +17,4 @@
     <ProjectReference Include="..\Link.Domain\Link.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Mediator\Commands\LinkCommands\" />
-    <Folder Include="Features\Mediator\Handlers\LinkHandlers\" />
-  </ItemGroup>
-
 </Project>
