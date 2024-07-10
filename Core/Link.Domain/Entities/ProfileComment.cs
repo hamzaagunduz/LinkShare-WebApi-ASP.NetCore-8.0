@@ -12,11 +12,12 @@ namespace Link.Domain.Entities
         public string Comment { get; set; }
         public string View { get; set; }
         public string Like { get; set; }
+        public int WriterID { get; set; }
         public bool Hidden { get; set; }
         public DateTime Time { get; set; }
 
-        public int ProfileID { get; set; }
-        public Profile Profiles { get; set; }
+        public int AppUserID { get; set; }
+        public AppUser AppUser { get; set; }
 
         public Answer? Answers { get; set; }
 

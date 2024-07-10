@@ -1,5 +1,6 @@
 ﻿using Link.Application.Features.Mediator.Commands.AppUserCommands;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
+using Link.Application.Tools;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,21 @@ namespace Link.WebApi.Controllers
         {
             await _mediator.Send(command);
             return Ok("AppUser başarıyla güncellendi");
+        }
+
+
+        [HttpPost("LoginToken")]
+        public async Task<IActionResult> LoginToken(GetCheckAppUserQuery query)
+        {
+            var values = await _mediator.Send(query);
+            if (values.IsExist)
+            {
+                return Created("", JwtTokenGenerator.GenerateToken(values));
+            }
+            else
+            {
+                return BadRequest("Kullanıcı adı veya şifre hatalıdır");
+            }
         }
     }
 }
