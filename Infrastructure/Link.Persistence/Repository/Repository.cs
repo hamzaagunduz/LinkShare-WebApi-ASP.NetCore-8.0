@@ -52,5 +52,10 @@ namespace Link.Persistence.Repository
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<T> GetByConditionAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _context.Set<T>().SingleOrDefaultAsync(expression);
+        }
     }
 }

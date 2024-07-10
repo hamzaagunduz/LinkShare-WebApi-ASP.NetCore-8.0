@@ -15,6 +15,8 @@ namespace Link.Application.Interfaces
         Task UpdateAsync(T entity);
         Task RemoveAsync(T entity);
         Task<T?> GetByFilterAsync(Expression<Func<T, bool>> filter);
+        Task<T> GetByConditionAsync(Expression<Func<T, bool>> expression);
+
 
     }
 }

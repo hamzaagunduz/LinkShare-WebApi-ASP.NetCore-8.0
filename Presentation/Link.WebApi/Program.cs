@@ -3,6 +3,10 @@ using Link.Persistence.Context;
 using Link.Persistence.Repository;
 using Link.Application.Services;
 using Link.Domain.Entities;
+using Link.Application.Interfaces.LinkInterfaces;
+using Link.Persistence.Repository.LinkRepositories;
+using Link.Application.Interfaces.FollowInterfaces;
+using Link.Persistence.Repository.FollowRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,8 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped(typeof(ILinkRepository), typeof(LinkRepository));
+builder.Services.AddScoped(typeof(IFollowRepository), typeof(FollowRepository));
 
 builder.Services.AddApplicationService(builder.Configuration);
 
