@@ -7,6 +7,11 @@ using Link.Application.Interfaces.LinkInterfaces;
 using Link.Persistence.Repository.LinkRepositories;
 using Link.Application.Interfaces.FollowInterfaces;
 using Link.Persistence.Repository.FollowRepositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Link.Application.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +35,24 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 .AddEntityFrameworkStores<LinkContext>();
 
 
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        // if URL path starts with "/api" then use Bearer authentication instead
+        options.ForwardDefaultSelector = httpContext => httpContext.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : null;
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+    {
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidAudience = JwtTokenDefaults.ValidAudience,
+            ValidIssuer = JwtTokenDefaults.ValidIssuer,
+            ClockSkew = TimeSpan.Zero,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true
+        };
+    });
 
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
