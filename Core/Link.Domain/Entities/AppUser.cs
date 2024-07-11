@@ -20,7 +20,7 @@ namespace Link.Domain.Entities
         public int View { get; set; }
         public string? ImageUrl { get; set; }
         public string? About { get; set; }
-        public ProfileComment ProfileComments { get; set; }
+        public List<ProfileComment> ProfileComments { get; set; }
         public List<Linke> Linkes { get; set; }
         public List<Follower> Followers { get; set; }
         public List<Following> Followings { get; set; }

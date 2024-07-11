@@ -4,22 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Link.Domain.Entities
+namespace Link.Application.Features.Mediator.Results.CommentResults
 {
-    public class ProfileComment
+    public class GetByAppUserIDCommentQueryResult
+
     {
-        public int ProfileCommentID { get; set; }
+        public int WriterID { get; set; }
         public string Comment { get; set; }
         public int View { get; set; }
         public int Like { get; set; }
-        public int WriterID { get; set; }
         public bool Hidden { get; set; }
         public DateTime Time { get; set; }
-
-        public int AppUserID { get; set; }
-        public AppUser AppUser { get; set; }
-
-        public Answer? Answers { get; set; }
-
     }
 }
+

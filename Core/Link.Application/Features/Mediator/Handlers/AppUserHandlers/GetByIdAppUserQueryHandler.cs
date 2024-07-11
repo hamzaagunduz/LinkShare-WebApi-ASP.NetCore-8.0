@@ -35,7 +35,8 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 ImageUrl = values.ImageUrl,
                 Password = values.Password,
                 PostCount = values.PostCount,
-                SurName = values.SurName
+                SurName = values.SurName,
+                UserName=values.UserName
             };
         }
     }

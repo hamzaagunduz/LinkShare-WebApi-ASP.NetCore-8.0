@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Link.Application.Tools;
+using Link.Application.Interfaces.CommentRepository;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +22,45 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+
+//builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    // JWT Authentication
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter JWT token in the format 'Bearer {token}'",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new List<string>()
+        }
+    });
+});
+
+
+
 
 builder.Services.AddScoped<LinkContext>();
+//builder.Services.AddHttpContextAccessor();
 
 //builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<BeldYazilimContext>();
 
@@ -35,29 +73,53 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 .AddEntityFrameworkStores<LinkContext>();
 
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        // if URL path starts with "/api" then use Bearer authentication instead
-        options.ForwardDefaultSelector = httpContext => httpContext.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : null;
-    })
-    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
-    {
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidAudience = JwtTokenDefaults.ValidAudience,
-            ValidIssuer = JwtTokenDefaults.ValidIssuer,
-            ClockSkew = TimeSpan.Zero,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true
-        };
-    });
+//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//    .AddCookie(options =>
+//    {
+//        // if URL path starts with "/api" then use Bearer authentication instead
+//        options.ForwardDefaultSelector = httpContext => httpContext.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : null;
+//    })
+//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+//    {
+//        o.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidAudience = JwtTokenDefaults.ValidAudience,
+//            ValidIssuer = JwtTokenDefaults.ValidIssuer,
+//            ClockSkew = TimeSpan.Zero,
+//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true
+//        };
+//    });
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidIssuer = JwtTokenDefaults.ValidIssuer,
+        ValidAudience = JwtTokenDefaults.ValidAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization();
+
+
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(ILinkRepository), typeof(LinkRepository));
 builder.Services.AddScoped(typeof(IFollowRepository), typeof(FollowRepository));
+builder.Services.AddScoped(typeof(ICommentRepository), typeof(CommentRepository));
 
 builder.Services.AddApplicationService(builder.Configuration);
 
@@ -68,12 +130,19 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    //app.UseSwagger();
+    //app.UseSwaggerUI();
+
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();  // Add this line to ensure authentication middleware is used
 app.UseAuthorization();
 
 app.MapControllers();

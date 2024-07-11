@@ -9,7 +9,7 @@ namespace Link.Application.Features.Mediator.Commands.LinkCommands
 {
     public class CreateLinkCommand:IRequest
     {
-        public int AppUserID { get; set; }
+        //public int AppUserID { get; set; }
         public string LinkName { get; set; }
         public string LinkUrl { get; set; }
     }

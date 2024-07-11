@@ -2,8 +2,10 @@
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Tools;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Link.WebApi.Controllers
 {
@@ -64,6 +66,19 @@ namespace Link.WebApi.Controllers
             {
                 return BadRequest("Kullanıcı adı veya şifre hatalıdır");
             }
+        }
+
+        [HttpGet("GetUserProfile")]
+
+        public IActionResult GetUserProfile()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized("User ID not found in token.");
+            }
+
+            return Ok(new { UserId = userId, Username = User.Identity.Name });
         }
     }
 }

@@ -18,6 +18,5 @@ namespace Link.Persistence.Context
         public DbSet<Following> Followings { get; set; }
         public DbSet<Linke> Linkes { get; set; }
         public DbSet<ProfileComment> ProfileComments { get; set; }
-        public DbSet<Profile> Profiles { get; set; }
     }
 }
