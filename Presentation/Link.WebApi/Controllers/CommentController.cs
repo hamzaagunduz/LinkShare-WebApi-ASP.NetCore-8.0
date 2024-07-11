@@ -1,5 +1,6 @@
 ﻿using Link.Application.Features.Mediator.Commands.Comment;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
+using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Features.Mediator.Queries.CommentQueries;
 using Link.Application.Features.Mediator.Queries.FollowQueries;
 using MediatR;
@@ -30,15 +31,18 @@ namespace Link.WebApi.Controllers
         [HttpGet("GetByAppUserIDCommentQuery/{id}")]//kullanıcı profilindeki yorum
         public async Task<IActionResult> GetByAppUserIDCommentQuery(int id)
         {
-            var value = await _mediator.Send(new GetByAppUserIDCommentQuery(id));
-            return Ok(value);
+            var query = new GetByAppUserIDCommentQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
         }
 
         [HttpGet("GetByWriterIDCommentQuery/{id}")]//yaptığı yorumlar
         public async Task<IActionResult> GetFollowers(int id)
         {
-            var value = await _mediator.Send(new GetByWriterIDCommentQuery(id));
-            return Ok(value);
+            var query = new GetByWriterIDCommentQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+
         }
     }
 }

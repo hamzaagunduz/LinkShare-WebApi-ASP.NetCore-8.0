@@ -2,6 +2,7 @@
 using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Features.Mediator.Handlers.LinkHandlers;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
+using Link.Application.Features.Mediator.Queries.FollowQueries;
 using Link.Application.Features.Mediator.Queries.LinkQueries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -32,8 +33,10 @@ namespace Link.WebApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByUserIDLink(int id)
         {
-            var value = await _mediator.Send(new GetByUserIdLinkQuery(id));
-            return Ok(value);
+            var query = new GetByUserIdLinkQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+
         }
 
         [HttpDelete]

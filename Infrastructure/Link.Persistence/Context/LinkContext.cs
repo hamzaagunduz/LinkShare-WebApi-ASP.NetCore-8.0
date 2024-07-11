@@ -1,4 +1,5 @@
 ﻿using Link.Domain.Entities;
+using Link.Persistence.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,5 +19,19 @@ namespace Link.Persistence.Context
         public DbSet<Following> Followings { get; set; }
         public DbSet<Linke> Linkes { get; set; }
         public DbSet<ProfileComment> ProfileComments { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            modelBuilder.ApplyConfiguration(new AnswerConfiguration());
+            modelBuilder.ApplyConfiguration(new FollowerConfiguration());
+            modelBuilder.ApplyConfiguration(new FollowingConfiguration());
+            modelBuilder.ApplyConfiguration(new LinkeConfiguration());
+            modelBuilder.ApplyConfiguration(new ProfileCommentConfiguration());
+
+        }
     }
 }

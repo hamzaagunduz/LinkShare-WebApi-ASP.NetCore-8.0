@@ -1,4 +1,5 @@
-﻿using Link.Application.Features.Mediator.Results.AppUserResults;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Results.AppUserResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Queries.AppUserQueries
 {
-    public class GetByIdAppUserQuery : IRequest<GetByIdAppUserQueryResult>
+    public class GetByIdAppUserQuery : IRequest<CustomResult<GetByIdAppUserQueryResult>>
     {
         public GetByIdAppUserQuery(int id)
         {

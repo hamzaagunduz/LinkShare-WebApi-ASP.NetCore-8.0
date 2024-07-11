@@ -1,4 +1,5 @@
-﻿using Link.Application.Features.Mediator.Results.CommentResults;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Results.CommentResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Queries.CommentQueries
 {
-    public class GetByWriterIDCommentQuery : IRequest<List<GetByWriterIDCommentQueryResult>>
+    public class GetByWriterIDCommentQuery : IRequest<CustomResult<List<GetByWriterIDCommentQueryResult>>>
     {
         public GetByWriterIDCommentQuery(int id)
         {
