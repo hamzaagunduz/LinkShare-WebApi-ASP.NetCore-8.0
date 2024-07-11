@@ -270,25 +270,6 @@ namespace Link.Persistence.Migrations
                     b.ToTable("Linkes");
                 });
 
-            modelBuilder.Entity("Link.Domain.Entities.Profile", b =>
-                {
-                    b.Property<int>("ProfileID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileID"));
-
-                    b.Property<int>("AppUserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProfileID");
-
-                    b.HasIndex("AppUserID")
-                        .IsUnique();
-
-                    b.ToTable("Profiles");
-                });
-
             modelBuilder.Entity("Link.Domain.Entities.ProfileComment", b =>
                 {
                     b.Property<int>("ProfileCommentID")
@@ -297,6 +278,9 @@ namespace Link.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProfileCommentID"));
 
+                    b.Property<int>("AppUserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comment")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -304,23 +288,21 @@ namespace Link.Persistence.Migrations
                     b.Property<bool>("Hidden")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Like")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProfileID")
+                    b.Property<int>("Like")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("View")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("View")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WriterID")
+                        .HasColumnType("int");
 
                     b.HasKey("ProfileCommentID");
 
-                    b.HasIndex("ProfileID");
+                    b.HasIndex("AppUserID");
 
                     b.ToTable("ProfileComments");
                 });
@@ -487,26 +469,15 @@ namespace Link.Persistence.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("Link.Domain.Entities.Profile", b =>
+            modelBuilder.Entity("Link.Domain.Entities.ProfileComment", b =>
                 {
                     b.HasOne("Link.Domain.Entities.AppUser", "AppUser")
-                        .WithOne("Profiles")
-                        .HasForeignKey("Link.Domain.Entities.Profile", "AppUserID")
+                        .WithMany("ProfileComments")
+                        .HasForeignKey("AppUserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("Link.Domain.Entities.ProfileComment", b =>
-                {
-                    b.HasOne("Link.Domain.Entities.Profile", "Profiles")
-                        .WithMany("ProfileComments")
-                        .HasForeignKey("ProfileID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Profiles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -568,12 +539,6 @@ namespace Link.Persistence.Migrations
 
                     b.Navigation("Linkes");
 
-                    b.Navigation("Profiles")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Link.Domain.Entities.Profile", b =>
-                {
                     b.Navigation("ProfileComments");
                 });
 

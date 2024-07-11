@@ -24,11 +24,11 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 
             var result = followings.Select(f => new GetByAppUserIdFollowingQueryResult
             {
-                AppUserID = f.AppUserID,
-                FollowerID=f.FollowingID,
+                //AppUserID = f.AppUserID,
+                //FollowerID=f.FollowingID,
                 UserName = f.UserName,
                 Name = f.Name,
-                AppUserFollowingID =f.AppUserFollowingID,
+                //AppUserFollowingID =f.AppUserFollowingID,
             }).ToList();
 
             return result;

@@ -9,7 +9,7 @@ namespace Link.Application.Features.Mediator.Commands.FollowCommands
 {
     public class UnfollowUserCommand : IRequest
     {
-        public int FollowerUserId { get; set; } // Takip eden kullanıcının ID'si
+        //public int FollowerUserId { get; set; } // Takip eden kullanıcının ID'si
         public int FollowingUserId { get; set; } // Takip edilen kullanıcının ID'si
     }
 }
