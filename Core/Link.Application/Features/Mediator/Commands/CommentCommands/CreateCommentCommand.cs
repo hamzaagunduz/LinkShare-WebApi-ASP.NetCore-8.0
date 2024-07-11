@@ -10,7 +10,7 @@ namespace Link.Application.Features.Mediator.Commands.Comment
     public class CreateCommentCommand:IRequest
     {
         public int AppUserID { get; set; }
-        public int WriterID { get; set; }
+        //public int WriterID { get; set; }
 
         public string Comment { get; set; }
         public int View { get; set; }
