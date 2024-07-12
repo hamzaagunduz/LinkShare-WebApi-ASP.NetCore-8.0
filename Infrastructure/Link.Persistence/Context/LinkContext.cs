@@ -31,7 +31,7 @@ namespace Link.Persistence.Context
             modelBuilder.ApplyConfiguration(new FollowingConfiguration());
             modelBuilder.ApplyConfiguration(new LinkeConfiguration());
             modelBuilder.ApplyConfiguration(new ProfileCommentConfiguration());
-
+            //modelBuilder.ApplyConfigurationsFromAssembly
         }
     }
 }
