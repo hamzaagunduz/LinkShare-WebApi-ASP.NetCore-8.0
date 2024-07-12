@@ -23,15 +23,21 @@ namespace Link.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> AppUserList()
         {
-            var values = await _mediator.Send(new GetAppUserQuery());
-            return Ok(values);
+            var query = new GetAppUserQuery();
+            var result = await _mediator.Send(query);
+            return result;
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAppUser(int id)
         {
-            var value = await _mediator.Send(new GetByIdAppUserQuery(id));
-            return Ok(value);
+
+            var query = new GetByIdAppUserQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+            //var value = await _mediator.Send(new GetByIdAppUserQuery(id));
+            //return Ok(value);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateAppUser(CreateAppUserCommand command)
         {
@@ -72,6 +78,7 @@ namespace Link.WebApi.Controllers
 
         public IActionResult GetUserProfile()
         {
+            
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {

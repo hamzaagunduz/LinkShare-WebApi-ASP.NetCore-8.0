@@ -1,4 +1,5 @@
-﻿using Link.Application.Features.Mediator.Queries.AppUserQueries;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Features.Mediator.Results.AppUserResults;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
 {
-    public class GetByIdAppUserQueryHandler:IRequestHandler<GetByIdAppUserQuery, GetByIdAppUserQueryResult>
+    public class GetByIdAppUserQueryHandler : IRequestHandler<GetByIdAppUserQuery, CustomResult<GetByIdAppUserQueryResult>>
     {
         private readonly IRepository<AppUser> _repository;
 
@@ -19,25 +20,53 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
         {
             _repository = repository;
         }
-        public async Task<GetByIdAppUserQueryResult> Handle(GetByIdAppUserQuery request, CancellationToken cancellationToken)
-        {
-            var values = await _repository.GetByIdAsync(request.id);
 
-            return new GetByIdAppUserQueryResult
+        public async Task<CustomResult<GetByIdAppUserQueryResult>> Handle(GetByIdAppUserQuery request, CancellationToken cancellationToken)
+        {
+            var value = await _repository.GetByIdAsync(request.id);
+
+            var result = new GetByIdAppUserQueryResult
             {
-                Id = values.Id,
-                FirstName = values.FirstName,
-                Email = values.Email,
-                View = values.View,
-                About = values.About,
-                FollowersCount = values.FollowersCount,
-                FollowingCount = values.FollowingCount,
-                ImageUrl = values.ImageUrl,
-                Password = values.Password,
-                PostCount = values.PostCount,
-                SurName = values.SurName,
-                UserName=values.UserName
+                Id = value.Id,
+                FirstName = value.FirstName,
+                Email = value.Email,
+                View = value.View,
+                About = value.About,
+                FollowersCount = value.FollowersCount,
+                FollowingCount = value.FollowingCount,
+                ImageUrl = value.ImageUrl,
+                Password = value.Password,
+                PostCount = value.PostCount,
+                SurName = value.SurName,
+                UserName = value.UserName
             };
+
+            return new CustomResult<GetByIdAppUserQueryResult>(result, System.Net.HttpStatusCode.OK);
         }
+
+
+        //public async Task<GetByIdAppUserQueryResult> Handle(GetByIdAppUserQuery request, CancellationToken cancellationToken)
+        //{
+        //    var values = await _repository.GetByIdAsync(request.id);
+
+        //    return new GetByIdAppUserQueryResult
+        //    {
+        //        Id = values.Id,
+        //        FirstName = values.FirstName,
+        //        Email = values.Email,
+        //        View = values.View,
+        //        About = values.About,
+        //        FollowersCount = values.FollowersCount,
+        //        FollowingCount = values.FollowingCount,
+        //        ImageUrl = values.ImageUrl,
+        //        Password = values.Password,
+        //        PostCount = values.PostCount,
+        //        SurName = values.SurName,
+        //        UserName = values.UserName
+        //    };
+        //}
+
+
     }
 }
+

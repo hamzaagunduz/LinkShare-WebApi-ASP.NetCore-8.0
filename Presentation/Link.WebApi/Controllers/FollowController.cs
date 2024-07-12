@@ -1,4 +1,5 @@
 ﻿using Link.Application.Features.Mediator.Commands.FollowCommands;
+using Link.Application.Features.Mediator.Queries.CommentQueries;
 using Link.Application.Features.Mediator.Queries.FollowQueries;
 using Link.Application.Features.Mediator.Queries.LinkQueries;
 using Link.Application.Features.Mediator.Results.FollowResults;
@@ -38,15 +39,19 @@ namespace Link.WebApi.Controllers
         [HttpGet("GetFollowersById/{id}")]
         public async Task<IActionResult> GetFollowers(int id)
         {
-            var value = await _mediator.Send(new GetByAppUserIdFollowersQuery(id));
-            return Ok(value);
+            var query = new GetByAppUserIdFollowersQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+
         }
 
         [HttpGet("GetFollowingById/{id}")]
         public async Task<IActionResult> GetFollowing(int id)
         {
-            var value = await _mediator.Send(new GetByAppUserIdFollowingQuery(id));
-            return Ok(value);
+            var query = new GetByAppUserIdFollowingQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+
         }
 
 

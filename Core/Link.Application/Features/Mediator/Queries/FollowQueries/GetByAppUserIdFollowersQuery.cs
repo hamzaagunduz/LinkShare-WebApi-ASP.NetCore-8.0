@@ -1,4 +1,5 @@
-﻿using Link.Application.Features.Mediator.Results.FollowResults;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Results.FollowResults;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Queries.FollowQueries
 {
-    public class GetByAppUserIdFollowersQuery:IRequest<List<GetByAppUserIdFollowersQueryResult>>
+    public class GetByAppUserIdFollowersQuery:IRequest <CustomResult<List<GetByAppUserIdFollowersQueryResult>>>
     {
         public GetByAppUserIdFollowersQuery(int userId)
         {
