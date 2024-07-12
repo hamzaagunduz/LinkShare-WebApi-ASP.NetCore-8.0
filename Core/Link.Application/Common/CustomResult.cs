@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -14,6 +11,7 @@ namespace Link.Application.Common
     {
         private readonly T _data;
         private readonly HttpStatusCode _statusCode;
+        private readonly List<string> _errors;
 
         public CustomResult(T data, HttpStatusCode statusCode)
         {
@@ -26,7 +24,7 @@ namespace Link.Application.Common
             var response = new CustomResponse<T>
             {
                 Data = _data,
-                Status = (int)_statusCode
+                Status = (int)_statusCode,
             };
 
             var json = JsonSerializer.Serialize(response);

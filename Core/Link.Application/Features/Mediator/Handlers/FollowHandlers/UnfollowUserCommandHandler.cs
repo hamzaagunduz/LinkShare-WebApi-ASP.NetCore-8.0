@@ -1,4 +1,5 @@
-﻿using Link.Application.Features.Mediator.Commands.FollowCommands;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.FollowCommands;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
@@ -7,13 +8,14 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 {
-    public class UnfollowUserCommandHandler : IRequestHandler<UnfollowUserCommand>
+    public class UnfollowUserCommandHandler : IRequestHandler<UnfollowUserCommand, CustomResult<Following>>
     {
         private readonly IRepository<Follower> _followerRepository;
         private readonly IRepository<Following> _followingRepository;
@@ -32,35 +34,73 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task Handle(UnfollowUserCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<Following>> Handle(UnfollowUserCommand request, CancellationToken cancellationToken)
         {
-            var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
-.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
-
-            var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value.ToString());
-            var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
-
-            var following = await _followingRepository
-                .GetByConditionAsync(f => f.AppUserID == int.Parse(userIdClaim.Value) && f.UserName == followingUser.UserName);
-
-
-            if (following != null)
+            try
             {
-                await _followingRepository.RemoveAsync(following);
-            }
+                var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
+                    .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
-            var follower = await _followerRepository
-         .GetByConditionAsync(f => f.AppUserID == request.FollowingUserId && f.UserName == followerUser.UserName);
-            if (follower != null)
+                if (userIdClaim == null)
+                {
+                    throw new UnauthorizedAccessException("User ID claim not found in token.");
+                }
+
+                var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
+
+                if (followerUser == null)
+                {
+                    throw new ArgumentNullException($"User with ID '{userIdClaim.Value}' not found.");
+                }
+
+                var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
+
+                if (followingUser == null)
+                {
+                    throw new ArgumentNullException($"User with ID '{request.FollowingUserId}' not found.");
+                }
+
+                var following = await _followingRepository
+                    .GetByConditionAsync(f => f.AppUserID == int.Parse(userIdClaim.Value) && f.AppUserFollowingID == request.FollowingUserId);
+
+                if (following != null)
+                {
+                    await _followingRepository.RemoveAsync(following);
+                }
+
+                var follower = await _followerRepository
+                    .GetByConditionAsync(f => f.AppUserID == request.FollowingUserId && f.AppUserFollowerID == int.Parse(userIdClaim.Value));
+
+                if (follower != null)
+                {
+                    await _followerRepository.RemoveAsync(follower);
+                }
+
+                // Update following and follower counts
+                followerUser.FollowingCount--;
+                followingUser.FollowersCount--;
+
+                await _userManager.UpdateAsync(followerUser);
+                await _userManager.UpdateAsync(followingUser);
+
+                return new CustomResult<Following>(null, HttpStatusCode.OK);
+
+            }
+            catch (UnauthorizedAccessException ex)
             {
-                await _followerRepository.RemoveAsync(follower);
+                return new CustomResult<Following>(null, HttpStatusCode.Unauthorized);
+
             }
+            catch (ArgumentNullException ex)
+            {
+                return new CustomResult<Following>(null, HttpStatusCode.NotFound);
 
-            followerUser.FollowingCount--;
-            followingUser.FollowersCount--;
+            }
+            catch (Exception ex)
+            {
+                return new CustomResult<Following>(null, HttpStatusCode.InternalServerError);
 
-            await _userManager.UpdateAsync(followerUser);
-            await _userManager.UpdateAsync(followingUser);
+            }
 
         }
     }

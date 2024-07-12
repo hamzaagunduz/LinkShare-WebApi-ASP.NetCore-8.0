@@ -23,8 +23,9 @@ namespace Link.WebApi.Controllers
         [HttpPost("Comment")]
         public async Task<IActionResult> Comment([FromBody] CreateCommentCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("Yorum başarıyla eklendi");
+            var result = await _mediator.Send(command);
+            return result;
+
 
         }
 

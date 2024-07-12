@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using FluentValidation;
+using FluentValidation.Results;
 
 namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 {
@@ -14,11 +16,13 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
     {
         private readonly IRepository<Linke> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IValidator<Linke> _validator;
 
-        public CreateLinkCommandHandler(IRepository<Linke> repository, IHttpContextAccessor httpContextAccessor)
+        public CreateLinkCommandHandler(IRepository<Linke> repository, IHttpContextAccessor httpContextAccessor, IValidator<Linke> validator)
         {
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
+            _validator = validator;
         }
 
         public async Task Handle(CreateLinkCommand request, CancellationToken cancellationToken)
@@ -38,6 +42,13 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
                 LinkName = request.LinkName,
                 LinkUrl = request.LinkUrl,
             };
+
+            ValidationResult result = await _validator.ValidateAsync(newLink, cancellationToken);
+            if (!result.IsValid)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.ErrorMessage));
+                throw new ValidationException(errors);
+            }
 
             await _repository.CreateAsync(newLink);
         }

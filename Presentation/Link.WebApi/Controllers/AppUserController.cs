@@ -34,29 +34,35 @@ namespace Link.WebApi.Controllers
             var query = new GetByIdAppUserQuery(id);
             var result = await _mediator.Send(query);
             return result;
-            //var value = await _mediator.Send(new GetByIdAppUserQuery(id));
-            //return Ok(value);
+
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAppUser(CreateAppUserCommand command)
         {
+            var result = await _mediator.Send(command);
+            return result;
 
-            await _mediator.Send(command);
-            return Ok("AppUser başarıyla eklendi");
+
 
         }
         [HttpDelete]
         public async Task<IActionResult> RemoveAppUser(int id)
         {
-            await _mediator.Send(new RemoveAppUserCommand(id));
-            return Ok("AppUser başarıyla silindi");
+
+            var query = new RemoveAppUserCommand(id);
+            var result = await _mediator.Send(query);
+            return result;
+
+
         }
         [HttpPut]
         public async Task<IActionResult> UpdateAppUser(UpdateAppUserCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("AppUser başarıyla güncellendi");
+            var result = await _mediator.Send(command);
+            return result;
+
+
         }
 
 
