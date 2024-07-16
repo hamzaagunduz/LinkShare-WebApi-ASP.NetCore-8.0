@@ -19,6 +19,9 @@ using Link.Application.FluentValidations;
 using System.Globalization;
 using System.Reflection;
 using Link.Application.AutoMapper.Link;
+using Link.Application.Behavior;
+using MediatR;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,12 +68,19 @@ builder.Services.AddSwaggerGen(c =>
 //builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddAutoMapper(typeof(LinkProfile).Assembly);
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
+builder.Services.AddValidatorsFromAssembly(Link.Application.AssemblyReference.Assembly,
+    includeInternalTypes: true);
 
 builder.Services.AddControllersWithViews()
     .AddFluentValidation(opt =>
     {
         opt.RegisterValidatorsFromAssemblyContaining<LinkValidator>();
+        opt.RegisterValidatorsFromAssemblyContaining<CommentValidator>();
+        opt.RegisterValidatorsFromAssemblyContaining<AppUserValidator>();
+        opt.RegisterValidatorsFromAssemblyContaining<FollowValidator>();
+
         opt.DisableDataAnnotationsValidation = true;
         opt.ValidatorOptions.LanguageManager.Culture = new CultureInfo("tr");
     });

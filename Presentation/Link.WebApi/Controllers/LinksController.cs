@@ -25,8 +25,8 @@ namespace Link.WebApi.Controllers
         public async Task<IActionResult> CreateLink(CreateLinkCommand command)
         {
 
-            await _mediator.Send(command);
-            return Ok("Link başarıyla eklendi");
+            var result = await _mediator.Send(command);
+            return result;
 
         }
 

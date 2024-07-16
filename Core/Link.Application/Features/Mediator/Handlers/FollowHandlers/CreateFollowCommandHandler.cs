@@ -1,5 +1,7 @@
-﻿using Link.Application.Common;
+﻿using FluentValidation.Results;
+using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
+using Link.Application.FluentValidations;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 {
-    public class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand, CustomResult<Follower>>
+    public class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand, CustomResult<Following>>
     {
         private readonly IRepository<Follower> _followerRepository;
         private readonly IRepository<Following> _followingRepository;
@@ -22,13 +24,13 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 
         public CreateFollowCommandHandler(IRepository<Follower> followerRepository, IRepository<Following> followingRepository, UserManager<AppUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
-            _followerRepository = followerRepository ?? throw new ArgumentNullException(nameof(followerRepository));
-            _followingRepository = followingRepository ?? throw new ArgumentNullException(nameof(followingRepository));
-            _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+            _followerRepository = followerRepository;
+            _followingRepository = followingRepository;
+            _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<CustomResult<Follower>> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<Following>> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -62,6 +64,17 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                     Name = $"{followingUser.FirstName} {followingUser.SurName}"
                 };
 
+                var validator = new FollowValidator(); // Assuming you have a validator class
+                ValidationResult validationResult = await validator.ValidateAsync(following, cancellationToken);
+
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    return new CustomResult<Following>(null, HttpStatusCode.BadRequest, errors); // Hata burada düzeltilmiş şekilde
+
+                }
+
+
                 await _followingRepository.CreateAsync(following);
 
                 var follower = new Follower
@@ -81,22 +94,25 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 await _userManager.UpdateAsync(followerUser);
                 await _userManager.UpdateAsync(followingUser);
 
-                return new CustomResult<Follower>(null, HttpStatusCode.OK);
+                return new CustomResult<Following>(null, HttpStatusCode.OK);
             }
+
+
+
             catch (UnauthorizedAccessException ex)
             {
-                return new CustomResult<Follower>(null, HttpStatusCode.Unauthorized);
-
+                var errors = new List<string> { ex.Message };
+                return new CustomResult<Following>(null, HttpStatusCode.Unauthorized, errors);
             }
             catch (ArgumentNullException ex)
             {
-                return new CustomResult<Follower>(null, HttpStatusCode.NotFound);
-
+                var errors = new List<string> { ex.Message };
+                return new CustomResult<Following>(null, HttpStatusCode.NotFound, errors);
             }
             catch (Exception ex)
             {
-                return new CustomResult<Follower>(null, HttpStatusCode.InternalServerError);
-
+                var errors = new List<string> { ex.Message };
+                return new CustomResult<Following>(null, HttpStatusCode.InternalServerError, errors);
             }
         }
     }

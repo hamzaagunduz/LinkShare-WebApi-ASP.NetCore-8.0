@@ -1,19 +1,20 @@
-﻿using Link.Application.Common;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.AppUserCommands;
+using Link.Application.FluentValidations;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
 {
-    public class UpdateAppUserCommandHandler : IRequestHandler<UpdateAppUserCommand,CustomResult<AppUser>>
+    public class UpdateAppUserCommandHandler : IRequestHandler<UpdateAppUserCommand, CustomResult<AppUser>>
     {
         private readonly IRepository<AppUser> _repository;
         private readonly UserManager<AppUser> _userManager;
@@ -22,7 +23,6 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
         {
             _repository = repository;
             _userManager = userManager;
-
         }
 
         public async Task<CustomResult<AppUser>> Handle(UpdateAppUserCommand request, CancellationToken cancellationToken)
@@ -47,6 +47,18 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 user.PostCount = request.PostCount;
                 user.View = request.View;
                 user.ImageUrl = request.ImageUrl;
+
+                // Validate user
+                var validator = new AppUserValidator(); // Assuming you have a validator class
+                ValidationResult validationResult = await validator.ValidateAsync(user, cancellationToken);
+
+                if (!validationResult.IsValid)
+                {
+                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+                    return new CustomResult<AppUser>(null, HttpStatusCode.BadRequest, errors);
+                }
+
+
 
                 // Remove old password and set new password
                 var removePasswordResult = await _userManager.RemovePasswordAsync(user);

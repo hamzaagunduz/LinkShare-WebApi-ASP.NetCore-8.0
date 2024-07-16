@@ -13,10 +13,11 @@ namespace Link.Application.Common
         private readonly HttpStatusCode _statusCode;
         private readonly List<string> _errors;
 
-        public CustomResult(T data, HttpStatusCode statusCode)
+        public CustomResult(T data, HttpStatusCode statusCode, List<string> errors = null)
         {
             _data = data;
             _statusCode = statusCode;
+            _errors = errors;
         }
 
         public async Task ExecuteResultAsync(ActionContext context)
@@ -25,6 +26,7 @@ namespace Link.Application.Common
             {
                 Data = _data,
                 Status = (int)_statusCode,
+                Errors = _errors
             };
 
             var json = JsonSerializer.Serialize(response);
@@ -39,5 +41,6 @@ namespace Link.Application.Common
     {
         public T Data { get; set; }
         public int Status { get; set; }
+        public List<string> Errors { get; set; }
     }
 }
