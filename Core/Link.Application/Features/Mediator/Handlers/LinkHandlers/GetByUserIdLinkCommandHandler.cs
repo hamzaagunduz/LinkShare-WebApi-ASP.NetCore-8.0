@@ -21,13 +21,11 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
     public class GetByUserIdLinkCommandHandler : IRequestHandler<GetByUserIdLinkQuery, CustomResult <List<GetByUserIdLinkQueryResult>>>
     {
         private readonly ILinkRepository _repository;
-        private readonly IValidator<Linke> _validator;
         private readonly IMapper _mapper;
 
-        public GetByUserIdLinkCommandHandler(ILinkRepository repository, IValidator<Linke> validator, IMapper mapper)
+        public GetByUserIdLinkCommandHandler(ILinkRepository repository, IMapper mapper)
         {
             _repository = repository;
-            _validator = validator;
             _mapper = mapper;
         }
 

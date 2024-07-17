@@ -1,7 +1,6 @@
 ﻿using FluentValidation.Results;
 using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.AppUserCommands;
-using Link.Application.FluentValidations;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
@@ -39,17 +38,6 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 View = request.View,
             };
 
-            // Validate the new user object using FluentValidation
-            var validator = new AppUserValidator(); // Assuming you have a validator class
-            ValidationResult validationResult = await validator.ValidateAsync(newUser, cancellationToken);
-
-            if (!validationResult.IsValid)
-            {
-                var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                return new CustomResult<AppUser>(null, HttpStatusCode.BadRequest, errors);
-            }
-
-            // Attempt to create the user
             IdentityResult result = await _userManager.CreateAsync(newUser, request.Password);
 
             if (!result.Succeeded)

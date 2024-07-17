@@ -19,13 +19,11 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
     {
         private readonly IRepository<Linke> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IValidator<Linke> _validator;
 
-        public CreateLinkCommandHandler(IRepository<Linke> repository, IHttpContextAccessor httpContextAccessor, IValidator<Linke> validator)
+        public CreateLinkCommandHandler(IRepository<Linke> repository, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
-            _validator = validator;
         }
 
         public async Task<CustomResult<Linke>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
@@ -47,13 +45,7 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
                     LinkUrl = request.LinkUrl,
                 };
 
-                // Validate the new link object
-                ValidationResult validationResult = await _validator.ValidateAsync(newLink, cancellationToken);
-                if (!validationResult.IsValid)
-                {
-                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    return new CustomResult<Linke>(null, System.Net.HttpStatusCode.BadRequest, errors);
-                }
+
 
                 // Save the new link to the repository
                 await _repository.CreateAsync(newLink);

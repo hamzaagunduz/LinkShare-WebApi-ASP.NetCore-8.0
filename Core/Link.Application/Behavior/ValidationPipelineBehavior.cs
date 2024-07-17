@@ -1,68 +1,46 @@
 ﻿using FluentValidation;
-using Link.Domain.Shared;
+using Link.Application.Common;
 using MediatR;
-using System;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Link.Application.Behavior
 {
-    public class ValidationPipelineBehavior<TRequest, TResponse>
-        : IPipelineBehavior<TRequest, TResponse>
+    public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : Result
+        where TResponse : AppResponse
+
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators) =>
-            _validators = validators;
-
-        public async Task<TResponse> Handle(
-            TRequest request,
-            RequestHandlerDelegate<TResponse> next,
-            CancellationToken cancellationToken)
+        public ValidationPipelineBehavior(IEnumerable<IValidator<TRequest>> validators)
         {
-            if (!_validators.Any())
-            {
-                return await next();
-            }
-
-            Error[] errors = _validators
-                .Select(validator => validator.Validate(request))
-                .SelectMany(validationResult => validationResult.Errors)
-                .Where(validationFailure => validationFailure is not null)
-                .Select(failure => new Error(
-                    failure.PropertyName,
-                    failure.ErrorMessage))
-                .Distinct()
-                .ToArray();
-
-            if (errors.Any())
-            {
-                return CreateValidationResult<TResponse>(errors);
-            }
-
-            return await next();
+            _validators = validators;
         }
 
-        private static TResult CreateValidationResult<TResult>(Error[] errors)
-            where TResult : Result
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            if (typeof(TResult) == typeof(Result))
+            if (_validators.Any())
             {
-                return (ValidationResult.WithErrors(errors) as TResult)!;
+                var context = new ValidationContext<TRequest>(request);
+
+                var validationResults = await Task.WhenAll(
+                    _validators.Select(v =>
+                        v.ValidateAsync(context, cancellationToken)));
+
+                var failures = validationResults
+                    .Where(r => r.Errors.Any())
+                    .SelectMany(r => r.Errors)
+                    .ToList();
+
+                if (failures.Any())
+                    return (TResponse)await Task.FromResult<AppResponse>(new ErrorResponse(failures.First().ErrorMessage.ToString()));
             }
-
-            object validationResult = typeof(ValidationResult<>)
-                .GetGenericTypeDefinition()
-                .MakeGenericType(typeof(TResult).GenericTypeArguments[0])
-                .GetMethod(nameof(ValidationResult.WithErrors))!
-                .Invoke(null, new object?[] { errors })!;
-
-            return (TResult)validationResult;
+            return await next();
         }
     }
 }

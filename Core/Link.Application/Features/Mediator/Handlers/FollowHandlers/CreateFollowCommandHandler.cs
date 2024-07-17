@@ -1,7 +1,6 @@
 ﻿using FluentValidation.Results;
 using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
-using Link.Application.FluentValidations;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
@@ -64,15 +63,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                     Name = $"{followingUser.FirstName} {followingUser.SurName}"
                 };
 
-                var validator = new FollowValidator(); // Assuming you have a validator class
-                ValidationResult validationResult = await validator.ValidateAsync(following, cancellationToken);
 
-                if (!validationResult.IsValid)
-                {
-                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    return new CustomResult<Following>(null, HttpStatusCode.BadRequest, errors); // Hata burada düzeltilmiş şekilde
-
-                }
 
 
                 await _followingRepository.CreateAsync(following);

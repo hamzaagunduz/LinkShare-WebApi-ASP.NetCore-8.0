@@ -15,13 +15,14 @@ using Link.Application.Tools;
 using Link.Application.Interfaces.CommentRepository;
 using Microsoft.OpenApi.Models;
 using FluentValidation.AspNetCore;
-using Link.Application.FluentValidations;
 using System.Globalization;
 using System.Reflection;
 using Link.Application.AutoMapper.Link;
-using Link.Application.Behavior;
 using MediatR;
 using FluentValidation;
+using Link.Application.Features.Mediator.Validations.CommentValidation;
+using Link.Application.Behavior;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,25 +66,47 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-//builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
 builder.Services.AddAutoMapper(typeof(LinkProfile).Assembly);
-builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 
+
+
+
+
+
+
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestResponseLoggingBehavior<,>));
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 builder.Services.AddValidatorsFromAssembly(Link.Application.AssemblyReference.Assembly,
     includeInternalTypes: true);
 
-builder.Services.AddControllersWithViews()
-    .AddFluentValidation(opt =>
-    {
-        opt.RegisterValidatorsFromAssemblyContaining<LinkValidator>();
-        opt.RegisterValidatorsFromAssemblyContaining<CommentValidator>();
-        opt.RegisterValidatorsFromAssemblyContaining<AppUserValidator>();
-        opt.RegisterValidatorsFromAssemblyContaining<FollowValidator>();
+//builder.Services.AddControllersWithViews()
+//    .AddFluentValidation(opt =>
+//    {
+//        //opt.RegisterValidatorsFromAssemblyContaining<CreateCommentCommandValidator>();
+//        opt.DisableDataAnnotationsValidation = true;
+//        opt.ValidatorOptions.LanguageManager.Culture = new CultureInfo("tr");
+//    });
 
-        opt.DisableDataAnnotationsValidation = true;
-        opt.ValidatorOptions.LanguageManager.Culture = new CultureInfo("tr");
-    });
+
+//builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+//builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+//builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+//// Diðer servis konfigürasyonlarý
+//builder.Services.AddMediatR(cfg =>
+//{
+//    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+//    cfg.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+//});
+
+
+
+
+
+
+
 
 
 
@@ -141,8 +164,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
 
     app.UseSwagger();
     app.UseSwaggerUI(c =>

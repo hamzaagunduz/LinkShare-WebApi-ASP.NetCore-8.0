@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Link.Application.Features.Mediator.Commands.CommentCommands
+namespace Link.Application.Features.Mediator.Validations.CommentValidation
 {
     public class CreateCommentCommandValidator : AbstractValidator<CreateCommentCommand>
     {
         public CreateCommentCommandValidator()
         {
             RuleFor(x => x.AppUserID).NotEmpty();
-            RuleFor(x => x.View).NotEmpty();
-
+            RuleFor(x => x.Comment)
+                        .MinimumLength(5).WithMessage("5kara.");
 
         }
     }

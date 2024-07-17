@@ -9,10 +9,19 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Commands.Comment
 {
-    public class CreateCommentCommand:IRequest<CustomResult<ProfileComment>>
+    public class CreateCommentCommand : IRequest<AppResponse>
     {
+        public CreateCommentCommand(int appUserID, string comment, int view, int like, bool hidden, DateTime time)
+        {
+            AppUserID = appUserID;
+            Comment = comment;
+            View = view;
+            Like = like;
+            Hidden = hidden;
+            Time = time;
+        }
+
         public int AppUserID { get; set; }
-        //public int WriterID { get; set; }
 
         public string Comment { get; set; }
         public int View { get; set; }

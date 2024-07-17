@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.AppUserCommands;
-using Link.Application.FluentValidations;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
@@ -48,15 +47,7 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 user.View = request.View;
                 user.ImageUrl = request.ImageUrl;
 
-                // Validate user
-                var validator = new AppUserValidator(); // Assuming you have a validator class
-                ValidationResult validationResult = await validator.ValidateAsync(user, cancellationToken);
 
-                if (!validationResult.IsValid)
-                {
-                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    return new CustomResult<AppUser>(null, HttpStatusCode.BadRequest, errors);
-                }
 
 
 

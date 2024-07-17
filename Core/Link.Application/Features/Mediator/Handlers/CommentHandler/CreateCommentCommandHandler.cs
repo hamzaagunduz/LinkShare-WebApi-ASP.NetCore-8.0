@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.Comment;
-using Link.Application.FluentValidations;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
@@ -15,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.CommentHandler
 {
-    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, CustomResult<ProfileComment>>
+    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,AppResponse>
     {
         private readonly IRepository<ProfileComment> _repository;
         private readonly UserManager<AppUser> _userManager;
@@ -28,11 +27,9 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<CustomResult<ProfileComment>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
+        public async Task<AppResponse> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
+             var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
                     .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
                 if (userIdClaim == null)
@@ -52,36 +49,19 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
                     Like = request.Like,
                     Time = DateTime.Now,
                 };
-                // pipeline mediator fluentvalidaton 
 
-                // Validate the command using FluentValidation
-                var validator = new CommentValidator();
-                var validationResult = await validator.ValidateAsync(comment, cancellationToken);
-                if (!validationResult.IsValid)
-                {
-                    var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-                    return new CustomResult<ProfileComment>(null, HttpStatusCode.BadRequest, errors);
-                }
+
 
                 await _repository.CreateAsync(comment);
-                return new CustomResult<ProfileComment>(null, HttpStatusCode.OK);
-            }
+                return await Task.FromResult<AppResponse>(new SuccessResponse(ResultMessages.CREATED_NOTE_SUCCESSFULLY));
 
-
-
-
-
-
-            catch (UnauthorizedAccessException ex)
-            {
-                // Log or handle the exception here
-                return new CustomResult<ProfileComment>(null, HttpStatusCode.Unauthorized, new List<string> { ex.Message });
-            }
-            catch (Exception ex)
-            {
-                // Log or handle the exception here
-                return new CustomResult<ProfileComment>(null, HttpStatusCode.InternalServerError, new List<string> { ex.Message });
-            }
         }
+
+
+
+
+
+
+
     }
-}
+    }

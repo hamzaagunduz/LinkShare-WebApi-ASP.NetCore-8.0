@@ -11,13 +11,13 @@ namespace Link.Application.Common
     {
         private readonly T _data;
         private readonly HttpStatusCode _statusCode;
-        private readonly List<string> _errors;
+        public List<string> Errors { get; }
 
         public CustomResult(T data, HttpStatusCode statusCode, List<string> errors = null)
         {
             _data = data;
             _statusCode = statusCode;
-            _errors = errors;
+            Errors = errors;
         }
 
         public async Task ExecuteResultAsync(ActionContext context)
@@ -26,13 +26,21 @@ namespace Link.Application.Common
             {
                 Data = _data,
                 Status = (int)_statusCode,
-                Errors = _errors
+                Errors = Errors // Hataları doğrudan burada döndürün
             };
+
+            // Hata varsa status kodunu 400 Bad Request olarak ayarlayın
+            if (Errors != null && Errors.Count > 0)
+            {
+                context.HttpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
+            else
+            {
+                context.HttpContext.Response.StatusCode = (int)_statusCode;
+            }
 
             var json = JsonSerializer.Serialize(response);
             context.HttpContext.Response.ContentType = "application/json";
-            context.HttpContext.Response.StatusCode = (int)_statusCode;
-
             await context.HttpContext.Response.WriteAsync(json);
         }
     }
