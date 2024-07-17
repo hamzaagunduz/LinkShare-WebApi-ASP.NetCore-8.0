@@ -26,24 +26,15 @@ namespace Link.WebApi.Controllers
 
 
 
-        //[HttpPost("Comment")]
-        //public async Task<IActionResult> Comment([FromBody] CreateCommentCommand command)
-        //{
-        //    var result = await Sender.Send(command);
-
-        //    return result;
-        //}
+ 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCommentCommand request)
         {
-            
             var result = await _mediator.Send(request);
-            if (result.IsSucceed == false)
-                return BadRequest(result.Message);
-            return Ok(result);
+            return result;
         }
 
         [HttpGet("GetByAppUserIDCommentQuery/{id}")]//kullanıcı profilindeki yorum

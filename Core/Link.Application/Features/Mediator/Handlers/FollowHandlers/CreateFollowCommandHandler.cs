@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 {
-    public class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand, CustomResult<Following>>
+    public class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand, CustomResult<string>>
     {
         private readonly IRepository<Follower> _followerRepository;
         private readonly IRepository<Following> _followingRepository;
@@ -29,7 +29,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<CustomResult<Following>> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 await _userManager.UpdateAsync(followerUser);
                 await _userManager.UpdateAsync(followingUser);
 
-                return new CustomResult<Following>(null, HttpStatusCode.OK);
+                return new CustomResult<string>("Comment created successfully.", HttpStatusCode.OK);
             }
 
 
@@ -93,17 +93,17 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             catch (UnauthorizedAccessException ex)
             {
                 var errors = new List<string> { ex.Message };
-                return new CustomResult<Following>(null, HttpStatusCode.Unauthorized, errors);
+                return new CustomResult<string>(null, HttpStatusCode.Unauthorized, errors);
             }
             catch (ArgumentNullException ex)
             {
                 var errors = new List<string> { ex.Message };
-                return new CustomResult<Following>(null, HttpStatusCode.NotFound, errors);
+                return new CustomResult<string>(null, HttpStatusCode.NotFound, errors);
             }
             catch (Exception ex)
             {
                 var errors = new List<string> { ex.Message };
-                return new CustomResult<Following>(null, HttpStatusCode.InternalServerError, errors);
+                return new CustomResult<string>(null, HttpStatusCode.InternalServerError, errors);
             }
         }
     }

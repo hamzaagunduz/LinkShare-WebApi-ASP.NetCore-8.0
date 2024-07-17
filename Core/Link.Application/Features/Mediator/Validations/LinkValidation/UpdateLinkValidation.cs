@@ -12,9 +12,9 @@ namespace Link.Application.Features.Mediator.Validations.LinkValidation
     {
         public UpdateLinkValidation()
         {
-            RuleFor(x => x.LinkeID).NotEmpty();
-            RuleFor(x => x.LinkName).NotEmpty();
-            RuleFor(x => x.LinkUrl).NotEmpty();
+            RuleFor(x => x.LinkeID).NotEmpty().WithMessage("ID bos");
+            RuleFor(x => x.LinkName).NotEmpty().WithMessage("name bos");
+            RuleFor(x => x.LinkUrl).NotEmpty().WithMessage("url bos");
 
         }
     }

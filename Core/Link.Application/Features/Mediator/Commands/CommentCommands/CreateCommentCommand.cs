@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Commands.Comment
 {
-    public class CreateCommentCommand : IRequest<AppResponse>
+    public class CreateCommentCommand : IRequest<CustomResult<string>>
     {
         public CreateCommentCommand(int appUserID, string comment, int view, int like, bool hidden, DateTime time)
         {

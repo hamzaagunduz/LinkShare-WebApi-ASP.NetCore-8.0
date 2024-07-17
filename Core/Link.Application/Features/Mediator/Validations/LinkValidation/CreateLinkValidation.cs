@@ -13,8 +13,9 @@ namespace Link.Application.Features.Mediator.Validations.LinkValidation
     {
         public CreateLinkValidation()
         {
-            RuleFor(x => x.LinkName).NotEmpty();
-            RuleFor(x => x.LinkUrl).NotEmpty();
+            RuleFor(x => x.LinkName).NotEmpty().WithMessage("bos bırakma");
+            RuleFor(x => x.LinkUrl).NotEmpty().WithMessage("bos bırakma");
+
 
 
         }

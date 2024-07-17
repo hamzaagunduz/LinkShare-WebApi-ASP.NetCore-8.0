@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using Link.Application.Common;
+﻿using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.Comment;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.CommentHandler
 {
-    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand,AppResponse>
+    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, CustomResult<string>>
     {
         private readonly IRepository<ProfileComment> _repository;
         private readonly UserManager<AppUser> _userManager;
@@ -27,41 +26,37 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<AppResponse> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
-             var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
-                    .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
+                .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
-                if (userIdClaim == null)
-                {
-                    throw new UnauthorizedAccessException("User ID claim not found in token.");
-                }
+            if (userIdClaim == null)
+            {
+                return new CustomResult<string>("User ID claim not found in token.", HttpStatusCode.Unauthorized);
+            }
 
-                var followerUser = await _userManager.FindByIdAsync(request.AppUserID.ToString());
+            var followerUser = await _userManager.FindByIdAsync(request.AppUserID.ToString());
 
-                var comment = new ProfileComment
-                {
-                    AppUserID = request.AppUserID,
-                    WriterID = int.Parse(userIdClaim.Value),
-                    View = request.View,
-                    Hidden = request.Hidden,
-                    Comment = request.Comment,
-                    Like = request.Like,
-                    Time = DateTime.Now,
-                };
+            if (followerUser == null)
+            {
+                return new CustomResult<string>("App User not found.", HttpStatusCode.NotFound);
+            }
 
+            var comment = new ProfileComment
+            {
+                AppUserID = request.AppUserID,
+                WriterID = int.Parse(userIdClaim.Value),
+                View = request.View,
+                Hidden = request.Hidden,
+                Comment = request.Comment,
+                Like = request.Like,
+                Time = DateTime.Now,
+            };
 
+            await _repository.CreateAsync(comment);
 
-                await _repository.CreateAsync(comment);
-                return await Task.FromResult<AppResponse>(new SuccessResponse(ResultMessages.CREATED_NOTE_SUCCESSFULLY));
-
+            return new CustomResult<string>("Comment created successfully.", HttpStatusCode.OK);
         }
-
-
-
-
-
-
-
     }
-    }
+}

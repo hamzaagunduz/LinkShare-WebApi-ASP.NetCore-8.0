@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 {
-    public class UnfollowUserCommandHandler : IRequestHandler<UnfollowUserCommand, CustomResult<Following>>
+    public class UnfollowUserCommandHandler : IRequestHandler<UnfollowUserCommand, CustomResult<string>>
     {
         private readonly IRepository<Follower> _followerRepository;
         private readonly IRepository<Following> _followingRepository;
@@ -34,7 +34,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<CustomResult<Following>> Handle(UnfollowUserCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(UnfollowUserCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -83,22 +83,22 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 await _userManager.UpdateAsync(followerUser);
                 await _userManager.UpdateAsync(followingUser);
 
-                return new CustomResult<Following>(null, HttpStatusCode.OK);
+                return new CustomResult<string>(null, HttpStatusCode.OK);
 
             }
             catch (UnauthorizedAccessException ex)
             {
-                return new CustomResult<Following>(null, HttpStatusCode.Unauthorized);
+                return new CustomResult<string>(null, HttpStatusCode.Unauthorized);
 
             }
             catch (ArgumentNullException ex)
             {
-                return new CustomResult<Following>(null, HttpStatusCode.NotFound);
+                return new CustomResult<string>(null, HttpStatusCode.NotFound);
 
             }
             catch (Exception ex)
             {
-                return new CustomResult<Following>(null, HttpStatusCode.InternalServerError);
+                return new CustomResult<string>(null, HttpStatusCode.InternalServerError);
 
             }
 

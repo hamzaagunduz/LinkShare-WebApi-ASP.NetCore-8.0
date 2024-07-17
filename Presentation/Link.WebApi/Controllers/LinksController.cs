@@ -1,4 +1,5 @@
-﻿using Link.Application.Common;
+﻿using Azure.Core;
+using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.AppUserCommands;
 using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Features.Mediator.Handlers.LinkHandlers;
@@ -58,8 +59,8 @@ namespace Link.WebApi.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateLink(UpdateLinkCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("AppUser başarıyla güncellendi");
+            var result = await _mediator.Send(command);
+            return result;
         }
 
     }

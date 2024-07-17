@@ -2,9 +2,9 @@
 using Link.Application.Common;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@ namespace Link.Application.Behavior
 {
     public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
-        where TResponse : AppResponse
+        where TResponse : CustomResult<string> // Burada TResponse'ı CustomResult<string> ile kısıtlıyoruz
 
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
@@ -38,7 +38,11 @@ namespace Link.Application.Behavior
                     .ToList();
 
                 if (failures.Any())
-                    return (TResponse)await Task.FromResult<AppResponse>(new ErrorResponse(failures.First().ErrorMessage.ToString()));
+                {
+                    var errorMessages = failures.Select(f => f.ErrorMessage).ToList();
+                    var errorResponse = new CustomResult<string>(null, HttpStatusCode.BadRequest, errorMessages);
+                    return (TResponse)(object)errorResponse;
+                }
             }
             return await next();
         }

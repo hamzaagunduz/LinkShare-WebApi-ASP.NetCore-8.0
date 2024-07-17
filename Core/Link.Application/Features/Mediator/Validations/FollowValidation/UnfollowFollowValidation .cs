@@ -13,7 +13,7 @@ namespace Link.Application.Features.Mediator.Validations.FollowValidation
     {
         public UnfollowFollowValidation()
         {
-            RuleFor(x => x.FollowingUserId).NotEmpty();
+            RuleFor(x => x.FollowingUserId).NotEmpty().WithMessage("bos bırakma");
 
 
         }

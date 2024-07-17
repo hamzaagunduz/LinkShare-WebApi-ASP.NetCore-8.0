@@ -12,10 +12,11 @@ using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using Link.Application.Common;
+using System.Net;
 
 namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 {
-    public class CreateLinkCommandHandler : IRequestHandler<CreateLinkCommand, CustomResult<Linke>>
+    public class CreateLinkCommandHandler : IRequestHandler<CreateLinkCommand, CustomResult<string>>
     {
         private readonly IRepository<Linke> _repository;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -26,7 +27,7 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<CustomResult<Linke>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -50,7 +51,7 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
                 // Save the new link to the repository
                 await _repository.CreateAsync(newLink);
 
-                return new CustomResult<Linke>(newLink, System.Net.HttpStatusCode.OK);
+                return new CustomResult<string>("Link created successfully.", HttpStatusCode.OK);
             }
 
 
@@ -58,17 +59,17 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
             catch (UnauthorizedAccessException ex)
             {
                 var errors = new List<string> { ex.Message };
-                return new CustomResult<Linke>(null, System.Net.HttpStatusCode.Unauthorized, errors);
+                return new CustomResult<string>(null, System.Net.HttpStatusCode.Unauthorized, errors);
             }
             catch (ValidationException ex)
             {
                 var errors = new List<string> { ex.Message };
-                return new CustomResult<Linke>(null, System.Net.HttpStatusCode.BadRequest, errors);
+                return new CustomResult<string>(null, System.Net.HttpStatusCode.BadRequest, errors);
             }
             catch (Exception ex)
             {
                 var errors = new List<string> { ex.Message };
-                return new CustomResult<Linke>(null, System.Net.HttpStatusCode.InternalServerError, errors);
+                return new CustomResult<string>(null, System.Net.HttpStatusCode.InternalServerError, errors);
             }
         }
     }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Commands.FollowCommands
 {
-    public class UnfollowUserCommand : IRequest<CustomResult<Following>>
+    public class UnfollowUserCommand : IRequest<CustomResult<string>>
     {
         //public int FollowerUserId { get; set; } // Takip eden kullanıcının ID'si
         public int FollowingUserId { get; set; } // Takip edilen kullanıcının ID'si
