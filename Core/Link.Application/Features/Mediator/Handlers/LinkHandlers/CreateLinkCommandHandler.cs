@@ -29,8 +29,7 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 
         public async Task<CustomResult<string>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
+
                 var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
                     .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
@@ -56,21 +55,6 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 
 
 
-            catch (UnauthorizedAccessException ex)
-            {
-                var errors = new List<string> { ex.Message };
-                return new CustomResult<string>(null, System.Net.HttpStatusCode.Unauthorized, errors);
-            }
-            catch (ValidationException ex)
-            {
-                var errors = new List<string> { ex.Message };
-                return new CustomResult<string>(null, System.Net.HttpStatusCode.BadRequest, errors);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string> { ex.Message };
-                return new CustomResult<string>(null, System.Net.HttpStatusCode.InternalServerError, errors);
-            }
-        }
+
     }
 }

@@ -36,8 +36,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 
         public async Task<CustomResult<string>> Handle(UnfollowUserCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
+
                 var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
                     .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
@@ -53,15 +52,18 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                     throw new ArgumentNullException($"User with ID '{userIdClaim.Value}' not found.");
                 }
 
-                var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
+
+            var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
 
                 if (followingUser == null)
                 {
                     throw new ArgumentNullException($"User with ID '{request.FollowingUserId}' not found.");
                 }
 
-                var following = await _followingRepository
+            var following = await _followingRepository
                     .GetByConditionAsync(f => f.AppUserID == int.Parse(userIdClaim.Value) && f.AppUserFollowingID == request.FollowingUserId);
+
+
 
                 if (following != null)
                 {
@@ -86,22 +88,8 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 return new CustomResult<string>(null, HttpStatusCode.OK);
 
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return new CustomResult<string>(null, HttpStatusCode.Unauthorized);
 
-            }
-            catch (ArgumentNullException ex)
-            {
-                return new CustomResult<string>(null, HttpStatusCode.NotFound);
-
-            }
-            catch (Exception ex)
-            {
-                return new CustomResult<string>(null, HttpStatusCode.InternalServerError);
-
-            }
 
         }
     }
-}
+

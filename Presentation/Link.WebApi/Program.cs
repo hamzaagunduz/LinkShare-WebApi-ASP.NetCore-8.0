@@ -22,6 +22,7 @@ using MediatR;
 using FluentValidation;
 using Link.Application.Features.Mediator.Validations.CommentValidation;
 using Link.Application.Behavior;
+using Link.Application.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -72,6 +73,7 @@ builder.Services.AddAutoMapper(typeof(LinkProfile).Assembly);
 
 
 
+builder.Services.AddTransient<IExceptionHandler, CustomExceptionHandler>();
 
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
@@ -81,25 +83,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.G
 builder.Services.AddValidatorsFromAssembly(Link.Application.AssemblyReference.Assembly,
     includeInternalTypes: true);
 
-//builder.Services.AddControllersWithViews()
-//    .AddFluentValidation(opt =>
-//    {
-//        //opt.RegisterValidatorsFromAssemblyContaining<CreateCommentCommandValidator>();
-//        opt.DisableDataAnnotationsValidation = true;
-//        opt.ValidatorOptions.LanguageManager.Culture = new CultureInfo("tr");
-//    });
-
-
-//builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
-//builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
-//builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-//// Diðer servis konfigürasyonlarý
-//builder.Services.AddMediatR(cfg =>
-//{
-//    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-//    cfg.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
-//});
 
 
 
@@ -171,6 +154,8 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
     });
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

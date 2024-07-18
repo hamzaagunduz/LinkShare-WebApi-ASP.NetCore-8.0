@@ -26,9 +26,6 @@ namespace Link.WebApi.Controllers
 
 
 
- 
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateCommentCommand request)

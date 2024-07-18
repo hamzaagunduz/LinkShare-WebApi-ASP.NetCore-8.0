@@ -38,10 +38,7 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
 
             var followerUser = await _userManager.FindByIdAsync(request.AppUserID.ToString());
 
-            if (followerUser == null)
-            {
-                return new CustomResult<string>("App User not found.", HttpStatusCode.NotFound);
-            }
+
 
             var comment = new ProfileComment
             {

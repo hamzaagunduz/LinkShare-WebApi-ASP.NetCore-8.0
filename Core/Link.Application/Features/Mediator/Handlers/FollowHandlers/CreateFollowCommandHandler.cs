@@ -31,31 +31,31 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 
         public async Task<CustomResult<string>> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
         {
-            try
-            {
+ 
                 var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
                     .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
-                if (userIdClaim == null)
-                {
-                    throw new UnauthorizedAccessException("User ID claim not found in token.");
-                }
+            if (userIdClaim == null)
+            {
+                throw new UnauthorizedAccessException("User ID claim not found in token.");
+            }
 
-                var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
+            var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
+            if (followerUser == null)
+            {
+                throw new ArgumentNullException($"User with ID '{userIdClaim.Value}' not found.");
+            }
 
-                if (followerUser == null)
-                {
-                    throw new ArgumentNullException($"User with ID '{userIdClaim.Value}' not found.");
-                }
 
-                var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
+            var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
+            if (followingUser == null)
+            {
+                throw new ArgumentNullException($"User with ID '{request.FollowingUserId}' not found.");
+            }
 
-                if (followingUser == null)
-                {
-                    throw new ArgumentNullException($"User with ID '{request.FollowingUserId}' not found.");
-                }
 
-                var following = new Following
+
+            var following = new Following
                 {
                     AppUserID = int.Parse(userIdClaim.Value),
                     AppUserFollowingID = request.FollowingUserId,
@@ -88,23 +88,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 return new CustomResult<string>("Comment created successfully.", HttpStatusCode.OK);
             }
 
-
-
-            catch (UnauthorizedAccessException ex)
-            {
-                var errors = new List<string> { ex.Message };
-                return new CustomResult<string>(null, HttpStatusCode.Unauthorized, errors);
-            }
-            catch (ArgumentNullException ex)
-            {
-                var errors = new List<string> { ex.Message };
-                return new CustomResult<string>(null, HttpStatusCode.NotFound, errors);
-            }
-            catch (Exception ex)
-            {
-                var errors = new List<string> { ex.Message };
-                return new CustomResult<string>(null, HttpStatusCode.InternalServerError, errors);
-            }
+    
         }
     }
-}
+
