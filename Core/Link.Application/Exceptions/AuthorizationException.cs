@@ -11,5 +11,9 @@ namespace Link.Application.Exceptions
         public AuthorizationException(string message) : base(message)
         {
         }
+
+        public AuthorizationException() : base("Authorization Hatası")
+        {
+        }
     }
 }

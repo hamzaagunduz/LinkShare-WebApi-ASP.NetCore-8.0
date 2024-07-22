@@ -35,10 +35,11 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 
                 if (userIdClaim == null)
                 {
-                    throw new UnauthorizedAccessException("User ID claim not found in token.");
+                    return new CustomResult<string>("User ID claim Alanı Tokende Bulunamadı Unauthorized.", HttpStatusCode.Unauthorized);
+
                 }
 
-                var newLink = new Linke
+            var newLink = new Linke
                 {
                     AppUserID = int.Parse(userIdClaim.Value),
                     LinkName = request.LinkName,
@@ -50,7 +51,7 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
                 // Save the new link to the repository
                 await _repository.CreateAsync(newLink);
 
-                return new CustomResult<string>("Link created successfully.", HttpStatusCode.OK);
+                return new CustomResult<string>("Link Oluşturma successfully.", HttpStatusCode.OK);
             }
 
 

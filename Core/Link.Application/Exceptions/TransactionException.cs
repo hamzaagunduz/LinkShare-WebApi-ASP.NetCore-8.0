@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Exceptions
 {
-    public class BadRequestException : Exception
+    public class TransactionException : Exception
     {
-        public BadRequestException(string message) : base(message)
+        public TransactionException(string message) : base(message)
         {
         }
-
-        public BadRequestException() : base("BadRequest Hatası")
+        public TransactionException() : base("TransactionException")
         {
         }
     }

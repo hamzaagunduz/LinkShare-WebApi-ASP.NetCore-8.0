@@ -13,8 +13,13 @@ namespace Link.Application.Features.Mediator.Validations.LinkValidation
     {
         public CreateLinkValidation()
         {
-            RuleFor(x => x.LinkName).NotEmpty().WithMessage("bos bırakma");
-            RuleFor(x => x.LinkUrl).NotEmpty().WithMessage("bos bırakma");
+            RuleFor(x => x.LinkName)
+                .NotEmpty().WithMessage("Link Adı Boş Olamaz")
+                .MaximumLength(50).WithMessage("Link Adı en fazla 10 karakter olmalıdır");
+
+            RuleFor(x => x.LinkUrl)
+                .NotEmpty().WithMessage("Link URL bırakılamaz")
+                .MaximumLength(2000).WithMessage("Link URL en fazla 2000 karakter olabilir");
 
 
 

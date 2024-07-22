@@ -11,5 +11,8 @@ namespace Link.Application.Exceptions
         public NullReferenceException(string message) : base(message)
         {
         }
+        public NullReferenceException() : base("NullReferanceException")
+        {
+        }
     }
 }

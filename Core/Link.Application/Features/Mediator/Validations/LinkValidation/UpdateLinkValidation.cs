@@ -12,10 +12,28 @@ namespace Link.Application.Features.Mediator.Validations.LinkValidation
     {
         public UpdateLinkValidation()
         {
-            RuleFor(x => x.LinkeID).NotEmpty().WithMessage("ID bos");
-            RuleFor(x => x.LinkName).NotEmpty().WithMessage("name bos");
-            RuleFor(x => x.LinkUrl).NotEmpty().WithMessage("url bos");
+            RuleFor(x => x.LinkeID).NotEmpty().WithMessage("ID boş olamaz");
 
+
+            RuleFor(x => x.LinkName)
+                .NotEmpty().WithMessage("Link Adı Boş Olamaz")
+                .MaximumLength(10).WithMessage("Link Adı en fazla 10 karakter olmalıdır");
+
+            RuleFor(x => x.LinkUrl)
+                .NotEmpty().WithMessage("Link URL bırakılamaz")
+                .MaximumLength(2000).WithMessage("Link URL en fazla 2000 karakter olabilir");
+
+        }
+
+
+        private bool IsDigitsOnly(string str)
+        {
+            foreach (char c in str)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+            return true;
         }
     }
 }

@@ -31,10 +31,11 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
             var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
                 .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
-            if (userIdClaim == null)
-            {
-                return new CustomResult<string>("User ID claim not found in token.", HttpStatusCode.Unauthorized);
-            }
+            //if (userIdClaim == null)
+            //{
+            //    var error = "User ID claim Alanı Tokende Bulunamadı Unauthorized.";
+            //    return new CustomResult<string>(null, HttpStatusCode.Unauthorized, new List<string> { error });
+            //}
 
             var followerUser = await _userManager.FindByIdAsync(request.AppUserID.ToString());
 
@@ -53,7 +54,7 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
 
             await _repository.CreateAsync(comment);
 
-            return new CustomResult<string>("Comment created successfully.", HttpStatusCode.OK);
+            return new CustomResult<string>("Yorum Başarıyla Eklendi.", HttpStatusCode.OK);
         }
     }
 }

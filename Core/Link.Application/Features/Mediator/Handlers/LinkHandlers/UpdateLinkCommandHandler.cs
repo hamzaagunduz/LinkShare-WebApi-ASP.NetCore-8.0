@@ -28,7 +28,8 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
             values.LinkUrl = request.LinkUrl;
 
             await _repository.UpdateAsync(values);
-            return new CustomResult<string>(null, HttpStatusCode.OK);
+            return new CustomResult<string>("Link Güncelleme successfully.", HttpStatusCode.OK);
+
 
 
         }

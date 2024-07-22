@@ -12,9 +12,11 @@ namespace Link.Application.Features.Mediator.Validations.CommentValidation
     {
         public CreateCommentCommandValidator()
         {
-            RuleFor(x => x.AppUserID).NotEmpty();
+            RuleFor(x => x.AppUserID).NotEmpty().WithMessage("AppUserID alanı boş olamaz.");
             RuleFor(x => x.Comment)
-                        .MinimumLength(5).WithMessage("5kara.");
+                .NotEmpty().WithMessage("Comment alanı boş olamaz.")
+                .MinimumLength(5).WithMessage("Comment alanı en az 5 karakter uzunluğunda olmalıdır.")
+                .MaximumLength(100).WithMessage("Comment alanı en fazla 100 karakter uzunluğunda olmalıdır.");
 
         }
     }

@@ -37,8 +37,10 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 
             if (userIdClaim == null)
             {
-                throw new UnauthorizedAccessException("User ID claim not found in token.");
+                var error = "User ID claim Alanı Tokende Bulunamadı Unauthorized.";
+                return new CustomResult<string>(null, HttpStatusCode.Unauthorized, new List<string> { error });
             }
+
 
             var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
             if (followerUser == null)
@@ -85,10 +87,11 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 await _userManager.UpdateAsync(followerUser);
                 await _userManager.UpdateAsync(followingUser);
 
-                return new CustomResult<string>("Comment created successfully.", HttpStatusCode.OK);
-            }
+            return new CustomResult<string>("Takio oluşturma başarılı.", HttpStatusCode.OK);
 
-    
         }
+
+
+    }
     }
 

@@ -39,13 +39,13 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 
                 var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
                     .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+            if (userIdClaim == null)
+            {
+                var error = "User ID claim Alanı Tokende Bulunamadı Unauthorized.";
+                return new CustomResult<string>(null, HttpStatusCode.Unauthorized, new List<string> { error });
+            }
 
-                if (userIdClaim == null)
-                {
-                    throw new UnauthorizedAccessException("User ID claim not found in token.");
-                }
-
-                var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
+            var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
 
                 if (followerUser == null)
                 {
@@ -85,11 +85,12 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
                 await _userManager.UpdateAsync(followerUser);
                 await _userManager.UpdateAsync(followingUser);
 
-                return new CustomResult<string>(null, HttpStatusCode.OK);
-
-            }
+            return new CustomResult<string>("Takipten Çıkma Başarılı.", HttpStatusCode.OK);
 
 
         }
+
+
+    }
     }
 
