@@ -45,10 +45,10 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
             {
                 AppUserID = request.AppUserID,
                 WriterID = int.Parse(userIdClaim.Value),
-                View = request.View,
-                Hidden = request.Hidden,
+                View = 0,
+                Hidden = false,
                 Comment = request.Comment,
-                Like = request.Like,
+                Like = 0,
                 Time = DateTime.Now,
             };
 

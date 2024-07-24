@@ -24,9 +24,11 @@ using Link.Application.Features.Mediator.Validations.CommentValidation;
 using Link.Application.Behavior;
 using Link.Application.Exceptions;
 using Link.Application.ExceptionsHandlers;
+using Link.Application.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 
@@ -135,7 +137,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = JwtTokenDefaults.ValidIssuer,
         ValidAudience = JwtTokenDefaults.ValidAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
     };
 });
 
@@ -171,6 +173,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 
+
 app.UseHttpsRedirection();
 //app.Use(async (context, next) =>
 //{
@@ -182,6 +185,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();  // Add this line to ensure authentication middleware is used
 app.UseAuthorization();
+//app.UseMiddleware<AccessTokenMiddleware>();
+
 
 app.MapControllers();
 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="Style/styles.css" />
+    <title>Kullanıcı Profili</title>
+  </head>
+  <body>
+
+    <div class="icons">
+      <a href="Home.html" class="icon-link"><i class="ri-home-line"></i></a>
+      <a href="#" class="icon-link"><i class="ri-user-line"></i></a>
+      <a href="#" class="icon-link"><i class="ri-notification-line"></i></a>
+      <a href="#" class="icon-link"><i class="ri-menu-line"></i></a>
+    </div>
+    
+    
+
+   
+    <div class="card dark">
+
+        <div class="updatephoto">
+            <div class="photo-info">
+              <h3>Profil Fotoğrafı</h3>
+              <h5>Hesabınızı kişiselleştirmek için bir profil fotoğrafı yükleyin.</h5>
+            </div>
+
+            <div class="user-photoset">
+                <img src="assets/user.jpg" alt="user">
+                <div class="change-photo">
+                    <label for="upload-photo" class="change-photo-label">
+                      <i class="fas fa-camera"></i>
+                      Upload Photo
+                    </label>
+                    <input type="file" id="upload-photo" style="display: none;">
+                  </div>
+            </div>
+
+          </div>
+
+          
+          <div class="profile-info">
+            <h3>Profile Biglileri</h3>
+            <form action="#">
+
+              <div class="input-group">
+                <label for="name">İsim</label>
+                <input type="text" id="name" name="name" value="Hamza Dursun Gündüz" required>
+              </div>
+              <div class="input-group">
+                <label for="username">Soyisim</label>
+                <input type="text" id="username" name="username" value="HamzaGunduz" required>
+              </div>
+              <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" value="hamza.gunduuz@gmail.com" required>
+              </div>
+              <div class="input-group">
+                <label for="bio">Hakkında</label>
+                <textarea id="bio" name="bio" rows="4" placeholder="Write something about yourself..."></textarea>
+              </div>
+              <div class="input-group">
+                <label for="email">Şifre</label>
+                <input type="password" id="email" name="email" value="hamza.gum" required>
+              </div>
+              <div class="input-group">
+                <label for="email">Şifre Tekrar</label>
+                <input type="password" id="email" name="email" value="hamza.gum" required>
+              </div>
+              <button type="submit">Save Changes</button>
+            </form>
+          </div>
+          
+          
+
+
+
+
+
+ 
+
+
+    </div>
+
+    
+  </body>
+</html>

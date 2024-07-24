@@ -11,22 +11,19 @@ namespace Link.Application.Features.Mediator.Commands.Comment
 {
     public class CreateCommentCommand : IRequest<CustomResult<string>>
     {
-        public CreateCommentCommand(int appUserID, string comment, int view, int like, bool hidden, DateTime time)
+        public CreateCommentCommand(int appUserID, string comment)
         {
             AppUserID = appUserID;
             Comment = comment;
-            View = view;
-            Like = like;
-            Hidden = hidden;
-            Time = time;
+
         }
 
         public int AppUserID { get; set; }
 
         public string Comment { get; set; }
-        public int View { get; set; }
-        public int Like { get; set; }
-        public bool Hidden { get; set; }
-        public DateTime Time { get; set; }
+        //public int View { get; set; }
+        //public int Like { get; set; }
+        //public bool Hidden { get; set; }
+        //public DateTime Time { get; set; }
     }
 }
