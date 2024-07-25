@@ -21,7 +21,7 @@ namespace Link.WebUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [HttpGet]
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -32,7 +32,7 @@ namespace Link.WebUI.Controllers
             if (!string.IsNullOrEmpty(userId))
             {
                 var linksTask = client.GetAsync($"https://localhost:7048/api/Links/{userId}");
-                var commentsTask = client.GetAsync($"https://localhost:7048/api/Comment/GetByAppUserIDCommentQuery/{userId}");
+                var commentsTask = client.GetAsync($"https://localhost:7048/api/Comment/GetCommentsWithAppUser/{userId}");
 
                 await Task.WhenAll(linksTask, commentsTask);
 
@@ -104,7 +104,7 @@ namespace Link.WebUI.Controllers
             if (!string.IsNullOrEmpty(token))
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                commentDto.AppUserID = 10;
+                commentDto.AppUserID = 5;
                 var jsonContent = JsonConvert.SerializeObject(commentDto);
                 var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 

@@ -10,12 +10,13 @@ namespace Link.Dto.ProfileDtos
     {
 
 
-            public int WriterID { get; set; }
             public string Comment { get; set; }
             public int View { get; set; }
             public int Like { get; set; }
-            public bool Hidden { get; set; }
-            public DateTime Time { get; set; }
+            public string FirstName { get; set; }
+            public string SurName { get; set; }
+            public string UserName { get; set; }
+
 
     }
 }

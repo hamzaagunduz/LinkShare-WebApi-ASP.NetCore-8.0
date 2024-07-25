@@ -50,5 +50,17 @@ namespace Link.WebApi.Controllers
             return result;
 
         }
+
+        [HttpGet("GetCommentsWithAppUser/{id}")]//yaptığı yorumlar
+        public async Task<IActionResult> GetCommentsWithAppUser(int id)
+        {
+            var query = new GetCommentsWithAppUserQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+
+        }
+
+
+
     }
 }

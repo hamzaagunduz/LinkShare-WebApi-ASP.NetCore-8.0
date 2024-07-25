@@ -25,6 +25,7 @@ using Link.Application.Behavior;
 using Link.Application.Exceptions;
 using Link.Application.ExceptionsHandlers;
 using Link.Application.Middleware;
+using Link.Persistence.Repository.CommentRepositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
