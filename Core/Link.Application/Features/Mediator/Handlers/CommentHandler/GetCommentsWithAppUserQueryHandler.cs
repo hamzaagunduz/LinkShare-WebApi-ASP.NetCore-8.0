@@ -33,6 +33,8 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
                 FirstName = c.FirstName,
                 SurName = c.SurName,
                 UserName= c.UserName,
+                Hidden=c.Hidden,
+                AppUserID=c.AppUserID
             }).ToList();
 
             return new CustomResult<List<GetCommentsWithAppUserQueryResult>>(result, HttpStatusCode.OK);

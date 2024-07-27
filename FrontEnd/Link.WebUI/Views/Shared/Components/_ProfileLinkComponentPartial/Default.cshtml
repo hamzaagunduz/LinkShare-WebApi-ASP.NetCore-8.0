@@ -1,4 +1,4 @@
-﻿@model Link.Dto.ProfileDtos.CombinedResponseDto
+﻿@model CombinedResponseDto
 
 <div class="social__icons">
     @foreach (var item in Model.Links)
@@ -7,6 +7,12 @@
             <a href="@item.LinkUrl" class="icon">
                 <span class="icon-text">@item.LinkName</span>
             </a>
+
+            <form action="/Profile/RemoveLink" method="post">
+                <input type="hidden" name="id" value="@item.LinkeID" />
+                <button type="submit" >X</button>
+            </form>
+
         </div>
     }
 </div>

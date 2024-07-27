@@ -54,7 +54,7 @@ namespace Link.WebApi.Controllers
         public async Task<IActionResult> RemoveLink(int id)
         {
             await _mediator.Send(new RemoveLinkCommand(id));
-            return Ok("AppUser başarıyla silindi");
+            return Ok("Link silindi");
         }
         [HttpPut]
         public async Task<IActionResult> UpdateLink(UpdateLinkCommand command)

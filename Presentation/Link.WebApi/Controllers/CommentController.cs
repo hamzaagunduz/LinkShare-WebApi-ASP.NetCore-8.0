@@ -1,7 +1,9 @@
 ﻿using Link.Application.Common;
 using Link.Application.Features.Mediator.Commands.AnswerCommands;
 using Link.Application.Features.Mediator.Commands.Comment;
+using Link.Application.Features.Mediator.Commands.CommentCommands;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
+using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Features.Mediator.Queries.CommentQueries;
 using Link.Application.Features.Mediator.Queries.FollowQueries;
@@ -40,6 +42,16 @@ namespace Link.WebApi.Controllers
             var result = await _mediator.Send(request);
             return result;
         }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveComment(int id)
+        {
+            await _mediator.Send(new RemoveCommentCommand(id));
+            return Ok("Yorum silindi");
+        }
+
+
 
         [HttpGet("GetByAppUserIDCommentQuery/{id}")]//kullanıcı profilindeki yorum
         public async Task<IActionResult> GetByAppUserIDCommentQuery(int id)

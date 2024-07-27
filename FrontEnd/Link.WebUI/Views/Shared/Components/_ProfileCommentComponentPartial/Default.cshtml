@@ -1,4 +1,4 @@
-﻿@model Link.Dto.ProfileDtos.CombinedResponseDto
+﻿@model CombinedResponseDto
 
 @* <div class="ask-question">
     <form id="add-comment-form" asp-action="AddComment" method="post">
@@ -12,12 +12,18 @@
 <div class="questions">
     @foreach (var comment in Model.Comments)
     {
+
         <div class="question">
+
             <div class="user-info">
+
                 <img src="/Linkhtml/assets/user.jpg" alt="Kullanıcı Adı" class="user-photo" />
                 <p class="username">@comment.FirstName @comment.SurName</p><br />
-
                 <p class="username">@comment.UserName</p>
+                <form action="/Profile/RemoveComment" method="post">
+                    <input type="hidden" name="id" value="@comment.ProfileCommentID" />
+                    <button type="submit">X</button>
+                </form>
             </div>
             <p class="question-text">@comment.Comment</p>
 

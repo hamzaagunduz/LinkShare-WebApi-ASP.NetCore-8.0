@@ -1,5 +1,6 @@
 ﻿using Link.Dto.ApiResponseDtos;
 using Link.Dto.CommentDtos;
+using Link.Dto.LinkDto;
 using Link.Dto.ProfileDtos;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -32,25 +33,33 @@ namespace Link.WebUI.Controllers
             {
                 var linksTask = client.GetAsync($"https://localhost:7048/api/Links/{userId}");
                 var commentsTask = client.GetAsync($"https://localhost:7048/api/Comment/GetCommentsWithAppUser/{userId}");
+                var appUserTask = client.GetAsync($"https://localhost:7048/api/AppUser/{userId}");
 
-                await Task.WhenAll(linksTask, commentsTask);
+
+                await Task.WhenAll(linksTask, commentsTask,appUserTask);
 
                 var linksResponse = await linksTask;
                 var commentsResponse = await commentsTask;
+                var userResponse = await appUserTask;
 
-                if (linksResponse.IsSuccessStatusCode && commentsResponse.IsSuccessStatusCode)
+                if (linksResponse.IsSuccessStatusCode && commentsResponse.IsSuccessStatusCode&& userResponse.IsSuccessStatusCode)
                 {
                     var linksJsonData = await linksResponse.Content.ReadAsStringAsync();
                     var commentsJsonData = await commentsResponse.Content.ReadAsStringAsync();
+                    var userJsonData = await userResponse.Content.ReadAsStringAsync();
+
 
                     var linksApiResponse = JsonConvert.DeserializeObject<ApiResponseDto<List<GetLinkDto>>>(linksJsonData);
                     var commentsApiResponse = JsonConvert.DeserializeObject<ApiResponseDto<List<CommentDto>>>(commentsJsonData);
+                    var userApiResponse= JsonConvert.DeserializeObject<ApiResponseDto<GetAppUserDto>>(userJsonData);
+
 
                     var combinedResponse = new CombinedResponseDto
                     {
                         Links = linksApiResponse.Data,
                         Comments = commentsApiResponse.Data,
-                        CommentAnswers = new Dictionary<int, List<AnswerDto>>()
+                        CommentAnswers = new Dictionary<int, List<AnswerDto>>(),
+                        GetAppUserDto=userApiResponse.Data
                     };
 
                     foreach (var comment in combinedResponse.Comments)
@@ -175,6 +184,30 @@ namespace Link.WebUI.Controllers
             return RedirectToAction("Index");
         }
 
+        public async Task<IActionResult> RemoveLink(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.DeleteAsync($"https://localhost:7048/api/Links?id={id}");
+
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+
+            }
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> RemoveComment(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.DeleteAsync($"https://localhost:7048/api/Article?id={id}");
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+
+            }
+            return View();
+        }
 
     }
 }

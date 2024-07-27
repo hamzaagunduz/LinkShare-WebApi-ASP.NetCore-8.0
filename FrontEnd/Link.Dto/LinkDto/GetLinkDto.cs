@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Link.Dto.ProfileDtos
+namespace Link.Dto.LinkDto
 {
-    public class AddLinkDto
+    public class GetLinkDto
     {
+        public int LinkeID { get; set; }
         public string LinkName { get; set; }
         public string LinkUrl { get; set; }
     }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Link.Dto.ProfileDtos
+namespace Link.Dto.CommentDtos
 {
     public class AddAnswerDto
     {

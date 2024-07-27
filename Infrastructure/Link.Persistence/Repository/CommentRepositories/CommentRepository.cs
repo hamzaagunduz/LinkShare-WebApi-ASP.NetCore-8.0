@@ -44,6 +44,8 @@ namespace Link.Persistence.Repository.CommentRepositories
                                                  UserName = user.UserName,
                                                  Comment = comment.Comment,
                                                  ProfileCommentID = comment.ProfileCommentID,
+                                                 AppUserID=comment.AppUserID,
+                                                 Hidden=comment.Hidden
                                              }).ToListAsync();
 
             return commentsWithWriters;

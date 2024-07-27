@@ -1,27 +1,37 @@
-﻿<div class="ask-question">
-    <textarea class="comment" placeholder="Sorunuzu yazın..."></textarea>
-    <button class="comment-button">Gönder</button>
+﻿@model CombinedResponseDto
+
+
+
+
+<div class="ask-question">
+    <form id="add-comment-form" asp-action="AddComment" method="post">
+        <textarea type="Comment" id="LinkName" name="Comment" placeholder="Yorumunuzu yazın"></textarea>
+        <button type="submit" class="comment-button">Gönder</button>
+        <input type="hidden" name="id" value="@Model.Comments.FirstOrDefault()?.AppUserID" />
+
+    </form>
 </div>
 
-
 <div class="questions">
-
-
-    <div class="question">
-        <div class="user-info">
-            <img src="/Linkhtml/assets/user.jpg" alt="Kullanıcı Adı 1" class="user-photo">
-            <p class="username">Aslı Kahve</p>
-        </div>
-        <p class="question-text">Merhaba, GitHub hesabınızı aktif olarak kullanıyor musunuz?</p>
-
-        <div class="answer">
+    @foreach (var comment in Model.Comments.Where(c => !c.Hidden))
+    {
+        <div class="question">
             <div class="user-info">
-                <img src="/Linkhtml/assets/user.jpg" alt="Başka Kullanıcı" class="user-photo">
-                <p class="username">Hamza Gündüz</p>
+                <img src="/Linkhtml/assets/user.jpg" alt="@comment.UserName" class="user-photo">
+                <p class="username">@comment.UserName</p>
             </div>
-            <p class="answer-text">Evet, GitHub hesabımı düzenli olarak kullanıyorum.</p>
+            <p class="question-text">@comment.Comment</p>
+
+            <div class="answer">
+                @foreach (var answer in Model.CommentAnswers.GetValueOrDefault(comment.ProfileCommentID, new List<AnswerDto>()))
+                {
+                    <div class="user-info">
+                        <img src="/Linkhtml/assets/user.jpg" alt="@answer.UserName" class="user-photo">
+                        <p class="username">@answer.UserName</p>
+                    </div>
+                    <p class="answer-text">@answer.AnswerText</p>
+                }
+            </div>
         </div>
-    </div>
-
-
+    }
 </div>

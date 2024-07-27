@@ -1,5 +1,4 @@
 ﻿using Link.Dto.ApiResponseDtos;
-using Link.Dto.ProfileDtos;
 using Link.WebUI.ViewComponents.ProfileViewComponents;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

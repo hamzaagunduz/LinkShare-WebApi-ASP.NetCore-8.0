@@ -150,6 +150,7 @@ body {
   text-align: center;
   display: flex;
   align-items: center;
+  position:relative;
 }
 
 .icon {
@@ -186,6 +187,7 @@ body {
 
 .questions {
   margin-top: 2rem;
+  position:relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -196,7 +198,7 @@ body {
 .question {
   background-color: var(--white);
   margin-bottom: 50px;
-
+  position:relative;
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -700,4 +702,40 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #0056b3;
+}
+
+
+.icon__card button {
+  position: absolute;
+  right: 4px; /* Sağa hizala */
+  transform: translateY(-50%); /* Dikey ortalamayı düzelt (isteğe bağlı) */
+  background-color: red;
+  width: auto; /* İstediğiniz genişlik */
+  padding: 5px 10px; /* Buton boyutlandırma */
+  border: none;
+  cursor: pointer;
+  color: white;
+  border-radius: 5px;
+  top:0px/* İsteğe bağlı */
+}
+
+
+
+.question .user-info button {
+    position: absolute;
+    top: 10px; /* Üstten 10px */
+    right: 10px; /* Sağdan 10px */
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px; /* İsteğe bağlı */
+}
+
+.icon__card button:hover {
+    background-color: darkred;
+}
+.question .user-info button:hover {
+    background-color: darkred;
 }
