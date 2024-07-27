@@ -1,0 +1,27 @@
+﻿@model LoginAppUserDto
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <form class="user" method="post">
+        <div class="form-group">
+            <input type="text" class="form-control form-control-user" id="exampleInputEmail" placeholder="Kullanıcı Adı" asp-for="UserName">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Şifre" asp-for="Password">
+        </div>
+        <button class="btn btn-success btn-block waves-effect waves-light"> Giriş Yap </button>
+    </form>
+
+</body>
+</html>

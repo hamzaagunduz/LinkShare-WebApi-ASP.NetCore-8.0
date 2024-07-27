@@ -1,0 +1,741 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+:root {
+  --primary-color: #30344c;
+  --text-dark: #1e293b;
+  --text-light: #94a3b8;
+  --white: #ffffff;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    min-height: 100vh;
+    background: linear-gradient( to right, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) ), url("/assets/bg.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5rem;
+}
+.icons {
+  position: absolute;
+  top: 10px;
+  right: 23px;
+  display: flex;
+  gap: 1rem;
+  color: #171111;
+}
+
+.icons i {
+  font-size: 1.7rem;
+  color: var(--primary-color);
+  background: rgba(20, 218, 228, 0.189); /* Saydam kare rengi */
+  padding: 0.5rem;
+  border-radius: 5px; /* Kare şekli için */
+  text-decoration: none; /* Link alt çizgisini kaldırır */
+}
+
+.icon-link {
+
+  text-decoration: none; /* Link alt çizgisini kaldırır */
+}
+
+
+.card {
+  width: 440px;
+  padding: 2rem 1rem;
+  border-radius: 10px;
+  margin-top: 50px;
+  background-color: var(--white);
+  text-align: center;
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card.dark {
+  background-color: rgb(171, 193, 241);
+  
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header span {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header span i {
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.5); /* Saydam kare rengi */
+  padding: 0.5rem;
+  border-radius: 5px; /* Kare şekli için */
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.card img {
+  max-width: 120px;
+  margin: 0rem;
+  border-radius: 100%;
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.name {
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: -0.75rem;
+  margin-top: -0.75rem;
+}
+
+.designation {
+  font-size: 1rem;
+  color: rgb(255, 255, 255);
+  margin-bottom: 1rem;
+}
+
+.userName {
+  font-size: 1rem;
+  color: rgb(0, 0, 0);
+  margin-bottom: 0rem;
+}
+
+.about {
+  max-width: 250px;
+  margin: auto;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  margin-bottom: 1rem;
+  margin-top: -0.7rem;
+}
+
+.card button {
+  padding: 0.75rem 2.5rem;
+  margin-top: 2rem;
+  outline: none;
+  border: none;
+  border-radius: 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--white);
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.social__icons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 0rem;
+
+}
+
+.icon__card {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  position:relative;
+}
+
+.icon {
+  margin: 0.5rem auto;
+  height: 45px;
+  width:  400px;
+  display: flex;
+  place-content: center;
+  border-radius: 12px;
+  text-decoration: none; /* Bağlantının alt çizgisini kaldırır */
+
+  align-items: center;
+  box-shadow: 5px 5px 20px rgb(139, 135, 155);
+  /* background-image: linear-gradient(to right, #b1237a, #dc4185); */
+  background-color: #004cff50;
+
+}
+.icon-text {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-left: 8px;
+  color: white;
+}
+.icon:hover .icon-text {
+  color: #000000; /* Hover durumunda metin rengi */
+}
+
+.ask-question {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.questions {
+  margin-top: 2rem;
+  position:relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+}
+
+
+.question {
+  background-color: var(--white);
+  margin-bottom: 50px;
+  position:relative;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  word-wrap: break-word; 
+}
+.question-text {
+  margin-top: 20px;/* Metnin sola yatık olması için */
+}
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-photo{
+  max-width: 70px; /* Maksimum genişlik */
+  max-height: 70px; /* Maksimum yükseklik */
+  border-radius: 50%;
+}
+.answer{
+  width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: #1da1f2;
+}
+.answer .user-photo{
+  max-width: 40px; /* Maksimum genişlik */
+  max-height: 40px;
+  margin-top: 7px;
+  margin-left: 7px;
+
+}
+
+.answer-text{
+  margin-top: 10px;/* Metnin sola yatık olması için */
+  margin-left: 10px;/
+}
+
+
+
+
+
+
+.comment {
+  width: 100%;
+  height: 80px;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid var(--text-light);
+  border-radius: 4px;
+  resize: none;
+  font-size: 0.9rem;
+}
+
+.comment-button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.comment-button:hover {
+  background-color: #1da1f2;
+}
+
+
+
+
+.icon i {
+  font-size: 2rem;
+  color: var(--white);
+}
+
+.icon__card h4 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.icon__card p {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.dark :is(.header span i, .name, .about, .icon__card h4) {
+  color: var(--white);
+}
+
+.dark :is(.card img, .card button, .icon) {
+  box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.7);
+}
+
+
+/*  HOme*/
+
+.cardhome {
+  width: 600px;
+  padding: 2rem 1rem;
+  border-radius: 10px;
+  margin-top: 50px;
+  background-color: var(--white);
+  text-align: center;
+  box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.cardhome.dark {
+  background-color: rgb(171, 193, 241);
+  
+}
+
+.questionshome {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+}
+
+.questionhome {
+  background-color: var(--white);
+  margin-bottom: 50px;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+  word-wrap: break-word; 
+}
+.questionhome-text {
+  margin-top: 20px;/* Metnin sola yatık olması için */
+}
+.userhome-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.userhome-infotext .userName{
+  font-size: 10px;
+  font-weight: 1000;
+  color: var(--text-dark);
+  margin-top: -5px;
+}
+.userhome-info .userName{
+  font-size: 10px;
+  font-weight: 1000;
+  color: var(--text-dark);
+  margin-top: -5px;
+}
+
+.questionshome .userhome-photo{
+  max-width: 50px; /* Maksimum genişlik */
+  max-height: 50px; /* Maksimum yükseklik */
+  border-radius: 50%;
+}
+
+
+.userhome-photo{
+  max-width: 70px; /* Maksimum genişlik */
+  max-height: 70px; /* Maksimum yükseklik */
+  border-radius: 50%;
+}
+.userhomeName {
+  font-size: 1rem;
+  color: rebeccapurple;
+  margin-bottom: 0rem;
+}
+.homeicons {
+  display: flex;
+  justify-content: center; /* İkonları ortalamak için */
+  gap: 2rem; /* İkonlar arasında boşluk */
+}
+
+.homeicons .icon-link {
+  text-decoration: none;
+  color: var(--primary-color);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.homeicons .icon-link i {
+  margin-right: 0.3rem; /* İkon ile metin arasında boşluk */
+  font-size: 20px;
+  color: white;
+}
+
+.homeicons .icon-link:hover {
+  color: #555354; /* Hover durumunda metin rengi */
+}
+
+.homeicons .icon-link:hover i {
+  color: #555354; /* Hover durumunda metin rengi */
+}
+
+
+.detailhome {
+  display: flex;
+  gap: 0.2rem; /* İkonlar arasında boşluk */
+  align-items: center;
+}
+.right-icon {
+  display: flex;
+  align-items: center;
+}
+
+
+.right-icon {
+  margin-left: auto; /* Bu bağlantıyı sağa hizalar */
+}
+
+.homeicons .icon-link:nth-child(1) {
+  background-color: rgb(49, 228, 216); /* Pembe arka plan rengi */
+  padding: 0.7rem; /* İkon etrafına boşluk vermek için */
+  border-radius: 8px; /* Yuvarlak şekil için */
+}
+
+
+
+/*  Home*/
+
+/*  User*/
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.search-bar input {
+  border: 0.4px solid rgba(255, 255, 255, 0.404) ;/* Kenarlık ekledik */
+  background: none;
+  outline: none;
+  color: var(--white);
+  font-size: 14px;
+  padding: 0.5rem;
+  border-radius: 8px; /* Sol köşeleri yuvarlak yapar */
+}
+
+.search-bar button {
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+  color: var(--white);
+  font-size: 16px;
+  padding: 0.5rem;
+  border-radius: 0 5px 5px 0; /* Sağ köşeleri yuvarlak yapar */
+}
+.usersearch {
+  background-color: var(--white);
+  margin-bottom: 10px;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 600px;
+  word-wrap: break-word; 
+}
+
+/*  User*/
+
+.hidden {
+  display: none;
+}
+
+.add-icons{
+  margin-left: 5px;
+}
+
+#add-social-icon-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-left: 0.4rem;
+}
+
+#add-social-icon-form input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+
+  
+
+
+.card .add-icons button {
+  background-image: none;
+  background-color: #000000a3;
+  border-radius: 5px;
+  margin-top: 7px;
+
+  display: flex;
+  width: 80px;
+  height: 40px;
+  align-items: center; /* Metni dikeyde hizalamak için */
+  justify-content: center; 
+  }
+
+  
+  
+.card .add-icons .add-text{
+  color: #ffffff;  
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  line-height: 1; 
+}
+
+#add-social-icon-form .add-text1 {
+  text-align: left;
+  color: #000000;  
+  font-size: 1rem;
+  font-weight: 1000;
+  line-height: 1; 
+}
+
+
+
+#dynamic-button {
+  padding: 0.75rem 2.5rem;
+  margin-top: 0.5rem; /* İsteğinize göre ayarlayabilirsiniz */
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #000000a3;
+  width: 30%;
+
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* Geçiş efekti */
+}
+
+#password-change {
+  display: none; /* Başlangıçta şifre değiştirme alanını gizli yapar */
+}
+
+#password-change.active {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.save-changes,
+button.change-photo,
+button#toggle-password {
+  margin-top: 1rem;
+}
+
+.photo-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.photo-info h3 {
+  margin-bottom: 0.1rem;
+  color: rgb(0, 0, 0);
+}
+.photo-info h5 {
+  margin-bottom: 0.2rem;
+  color: rgb(255, 255, 255);
+
+}
+
+.fetch-avatar {
+  margin-bottom: 1rem;
+}
+.user-photoset{
+  display: flex;
+}
+.user-photoset img{
+  margin-top: 10px;
+
+  width: 100px;
+  height: 100px;
+}
+
+.change-photo {
+text-align: left;
+margin-top: 4rem;
+margin-left: 1.2rem;
+
+}
+
+.change-photo-label {
+  color: #f8f8f8;
+  display: inline-block; /* Metnin genişliğine göre ayarlanmasını sağlar */
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem; /* Butonun padding'ini ayarlar */
+  border-radius: 8px;
+  background-color: #3981ee9f;
+}
+.change-photo-label:hover {
+  background-color: #2c6fc7; /* Hover durumunda arka plan rengini değiştirir */
+  color: #ffffff; /* Hover durumunda metin rengini değiştirir */
+}
+
+.change-photo-label i {
+  font-size: 0.1rem;
+}
+
+#upload-photo {
+  display: none;
+}
+
+
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.account-info h3 {
+  margin-bottom: 0.1rem;
+  margin-top: 3rem;
+  color: white;
+}
+.account-info h5 {
+  margin-bottom: 0.2rem;
+  color: rgb(221, 218, 218);
+
+}
+
+.profile-info {
+  width: 100%;
+  color: #ffffff;
+  margin: auto;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f0f06d;
+  text-align: left;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.profile-info form {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+}
+
+.input-group input,
+.input-group textarea {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.input-group textarea {
+  resize: vertical;
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+
+.icon__card button {
+  position: absolute;
+  right: 4px; /* Sağa hizala */
+  transform: translateY(-50%); /* Dikey ortalamayı düzelt (isteğe bağlı) */
+  background-color: red;
+  width: auto; /* İstediğiniz genişlik */
+  padding: 5px 10px; /* Buton boyutlandırma */
+  border: none;
+  cursor: pointer;
+  color: white;
+  border-radius: 5px;
+  top:0px/* İsteğe bağlı */
+}
+
+
+
+.question .user-info button {
+    position: absolute;
+    top: 10px; /* Üstten 10px */
+    right: 10px; /* Sağdan 10px */
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px; /* İsteğe bağlı */
+}
+
+.icon__card button:hover {
+    background-color: darkred;
+}
+.question .user-info button:hover {
+    background-color: darkred;
+}

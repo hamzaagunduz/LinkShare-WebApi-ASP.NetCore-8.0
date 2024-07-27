@@ -1,9 +1,12 @@
-﻿using Link.Application.Features.Mediator.Commands.AppUserCommands;
+﻿using Azure.Core;
+using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.AppUserCommands;
 using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Features.Mediator.Handlers.LinkHandlers;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Features.Mediator.Queries.FollowQueries;
 using Link.Application.Features.Mediator.Queries.LinkQueries;
+using Link.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,9 +27,17 @@ namespace Link.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateLink(CreateLinkCommand command)
         {
+            var result = await _mediator.Send(command);
 
-            await _mediator.Send(command);
-            return Ok("Link başarıyla eklendi");
+            //var customResult = result as CustomResult<Linke>;
+            //if (customResult != null && customResult.Errors != null && customResult.Errors.Count > 0)
+            //{
+            //    return BadRequest(customResult.Errors);
+            //}
+
+            //return Ok(customResult.Errors); // Başarılı ise veriyi döndür
+
+            return result;
 
         }
 
@@ -43,13 +54,13 @@ namespace Link.WebApi.Controllers
         public async Task<IActionResult> RemoveLink(int id)
         {
             await _mediator.Send(new RemoveLinkCommand(id));
-            return Ok("AppUser başarıyla silindi");
+            return Ok("Link silindi");
         }
         [HttpPut]
         public async Task<IActionResult> UpdateLink(UpdateLinkCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("AppUser başarıyla güncellendi");
+            var result = await _mediator.Send(command);
+            return result;
         }
 
     }

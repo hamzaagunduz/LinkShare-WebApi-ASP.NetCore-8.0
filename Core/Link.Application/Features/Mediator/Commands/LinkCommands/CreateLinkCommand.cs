@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Link.Application.Common;
+using Link.Domain.Entities;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Commands.LinkCommands
 {
-    public class CreateLinkCommand:IRequest
+    public class CreateLinkCommand: IRequest<CustomResult<string>>
     {
         //public int AppUserID { get; set; }
         public string LinkName { get; set; }

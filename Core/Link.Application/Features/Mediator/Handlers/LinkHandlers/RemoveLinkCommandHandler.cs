@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 {
-    internal class RemoveLinkCommandHandler : IRequestHandler<RemoveLinkCommand>
+    public class RemoveLinkCommandHandler : IRequestHandler<RemoveLinkCommand>
     {
-        private readonly IRepository<AppUser> _repository;
+        private readonly IRepository<Linke> _repository;
 
-        public RemoveLinkCommandHandler(IRepository<AppUser> repository)
+        public RemoveLinkCommandHandler(IRepository<Linke> repository)
         {
             _repository = repository;
         }

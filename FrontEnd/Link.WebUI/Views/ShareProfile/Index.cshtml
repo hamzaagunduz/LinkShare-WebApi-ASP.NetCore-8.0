@@ -1,0 +1,34 @@
+﻿  
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+
+
+
+
+
+    <div class="card dark">
+        <div class="header">
+        <span><i class="ri-arrow-left-line"></i></span>
+        <span><i class="ri-heart-line">Takip Et</i></span>
+    </div>
+    <img src="/Linkhtml/assets/user.jpg" alt="user" />
+    <h1 class="name">@Model.GetAppUserDto.FirstName</h1>
+    <p class="userName">@Model.GetAppUserDto.UserName</p>
+    <p class="designation">@Model.GetAppUserDto.Email</p>
+    <p class="about">@Model.GetAppUserDto.About</p>
+    @await Component.InvokeAsync("_ShareProfileLinkComponentPartial") 
+
+
+    @await Component.InvokeAsync("_ShareProfileCommentComponentPartial")
+
+
+
+
+
+    </div>
+
+
+

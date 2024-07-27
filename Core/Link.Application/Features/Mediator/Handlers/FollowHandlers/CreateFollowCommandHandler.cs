@@ -1,19 +1,20 @@
-﻿using Link.Application.Features.Mediator.Commands.FollowCommands;
+﻿using FluentValidation.Results;
+using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.FollowCommands;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Security.Claims;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
 {
-    public class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand>
+    public class CreateFollowCommandHandler : IRequestHandler<CreateFollowCommand, CustomResult<string>>
     {
         private readonly IRepository<Follower> _followerRepository;
         private readonly IRepository<Following> _followingRepository;
@@ -28,48 +29,69 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task Handle(CreateFollowCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(CreateFollowCommand request, CancellationToken cancellationToken)
         {
-            var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
-.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
-
-            var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value.ToString());
-
-            var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
+ 
+                var userIdClaim = _httpContextAccessor.HttpContext.User.Claims
+                    .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
 
             if (userIdClaim == null)
             {
-                // Handle the case where the user ID claim is not found
-                throw new UnauthorizedAccessException("User ID claim not found in token.");
+                var error = "User ID claim Alanı Tokende Bulunamadı Unauthorized.";
+                return new CustomResult<string>(null, HttpStatusCode.Unauthorized, new List<string> { error });
             }
-            var following = new Following
+
+
+            var followerUser = await _userManager.FindByIdAsync(userIdClaim.Value);
+            if (followerUser == null)
             {
-                AppUserID = int.Parse(userIdClaim.Value),
-                AppUserFollowingID = request.FollowingUserId,
-                UserName = followingUser.UserName,
-                Name = followingUser.FirstName + " " + followingUser.SurName
-            };
+                throw new ArgumentNullException($"User with ID '{userIdClaim.Value}' not found.");
+            }
 
-            await _followingRepository.CreateAsync(following);
 
-            // Follower tablosuna ekleme
-            var follower = new Follower
-            {  
-                AppUserID = request.FollowingUserId,
-                AppUserFollowerID= int.Parse(userIdClaim.Value),
-                UserName = followerUser.UserName,
-                Name = followerUser.FirstName + " " + followerUser.SurName
-            };
+            var followingUser = await _userManager.FindByIdAsync(request.FollowingUserId.ToString());
+            if (followingUser == null)
+            {
+                throw new ArgumentNullException($"User with ID '{request.FollowingUserId}' not found.");
+            }
 
-            await _followerRepository.CreateAsync(follower);
 
-            // Following ve Follower sayısını güncelleme
-            followerUser.FollowingCount++;
-            followingUser.FollowersCount++;
 
-            await _userManager.UpdateAsync(followerUser);
-            await _userManager.UpdateAsync(followingUser);
+            var following = new Following
+                {
+                    AppUserID = int.Parse(userIdClaim.Value),
+                    AppUserFollowingID = request.FollowingUserId,
+                    UserName = followingUser.UserName,
+                    Name = $"{followingUser.FirstName} {followingUser.SurName}"
+                };
+
+
+
+
+                await _followingRepository.CreateAsync(following);
+
+                var follower = new Follower
+                {
+                    AppUserID = request.FollowingUserId,
+                    AppUserFollowerID = int.Parse(userIdClaim.Value),
+                    UserName = followerUser.UserName,
+                    Name = $"{followerUser.FirstName} {followerUser.SurName}"
+                };
+
+                await _followerRepository.CreateAsync(follower);
+
+                // Update following and follower counts
+                followerUser.FollowingCount++;
+                followingUser.FollowersCount++;
+
+                await _userManager.UpdateAsync(followerUser);
+                await _userManager.UpdateAsync(followingUser);
+
+            return new CustomResult<string>("Takio oluşturma başarılı.", HttpStatusCode.OK);
 
         }
+
+
     }
-}
+    }
+

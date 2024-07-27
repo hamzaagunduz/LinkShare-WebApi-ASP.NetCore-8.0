@@ -1,31 +1,28 @@
-﻿using Link.Application.Features.Mediator.Commands.AppUserCommands;
+﻿using FluentValidation.Results;
+using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.AppUserCommands;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
 {
-    public class CreateAppUserCommandHandler : IRequestHandler<CreateAppUserCommand>
+    public class CreateAppUserCommandHandler : IRequestHandler<CreateAppUserCommand, CustomResult<AppUser>>
     {
-        private readonly IRepository<AppUser> _repository;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IMediator _mediator;
 
-        public CreateAppUserCommandHandler(IRepository<AppUser> repository, UserManager<AppUser> userManager, IMediator mediator)
+        public CreateAppUserCommandHandler(UserManager<AppUser> userManager)
         {
-            _repository = repository;
             _userManager = userManager;
-            _mediator = mediator;
         }
 
-        public async Task Handle(CreateAppUserCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<AppUser>> Handle(CreateAppUserCommand request, CancellationToken cancellationToken)
         {
             var newUser = new AppUser
             {
@@ -39,20 +36,20 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 FollowingCount = request.FollowingCount,
                 PostCount = request.PostCount,
                 View = request.View,
-                
             };
 
             IdentityResult result = await _userManager.CreateAsync(newUser, request.Password);
 
             if (!result.Succeeded)
             {
-                // Hata mesajlarını debug loguna yaz
+                var identityErrors = result.Errors.Select(e => $"{e.Code}: {e.Description}").ToList();
                 Debug.WriteLine("Kullanıcı oluşturulurken hata oluştu:");
-                foreach (var error in result.Errors)
-                {
-                    Debug.WriteLine($"Kod: {error.Code}, Açıklama: {error.Description}");
-                }
+                identityErrors.ForEach(error => Debug.WriteLine(error));
+
+                return new CustomResult<AppUser>(null, HttpStatusCode.BadRequest, identityErrors);
             }
+
+            return new CustomResult<AppUser>(newUser, HttpStatusCode.OK);
         }
     }
 }

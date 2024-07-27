@@ -1,16 +1,18 @@
-﻿using Link.Application.Features.Mediator.Commands.LinkCommands;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Interfaces;
 using Link.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 {
-    public class UpdateLinkCommandHandler : IRequestHandler<UpdateLinkCommand>
+    public class UpdateLinkCommandHandler : IRequestHandler<UpdateLinkCommand,CustomResult<string>>
     {
         private readonly IRepository<Linke> _repository;
 
@@ -19,13 +21,16 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
             _repository = repository;
         }
 
-        public async Task Handle(UpdateLinkCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(UpdateLinkCommand request, CancellationToken cancellationToken)
         {
             var values = await _repository.GetByIdAsync(request.LinkeID);
             values.LinkName = request.LinkName;
             values.LinkUrl = request.LinkUrl;
 
             await _repository.UpdateAsync(values);
+            return new CustomResult<string>("Link Güncelleme successfully.", HttpStatusCode.OK);
+
+
 
         }
     }

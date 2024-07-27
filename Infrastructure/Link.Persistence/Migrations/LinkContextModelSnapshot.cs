@@ -35,10 +35,12 @@ namespace Link.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("LikeCount")
-                        .IsRequired()
+                    b.Property<int>("AppUserID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikeCount")
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("int");
 
                     b.Property<int?>("ProfileCommentID")
                         .HasColumnType("int");
@@ -46,10 +48,9 @@ namespace Link.Persistence.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("View")
-                        .IsRequired()
+                    b.Property<int>("View")
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("int");
 
                     b.HasKey("AnswerID");
 

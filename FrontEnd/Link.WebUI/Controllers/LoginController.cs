@@ -47,9 +47,11 @@ namespace Link.WebUI.Controllers
                     var token = handler.ReadJwtToken(tokenModel.Token);
                     var claims = token.Claims.ToList();
 
+
+
                     if (tokenModel.Token != null)
                     {
-                        claims.Add(new Claim("carbooktoken", tokenModel.Token));
+                        claims.Add(new Claim("access_tokena", tokenModel.Token));
                         var claimsIdentity = new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme);
                         var authProps = new AuthenticationProperties
                         {
@@ -57,11 +59,22 @@ namespace Link.WebUI.Controllers
                             IsPersistent = true
                         };
 
+                        Response.Cookies.Append("access_token", tokenModel.Token, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            Expires = tokenModel.ExpireDate
+                        });
+
+                        Console.WriteLine($"Giriş yapan kullanıcının ID'si: {new JwtSecurityTokenHandler().ReadJwtToken(tokenModel.Token).Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value}");
+
+                        Console.WriteLine($"token: {tokenModel.Token}");
+
                         await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProps);
 
 
 
-                        return RedirectToAction("AdminArticle", "Admin");
+                        return RedirectToAction("Index", "Profile");
                     }
                 }
             }

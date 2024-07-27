@@ -1,0 +1,30 @@
+﻿@model CombinedResponseDto
+
+<div class="social__icons">
+    @foreach (var item in Model.Links)
+    {
+        <div class="icon__card">
+            <a href="@item.LinkUrl" class="icon">
+                <span class="icon-text">@item.LinkName</span>
+            </a>
+
+            <form action="/Profile/RemoveLink" method="post">
+                <input type="hidden" name="id" value="@item.LinkeID" />
+                <button type="submit" >X</button>
+            </form>
+
+        </div>
+    }
+</div>
+
+<form id="add-social-icon-form" asp-action="AddLink" method="post">
+    <span class="add-text1">BAŞLIK</span>
+    <input type="text" id="LinkName" name="LinkName" placeholder="Açıklama" required />
+
+    <span class="add-text1">URL ADRESİ</span>
+    <input type="url" id="LinkUrl" name="LinkUrl" placeholder="URL" required />
+
+    <button id="dynamic-button" class="icon" type="submit">
+        <span class="add-text">Kaydet</span>
+    </button>
+</form>

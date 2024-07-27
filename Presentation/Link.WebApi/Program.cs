@@ -14,14 +14,31 @@ using System.Text;
 using Link.Application.Tools;
 using Link.Application.Interfaces.CommentRepository;
 using Microsoft.OpenApi.Models;
+using FluentValidation.AspNetCore;
+using System.Globalization;
+using System.Reflection;
+using Link.Application.AutoMapper.Link;
+using MediatR;
+using FluentValidation;
+using Link.Application.Features.Mediator.Validations.CommentValidation;
+using Link.Application.Behavior;
+using Link.Application.Exceptions;
+using Link.Application.ExceptionsHandlers;
+using Link.Application.Middleware;
+using Link.Persistence.Repository.CommentRepositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpClient();
 
 // Add services to the container.
 
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddEndpointsApiExplorer()
+    .AddProblemDetails(); 
 
 
 //builder.Services.AddSwaggerGen();
@@ -56,6 +73,39 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
+builder.Services.AddExceptionHandler<AuthorizationExceptionHandler>();
+builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
+builder.Services.AddExceptionHandler<NullReferenceExceptionHandler>();
+builder.Services.AddExceptionHandler<TransactionExceptionHandler>();
+
+
+builder.Services.AddAutoMapper(typeof(LinkProfile).Assembly);
+
+
+
+
+
+
+
+
+
+
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestResponseLoggingBehavior<,>));
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+builder.Services.AddValidatorsFromAssembly(Link.Application.AssemblyReference.Assembly,
+    includeInternalTypes: true);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -73,24 +123,6 @@ builder.Services.AddIdentity<AppUser, AppRole>(options =>
 .AddEntityFrameworkStores<LinkContext>();
 
 
-//builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddCookie(options =>
-//    {
-//        // if URL path starts with "/api" then use Bearer authentication instead
-//        options.ForwardDefaultSelector = httpContext => httpContext.Request.Path.StartsWithSegments("/api") ? JwtBearerDefaults.AuthenticationScheme : null;
-//    })
-//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
-//    {
-//        o.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidAudience = JwtTokenDefaults.ValidAudience,
-//            ValidIssuer = JwtTokenDefaults.ValidIssuer,
-//            ClockSkew = TimeSpan.Zero,
-//            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
-//            ValidateLifetime = true,
-//            ValidateIssuerSigningKey = true
-//        };
-//    });
 
 builder.Services.AddAuthentication(options =>
 {
@@ -106,7 +138,7 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = JwtTokenDefaults.ValidIssuer,
         ValidAudience = JwtTokenDefaults.ValidAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtTokenDefaults.Key)),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
     };
 });
 
@@ -130,8 +162,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
 
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -140,11 +170,26 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+
+
+app.UseExceptionHandler();
+
+
 app.UseHttpsRedirection();
+//app.Use(async (context, next) =>
+//{
+//    // Test amaçlý NullReferenceException fýrlatma
+//    throw new NotFoundException("Test null reference exception");
+//    await next.Invoke();
+//});
+
 
 app.UseAuthentication();  // Add this line to ensure authentication middleware is used
 app.UseAuthorization();
+//app.UseMiddleware<AccessTokenMiddleware>();
+
 
 app.MapControllers();
+
 
 app.Run();

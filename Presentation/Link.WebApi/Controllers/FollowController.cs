@@ -22,16 +22,16 @@ namespace Link.WebApi.Controllers
         [HttpPost("follow")]
         public async Task<IActionResult> Follow([FromBody] CreateFollowCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("Takip başarıyla eklendi");
+            var result = await _mediator.Send(command);
+            return result;
 
         }
 
         [HttpPost("unfollow")]
         public async Task<IActionResult> Unfollow([FromBody] UnfollowUserCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("Takip başarıyla eklendi");
+            var result = await _mediator.Send(command);
+            return result;
 
         }
 

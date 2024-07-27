@@ -1,0 +1,13 @@
+﻿@model CombinedResponseDto
+
+<h2>Profile Links</h2>
+<div class="social__icons">
+    @foreach (var link in Model.Links)
+    {
+        <div class="icon__card">
+            <a href="@link.LinkUrl" class="icon">
+                <span class="icon-text">@link.LinkName</span>
+            </a>
+        </div>
+    }
+</div>
