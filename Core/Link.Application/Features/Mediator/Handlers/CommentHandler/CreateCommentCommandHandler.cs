@@ -46,7 +46,7 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
                 AppUserID = request.AppUserID,
                 WriterID = int.Parse(userIdClaim.Value),
                 View = 0,
-                Hidden = false,
+                Hidden = true,
                 Comment = request.Comment,
                 Like = 0,
                 Time = DateTime.Now,

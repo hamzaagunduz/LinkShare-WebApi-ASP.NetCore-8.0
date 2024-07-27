@@ -10,6 +10,10 @@ namespace Link.Dto.ProfileDtos
     {
         public List<GetLinkDto> Links { get; set; }
         public List<CommentDto> Comments { get; set; }
+
+
+        public Dictionary<int, List<AnswerDto>> CommentAnswers { get; set; }
+
     }
 
 }

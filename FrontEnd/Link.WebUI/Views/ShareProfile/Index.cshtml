@@ -1,0 +1,39 @@
+﻿  
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+
+
+
+
+
+    <div class="card dark">
+        <div class="header">
+            <span><i class="ri-arrow-left-line"></i></span>
+
+            <span>
+                <i class="ri-heart-line">Takip Et</i>
+            </span>
+
+        </div>
+        <img src="/Linkhtml/assets/user.jpg" alt="user" />
+        <h1 class="name">Merve Test</h1>
+        <p class="userName">meretst</p>
+        <p class="designation">Bilgisayar Mühendisi</p>
+        <p class="about">Bağlantılarıma Buradan Ulaşabilirsiniz</p>
+
+    @await Component.InvokeAsync("_ShareProfileLinkComponentPartial")
+
+
+    @* @await Component.InvokeAsync("_ShareProfileCommentComponentPartial") *@
+
+
+
+
+
+    </div>
+
+
+

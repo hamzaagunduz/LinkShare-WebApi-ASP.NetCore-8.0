@@ -26,7 +26,6 @@ namespace Link.WebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient();
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!string.IsNullOrEmpty(userId))
@@ -50,18 +49,42 @@ namespace Link.WebUI.Controllers
                     var combinedResponse = new CombinedResponseDto
                     {
                         Links = linksApiResponse.Data,
-                        Comments = commentsApiResponse.Data
+                        Comments = commentsApiResponse.Data,
+                        CommentAnswers = new Dictionary<int, List<AnswerDto>>()
                     };
+
+                    foreach (var comment in combinedResponse.Comments)
+                    {
+                        var answersResponse = await GetAnswersWithId(comment.ProfileCommentID);
+                        combinedResponse.CommentAnswers[comment.ProfileCommentID] = answersResponse.Data;
+                    }
 
                     return View(combinedResponse);
                 }
             }
 
-            return View(new CombinedResponseDto { Links = new List<GetLinkDto>(), Comments = new List<CommentDto>() });
+            return View(new CombinedResponseDto
+            {
+                Links = new List<GetLinkDto>(),
+                Comments = new List<CommentDto>(),
+                CommentAnswers = new Dictionary<int, List<AnswerDto>>()
+            });
         }
 
 
+        private async Task<ApiResponseDto<List<AnswerDto>>> GetAnswersWithId(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"https://localhost:7048/api/Comment/GetAnswersWithId/{id}");
 
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<ApiResponseDto<List<AnswerDto>>>(jsonData);
+            }
+
+            return new ApiResponseDto<List<AnswerDto>> { Data = new List<AnswerDto>() }; // Boş bir liste döndür
+        }
 
 
 
@@ -104,7 +127,7 @@ namespace Link.WebUI.Controllers
             if (!string.IsNullOrEmpty(token))
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                commentDto.AppUserID = 5;
+                commentDto.AppUserID = 10;
                 var jsonContent = JsonConvert.SerializeObject(commentDto);
                 var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
@@ -125,7 +148,32 @@ namespace Link.WebUI.Controllers
 
 
 
+        [HttpPost]
+        public async Task<IActionResult> AddAnswer(AddAnswerDto answerDto)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var token = Request.Cookies["access_token"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+                var jsonContent = JsonConvert.SerializeObject(answerDto);
+                var contentString = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var responseMessage = await client.PostAsync("https://localhost:7048/api/Comment/CreateAnswer", contentString);
+
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Cevap eklenirken bir hata oluştu.");
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
 
 
     }

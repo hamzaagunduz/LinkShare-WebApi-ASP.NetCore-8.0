@@ -1,4 +1,5 @@
 ﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.AnswerCommands;
 using Link.Application.Features.Mediator.Commands.Comment;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
@@ -33,6 +34,12 @@ namespace Link.WebApi.Controllers
             var result = await _mediator.Send(request);
             return result;
         }
+        [HttpPost("CreateAnswer")]
+        public async Task<IActionResult> CreateAnswer([FromBody] CreateAnswerCommand request)
+        {
+            var result = await _mediator.Send(request);
+            return result;
+        }
 
         [HttpGet("GetByAppUserIDCommentQuery/{id}")]//kullanıcı profilindeki yorum
         public async Task<IActionResult> GetByAppUserIDCommentQuery(int id)
@@ -55,6 +62,14 @@ namespace Link.WebApi.Controllers
         public async Task<IActionResult> GetCommentsWithAppUser(int id)
         {
             var query = new GetCommentsWithAppUserQuery(id);
+            var result = await _mediator.Send(query);
+            return result;
+
+        }
+        [HttpGet("GetAnswersWithId/{id}")]//yaptığı yorumlar
+        public async Task<IActionResult> GetAnswersWithId(int id)
+        {
+            var query = new GetAnswersForCommentQuery(id);
             var result = await _mediator.Send(query);
             return result;
 

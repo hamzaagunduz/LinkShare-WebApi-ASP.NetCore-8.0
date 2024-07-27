@@ -9,6 +9,7 @@ namespace Link.Dto.ProfileDtos
     public class CommentDto
     {
 
+            public int ProfileCommentID { get; set; }
 
             public string Comment { get; set; }
             public int View { get; set; }

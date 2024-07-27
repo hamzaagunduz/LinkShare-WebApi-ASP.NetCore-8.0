@@ -8,6 +8,8 @@ namespace Link.Application.Features.Mediator.Results.CommentResults
 {
     public class GetCommentsWithAppUserQueryResult
     {
+        public int ProfileCommentID { get; set; }
+
         public string Comment { get; set; }
         public int View { get; set; }
         public int Like { get; set; }

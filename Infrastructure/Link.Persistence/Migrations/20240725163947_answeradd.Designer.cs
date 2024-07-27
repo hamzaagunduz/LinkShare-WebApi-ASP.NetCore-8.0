@@ -4,6 +4,7 @@ using Link.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Link.Persistence.Migrations
 {
     [DbContext(typeof(LinkContext))]
-    partial class LinkContextModelSnapshot : ModelSnapshot
+    [Migration("20240725163947_answeradd")]
+    partial class answeradd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +41,10 @@ namespace Link.Persistence.Migrations
                     b.Property<int>("AppUserID")
                         .HasColumnType("int");
 
-                    b.Property<int>("LikeCount")
+                    b.Property<string>("LikeCount")
+                        .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int?>("ProfileCommentID")
                         .HasColumnType("int");
@@ -48,9 +52,10 @@ namespace Link.Persistence.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("View")
+                    b.Property<string>("View")
+                        .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("AnswerID");
 

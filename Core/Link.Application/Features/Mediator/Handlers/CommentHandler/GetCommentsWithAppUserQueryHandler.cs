@@ -27,11 +27,12 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
             var result = comments.Select(c => new GetCommentsWithAppUserQueryResult
             {
                 Comment=c.Comment,
-                Like =c.Like,
+                ProfileCommentID = c.ProfileCommentID,
+                Like = c.Like,
                 View=c.View,
                 FirstName = c.FirstName,
                 SurName = c.SurName,
-                UserName= c.UserName
+                UserName= c.UserName,
             }).ToList();
 
             return new CustomResult<List<GetCommentsWithAppUserQueryResult>>(result, HttpStatusCode.OK);
