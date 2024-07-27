@@ -35,6 +35,10 @@ namespace Link.Persistence.Configurations
                    .IsRequired();
 
 
+            builder.HasOne(pc => pc.Answers)
+                   .WithOne(a => a.ProfileComment)
+                   .HasForeignKey<Answer>(a => a.ProfileCommentID)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

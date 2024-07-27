@@ -106,8 +106,10 @@ namespace Link.WebUI.Controllers
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    // Yönlendirme sırasında id parametresini iletin
+                    return RedirectToAction("Index", new { id = commentDto.AppUserID });
                 }
+
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Yorum eklenirken bir hata oluştu.");
