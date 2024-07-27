@@ -200,7 +200,7 @@ namespace Link.WebUI.Controllers
         public async Task<IActionResult> RemoveComment(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var responseMessage = await client.DeleteAsync($"https://localhost:7048/api/Article?id={id}");
+            var responseMessage = await client.DeleteAsync($"https://localhost:7048/api/Comment?id={id}");
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
