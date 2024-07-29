@@ -2,12 +2,8 @@
 
 <h2>Profile Links</h2>
 
-@* Validasyon hatalarını göster *@
-
-
 @if (Model.ShowForm)
 {
-    <div asp-validation-summary="ModelOnly"></div>
     <div class="social__icons">
         @foreach (var item in Model.Links)
         {
@@ -16,7 +12,7 @@
                     <span class="icon-text">@item.LinkName</span>
                 </a>
 
-                <form action="/Profile/RemoveLink" method="post" class="remove-link-form">
+                <form action="/ShareProfile/RemoveLink" method="post" class="remove-link-form">
                     <input type="hidden" name="id" value="@item.LinkeID" />
                     <button type="submit" class="remove-link-button" data-link-name="@item.LinkName">
                         X
@@ -27,45 +23,93 @@
     </div>
     @if (Model.Links.Count <= 10)
     {
-
         <form id="add-social-icon-form" asp-action="AddLink" method="post">
+            <div asp-validation-summary="ModelOnly"></div>
             <span class="add-text1">BAŞLIK</span>
             <input type="text" id="LinkName" name="LinkName" placeholder="Açıklama" />
 
+            @if (ViewData.ModelState["LinkName"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["LinkName"].Errors)
+                {
+                    @if (error.ErrorMessage != "The LinkName field is required.")
+                    {
+                        <span class="field-validation-error">@error.ErrorMessage</span>
+                    }
+                }
+            }
+
             <span class="add-text1">URL ADRESİ</span>
             <input type="url" id="LinkUrl" name="LinkUrl" placeholder="URL" />
+
+            @if (ViewData.ModelState["LinkUrl"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["LinkUrl"].Errors)
+                {
+
+                        <span class="field-validation-error">@error.ErrorMessage</span>
+                }
+            }
 
             <button id="dynamic-button" class="icon" type="submit">
                 <span class="add-text">Kaydet</span>
             </button>
         </form>
-        }
-
+    }
 }
 else
 {
-
-        <div class="social__icons">
-            @foreach (var link in Model.Links)
-            {
-                <div class="icon__card">
-                    <a href="@link.LinkUrl" class="icon">
-                        <span class="icon-text">@link.LinkName</span>
-                    </a>
-                </div>
-            }
-        </div>
+    <div class="social__icons">
+        @foreach (var link in Model.Links)
+        {
+            <div class="icon__card">
+                <a href="@link.LinkUrl" class="icon">
+                    <span class="icon-text">@link.LinkName</span>
+                </a>
+            </div>
+        }
+    </div>
 }
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('DOM fully loaded and parsed');
+        const form = document.getElementById('add-social-icon-form');
+        const button = document.getElementById('dynamic-button');
+        const minTimeInterval = 15000; // 5 saniye
 
-        // X butonlarına tıklama olayını dinle
+        // Form gönderimi işlemini yakala
+        form.addEventListener('submit', function (event) {
+
+            // Butonu devre dışı bırak ve metni değiştir
+            button.disabled = true;
+            button.innerText = 'Lütfen bekleyin...';
+
+            // Formu gönder
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+            }).then(response => {
+                if (response.ok) {
+                    setTimeout(() => {
+                        button.disabled = false;
+                        button.innerText = 'Kaydet';
+                    }, minTimeInterval);
+                } else {
+                    button.disabled = false;
+                    button.innerText = 'Kaydet';
+                    console.error('Hata:', response.statusText);
+                }
+            }).catch(error => {
+                button.disabled = false;
+                button.innerText = 'Kaydet';
+                console.error('Hata:', error);
+            });
+        });
+
         document.querySelectorAll('.remove-link-button').forEach(button => {
             button.addEventListener('click', function (event) {
-                event.preventDefault(); // Formun normal submit işlemini engelle
+                event.preventDefault(); 
 
                 const form = this.closest('form');
                 const linkName = this.getAttribute('data-link-name');
@@ -87,4 +131,5 @@ else
             });
         });
     });
+
 </script>

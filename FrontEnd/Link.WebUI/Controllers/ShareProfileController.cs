@@ -19,7 +19,6 @@ namespace Link.WebUI.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-
         public ShareProfileController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -28,8 +27,15 @@ namespace Link.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int id)
         {
-            var client = _httpClientFactory.CreateClient();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var combinedResponse = await GetCombinedResponse(id, userId);
+
+            return View(combinedResponse);
+        }
+
+        private async Task<CombinedResponseDto> GetCombinedResponse(int id, string userId)
+        {
+            var client = _httpClientFactory.CreateClient();
 
             var profileLinksTask = client.GetAsync($"https://localhost:7048/api/Links/{id}");
             var profileCommentsTask = client.GetAsync($"https://localhost:7048/api/Comment/GetCommentsWithAppUser/{id}");
@@ -57,7 +63,7 @@ namespace Link.WebUI.Controllers
                     Comments = profileCommentsApiResponse.Data,
                     CommentAnswers = new Dictionary<int, List<AnswerDto>>(),
                     GetAppUserDto = userApiResponse.Data,
-                    ShowForm = (userId == id.ToString()) // Formu gösterme koşulu
+                    ShowForm = (userId == id.ToString()),
                 };
 
                 foreach (var comment in combinedResponse.Comments)
@@ -66,18 +72,17 @@ namespace Link.WebUI.Controllers
                     combinedResponse.CommentAnswers[comment.ProfileCommentID] = answersResponse.Data;
                 }
 
-                return View(combinedResponse);
+                return combinedResponse;
             }
 
-            return View(new CombinedResponseDto
+            return new CombinedResponseDto
             {
                 Links = new List<GetLinkDto>(),
                 Comments = new List<CommentDto>(),
                 CommentAnswers = new Dictionary<int, List<AnswerDto>>(),
                 ShowForm = false
-            });
+            };
         }
-
 
         private async Task<ApiResponseDto<List<AnswerDto>>> GetAnswersWithId(int id)
         {
@@ -114,7 +119,6 @@ namespace Link.WebUI.Controllers
                     // Yönlendirme sırasında id parametresini iletin
                     return RedirectToAction("Index", new { id = commentDto.AppUserID });
                 }
-
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Yorum eklenirken bir hata oluştu.");
@@ -141,10 +145,9 @@ namespace Link.WebUI.Controllers
                 }
 
                 // Validasyon hatalarını kullanıcıya göstermek için formu tekrar göster
-                return RedirectToAction("Index", new { id = userId });
+                var combinedResponse = await GetCombinedResponse(int.Parse(userId), userId); // combinedResponse elde etmek için
+                return View("Index", combinedResponse);
             }
-
-
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -167,7 +170,6 @@ namespace Link.WebUI.Controllers
             return RedirectToAction("Index", new { id = userId });
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AddAnswer(AddAnswerDto answerDto)
         {
@@ -187,7 +189,6 @@ namespace Link.WebUI.Controllers
                 if (responseMessage.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index", new { id = userId });
-
                 }
                 else
                 {
@@ -208,8 +209,8 @@ namespace Link.WebUI.Controllers
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", new { id = userId });
-
             }
+
             return RedirectToAction("Index", new { id = userId });
         }
 
@@ -219,16 +220,13 @@ namespace Link.WebUI.Controllers
 
             var client = _httpClientFactory.CreateClient();
             var responseMessage = await client.DeleteAsync($"https://localhost:7048/api/Comment?id={id}");
+
             if (responseMessage.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", new { id = userId });
-
             }
+
             return RedirectToAction("Index", new { id = userId });
         }
-
-
-
-
     }
 }

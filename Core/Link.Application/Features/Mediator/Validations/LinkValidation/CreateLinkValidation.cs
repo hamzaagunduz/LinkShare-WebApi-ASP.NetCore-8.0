@@ -1,12 +1,5 @@
 ﻿using FluentValidation;
-using Link.Application.Features.Mediator.Commands.FollowCommands;
-using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Dto.LinkDto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Validations.LinkValidation
 {
@@ -19,12 +12,8 @@ namespace Link.Application.Features.Mediator.Validations.LinkValidation
                 .MaximumLength(10).WithMessage("Link Adı en fazla 10 karakter olmalıdır");
 
             RuleFor(x => x.LinkUrl)
-                .NotEmpty().WithMessage("Link URL bırakılamaz")
+                .NotEmpty().WithMessage("Link URL Boş bırakılamaz")
                 .MaximumLength(2000).WithMessage("Link URL en fazla 2000 karakter olabilir");
-
-
-
-
         }
     }
 }
