@@ -50,7 +50,6 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
 
 
 
-
                 // Remove old password and set new password
                 var removePasswordResult = await _userManager.RemovePasswordAsync(user);
                 var addPasswordResult = await _userManager.AddPasswordAsync(user, request.Password);

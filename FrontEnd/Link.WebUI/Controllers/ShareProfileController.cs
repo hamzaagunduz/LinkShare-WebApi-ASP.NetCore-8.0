@@ -139,12 +139,13 @@ namespace Link.WebUI.Controllers
 
             if (!validationResult.IsValid)
             {
+                ModelState.Clear();
+
                 foreach (var error in validationResult.Errors)
                 {
                     ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
 
-                // Validasyon hatalarını kullanıcıya göstermek için formu tekrar göster
                 var combinedResponse = await GetCombinedResponse(int.Parse(userId), userId); // combinedResponse elde etmek için
                 return View("Index", combinedResponse);
             }

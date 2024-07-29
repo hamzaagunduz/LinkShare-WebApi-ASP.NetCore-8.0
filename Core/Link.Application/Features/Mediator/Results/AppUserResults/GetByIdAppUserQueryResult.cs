@@ -20,5 +20,7 @@ namespace Link.Application.Features.Mediator.Results.AppUserResults
         public int View { get; set; }
         public string? ImageUrl { get; set; }
         public string? About { get; set; }
+        public DateTime? LastLinkAddedTime { get; set; }
+
     }
 }

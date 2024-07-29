@@ -16,8 +16,12 @@
 body {
     font-family: "Poppins", sans-serif;
     min-height: 100vh;
-    background: linear-gradient( to right, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) ), url("/assets/bg.jpg");
-    background-position: center center;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
+    url("../assets/bg.jpg");    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;

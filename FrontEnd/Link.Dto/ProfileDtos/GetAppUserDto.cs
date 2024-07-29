@@ -20,5 +20,7 @@ namespace Link.Dto.ProfileDtos
             public int View { get; set; }
             public object ImageUrl { get; set; }
             public string About { get; set; }
+            public DateTime? LastLinkAddedTime { get; set; }
+
     }
 }

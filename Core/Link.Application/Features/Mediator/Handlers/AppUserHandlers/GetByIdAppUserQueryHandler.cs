@@ -38,7 +38,8 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 Password = value.Password,
                 PostCount = value.PostCount,
                 SurName = value.SurName,
-                UserName = value.UserName
+                UserName = value.UserName,
+                LastLinkAddedTime=value.LastLinkAddedTime,
             };
 
             return new CustomResult<GetByIdAppUserQueryResult>(result, System.Net.HttpStatusCode.OK);

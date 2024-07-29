@@ -24,5 +24,6 @@ namespace Link.Application.Features.Mediator.Commands.AppUserCommands
         public int View { get; set; }
         public string? ImageUrl { get; set; }
         public string? About { get; set; }
+
     }
 }
