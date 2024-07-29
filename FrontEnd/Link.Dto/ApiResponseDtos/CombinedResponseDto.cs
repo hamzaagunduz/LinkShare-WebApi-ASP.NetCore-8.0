@@ -15,6 +15,7 @@ namespace Link.Dto.ApiResponseDtos
         public List<CommentDto> Comments { get; set; }
         public GetAppUserDto GetAppUserDto { get; set; }
         public Dictionary<int, List<AnswerDto>> CommentAnswers { get; set; }
+        public bool ShowForm { get; set; } // Yeni eklenen özellik
 
     }
 

@@ -144,7 +144,7 @@ namespace Link.WebUI.Controllers
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index", new {id= commentDto.AppUserID });
                 }
                 else
                 {

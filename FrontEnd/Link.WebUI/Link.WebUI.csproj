@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Link.Application\Link.Application.csproj" />
     <ProjectReference Include="..\..\Core\Link.Domain\Link.Domain.csproj" />
     <ProjectReference Include="..\Link.Dto\Link.Dto.csproj" />
   </ItemGroup>

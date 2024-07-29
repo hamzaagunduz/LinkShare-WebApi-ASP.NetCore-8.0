@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\FrontEnd\Link.Dto\Link.Dto.csproj" />
     <ProjectReference Include="..\Link.Domain\Link.Domain.csproj" />
   </ItemGroup>
 

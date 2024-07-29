@@ -1,14 +1,6 @@
 ﻿@model CombinedResponseDto
 
-@* <div class="ask-question">
-    <form id="add-comment-form" asp-action="AddComment" method="post">
-        <textarea type="Comment" id="LinkName" name="Comment" placeholder="Yorumunuzu yazın"></textarea>
-        <button id="dynamic-button" class="icon" type="submit">
-            <span class="add-text">Kaydet</span>
-        </button>
-    </form>
-</div>
- *@
+
 <div class="questions">
     @foreach (var comment in Model.Comments)
     {
