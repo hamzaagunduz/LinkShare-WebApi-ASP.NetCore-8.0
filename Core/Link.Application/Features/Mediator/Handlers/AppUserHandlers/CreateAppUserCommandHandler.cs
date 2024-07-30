@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
 {
-    public class CreateAppUserCommandHandler : IRequestHandler<CreateAppUserCommand, CustomResult<AppUser>>
+    public class CreateAppUserCommandHandler : IRequestHandler<CreateAppUserCommand, CustomResult<string>>
     {
         private readonly UserManager<AppUser> _userManager;
 
@@ -22,7 +22,7 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
             _userManager = userManager;
         }
 
-        public async Task<CustomResult<AppUser>> Handle(CreateAppUserCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(CreateAppUserCommand request, CancellationToken cancellationToken)
         {
             var newUser = new AppUser
             {
@@ -31,25 +31,17 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
                 SurName = request.SurName,
                 Email = request.Email,
                 Password = request.Password,
-                About = request.About,
-                FollowersCount = request.FollowersCount,
-                FollowingCount = request.FollowingCount,
-                PostCount = request.PostCount,
-                View = request.View,
+                About = "Merhaba yeni üye oldum",
+                FollowersCount = 0,
+                FollowingCount = 0,
+                PostCount = 0,
+                View = 0,
             };
 
             IdentityResult result = await _userManager.CreateAsync(newUser, request.Password);
 
-            if (!result.Succeeded)
-            {
-                var identityErrors = result.Errors.Select(e => $"{e.Code}: {e.Description}").ToList();
-                Debug.WriteLine("Kullanıcı oluşturulurken hata oluştu:");
-                identityErrors.ForEach(error => Debug.WriteLine(error));
 
-                return new CustomResult<AppUser>(null, HttpStatusCode.BadRequest, identityErrors);
-            }
-
-            return new CustomResult<AppUser>(newUser, HttpStatusCode.OK);
+            return new CustomResult<string>("Link Oluşturma successfully.", HttpStatusCode.OK);
         }
     }
 }

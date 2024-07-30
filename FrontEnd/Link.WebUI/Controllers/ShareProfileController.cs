@@ -134,21 +134,6 @@ namespace Link.WebUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var token = Request.Cookies["access_token"];
-            var validator = new CreateLinkValidation();
-            var validationResult = validator.Validate(linkDto);
-
-            if (!validationResult.IsValid)
-            {
-                ModelState.Clear();
-
-                foreach (var error in validationResult.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-
-                var combinedResponse = await GetCombinedResponse(int.Parse(userId), userId); // combinedResponse elde etmek için
-                return View("Index", combinedResponse);
-            }
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -164,12 +149,21 @@ namespace Link.WebUI.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Bağlantı eklenirken bir hata oluştu.");
+                    // API'den dönen hataları ModelState'e ekleyin
+                    var errorResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(await responseMessage.Content.ReadAsStringAsync());
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error);
+                    }
                 }
             }
 
-            return RedirectToAction("Index", new { id = userId });
+            var combinedResponse = await GetCombinedResponse(int.Parse(userId), userId); // combinedResponse elde etmek için
+            return View("Index", combinedResponse);
         }
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> AddAnswer(AddAnswerDto answerDto)

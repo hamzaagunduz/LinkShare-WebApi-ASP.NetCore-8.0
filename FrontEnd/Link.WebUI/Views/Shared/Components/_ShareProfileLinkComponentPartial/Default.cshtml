@@ -21,10 +21,11 @@
             </div>
         }
     </div>
+
     @if (Model.Links.Count <= 10)
     {
         <form id="add-social-icon-form" asp-action="AddLink" method="post" novalidate>
-            <div asp-validation-summary="ModelOnly"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <span class="add-text1">BAŞLIK</span>
             <input type="text" id="LinkName" name="LinkName" placeholder="Açıklama" />
 
@@ -32,8 +33,7 @@
             {
                 @foreach (var error in ViewData.ModelState["LinkName"].Errors)
                 {
-
-                        <span class="field-validation-error">@error.ErrorMessage</span>
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
                 }
             }
 
@@ -44,8 +44,7 @@
             {
                 @foreach (var error in ViewData.ModelState["LinkUrl"].Errors)
                 {
-
-                        <span class="field-validation-error">@error.ErrorMessage</span>
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
                 }
             }
 
@@ -95,4 +94,3 @@ else
         });
     });
 </script>
-

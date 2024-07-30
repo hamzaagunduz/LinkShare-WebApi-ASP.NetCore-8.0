@@ -1,0 +1,80 @@
+﻿@model RegisterDto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Register</title>
+</head>
+<body>
+    <form asp-action="Index" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="FirstName" class="control-label"></label>
+            <input asp-for="FirstName" class="form-control" />
+            @if (ViewData.ModelState["FirstName"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["FirstName"].Errors)
+                {
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                }
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="UserName" class="control-label"></label>
+            <input asp-for="UserName" class="form-control" />
+            @if (ViewData.ModelState["UserName"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["UserName"].Errors)
+                {
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                }
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SurName" class="control-label"></label>
+            <input asp-for="SurName" class="form-control" />
+            @if (ViewData.ModelState["SurName"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["SurName"].Errors)
+                {
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                }
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" class="form-control" />
+            @if (ViewData.ModelState["Email"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["Email"].Errors)
+                {
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                }
+            }
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password" class="control-label"></label>
+            <input asp-for="Password"  class="form-control" />
+            @if (ViewData.ModelState["Password"] != null)
+            {
+                @foreach (var error in ViewData.ModelState["Password"].Errors)
+                {
+                    <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                }
+            }
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</body>
+</html>

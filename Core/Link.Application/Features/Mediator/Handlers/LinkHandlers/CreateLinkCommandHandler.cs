@@ -42,7 +42,6 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 
                 }
 
-
             var userId = int.Parse(userIdClaim.Value);
             var user = await _userRepository.GetByIdAsync(userId);
             var now = DateTime.UtcNow;

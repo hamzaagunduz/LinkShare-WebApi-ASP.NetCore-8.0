@@ -1,27 +1,43 @@
 ﻿@model LoginAppUserDto
-
+@inject IConfiguration configuration
 @{
+    var sitekey = configuration["RecaptchaSettings:SiteKey"];
     Layout = null;
 }
 
-
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
 </head>
 <body>
-    <form class="user" method="post">
+    <form class="user" method="post" onsubmit="onSubmit(event)">
+        <input type="hidden" id="recaptchaTokenId" asp-for="RecaptchaToken" />
         <div class="form-group">
             <input type="text" class="form-control form-control-user" id="exampleInputEmail" placeholder="Kullanıcı Adı" asp-for="UserName">
         </div>
         <div class="form-group">
             <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Şifre" asp-for="Password">
         </div>
-        <button class="btn btn-success btn-block waves-effect waves-light"> Giriş Yap </button>
-    </form>
+        <button class="btn btn-success btn-block waves-effect waves-light">Giriş Yap</button>
 
+        <div id="html_element"></div>
+    </form>
 </body>
 </html>
+
+<script type="text/javascript">
+    var onloadCallback = function () {
+        grecaptcha.render('html_element', {
+            'sitekey': '@sitekey'
+        });
+    };
+
+    function onSubmit(event) {
+        var token = grecaptcha.getResponse();
+        document.getElementById("recaptchaTokenId").value = token;
+    }
+</script>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>

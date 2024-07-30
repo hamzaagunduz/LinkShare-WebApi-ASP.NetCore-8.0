@@ -7,15 +7,20 @@ using System.Text;
 using Link.WebUI.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.Tasks;
 
 namespace Link.WebUI.Controllers
 {
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public LoginController(IHttpClientFactory httpClientFactory)
+        private readonly RecaptchaService _recaptchaService;
+
+        public LoginController(IHttpClientFactory httpClientFactory, RecaptchaService recaptchaService)
         {
             _httpClientFactory = httpClientFactory;
+            _recaptchaService = recaptchaService;
         }
 
         [HttpGet]
@@ -26,11 +31,21 @@ namespace Link.WebUI.Controllers
         }
 
         [HttpPost]
+        [EnableRateLimiting("fixed")]
         public async Task<IActionResult> Index(LoginAppUserDto loginAppUserDto)
         {
+            // reCAPTCHA doğrulaması
+            
+            var isRecaptchaValid = await _recaptchaService.VerifyRecaptchaAsync(loginAppUserDto.RecaptchaToken);
+            if (!isRecaptchaValid)
+            {
+                ModelState.AddModelError(string.Empty, "reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
+                return View(loginAppUserDto);
+            }
+
             var client = _httpClientFactory.CreateClient();
             var content = new StringContent(JsonSerializer.Serialize(loginAppUserDto), Encoding.UTF8, "application/json");
-
+            Console.WriteLine(loginAppUserDto.RecaptchaToken);
             var response = await client.PostAsync("https://localhost:7048/api/AppUser/LoginToken", content);
 
             if (response.IsSuccessStatusCode)
@@ -46,8 +61,6 @@ namespace Link.WebUI.Controllers
                     JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
                     var token = handler.ReadJwtToken(tokenModel.Token);
                     var claims = token.Claims.ToList();
-
-
 
                     if (tokenModel.Token != null)
                     {
@@ -71,8 +84,6 @@ namespace Link.WebUI.Controllers
                         Console.WriteLine($"token: {tokenModel.Token}");
 
                         await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProps);
-
-
 
                         return RedirectToAction("Index", "Profile");
                     }
