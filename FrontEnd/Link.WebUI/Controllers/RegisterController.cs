@@ -49,6 +49,16 @@ namespace Link.WebUI.Controllers
                     ModelState.AddModelError(string.Empty, error);
                 }
 
+                foreach (var state in ModelState)
+                {
+                    var key = state.Key;
+                    var errors = state.Value.Errors;
+                    foreach (var error in errors)
+                    {
+                        Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                    }
+                }
+
                 // Hatalarla birlikte formu tekrar göster
                 return View(registerDto);
             }
