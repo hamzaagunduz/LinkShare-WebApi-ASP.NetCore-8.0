@@ -32,8 +32,8 @@ namespace Link.WebUI.Controllers
             var isRecaptchaValid = await _recaptchaService.VerifyRecaptchaAsync(registerDto.RecaptchaToken);
             if (!isRecaptchaValid)
             {
-                ModelState.AddModelError(string.Empty, "reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
-                return View(registerDto);
+                    ModelState.AddModelError(string.Empty, "reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
+                    return View(registerDto);
             }
 
 

@@ -3,64 +3,54 @@
 @inject IConfiguration configuration
 @{
     var sitekey = configuration["RecaptchaSettings:SiteKey"];
-    Layout = null;
+    ViewData["Title"] = "Profile Settings";
+    Layout = "~/Views/UILayout/Index.cshtml";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Register</title>
-@*     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script> *@
+<div class="card dark">
+    <h3>Kayıt Ol</h3>
 
-</head>
-<body>
-    <form asp-action="Index" method="post" onsubmit="onSubmit(event)">
-        <div asp-validation-summary="ModelOnly"></div>
+    <div class="profile-info">
+        <form asp-action="Index" method="post" onsubmit="return onSubmit(event)">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-        <input type="hidden" id="recaptchaTokenId" asp-for="RecaptchaToken" />
-        <div class="form-group">
-            <label asp-for="FirstName" class="control-label"></label>
-            <input asp-for="FirstName" class="form-control" />
-            <span asp-validation-for="FirstName" class="text-danger"></span>
-        </div>
+            <input type="hidden" id="recaptchaTokenId" name="RecaptchaToken" />
 
-        <div class="form-group">
-            <label asp-for="UserName" class="control-label"></label>
-            <input asp-for="UserName" class="form-control" />
-            <span asp-validation-for="UserName" class="text-danger"></span>
-        </div>
+            <div class="input-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
 
-        <div class="form-group">
-            <label asp-for="SurName" class="control-label"></label>
-            <input asp-for="SurName" class="form-control" />
-            <span asp-validation-for="SurName" class="text-danger"></span>
-        </div>
+            <div class="input-group">
+                <label asp-for="UserName" class="control-label"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
 
-        <div class="form-group">
-            <label asp-for="Email" class="control-label"></label>
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+            <div class="input-group">
+                <label asp-for="SurName" class="control-label"></label>
+                <input asp-for="SurName" class="form-control" />
+                <span asp-validation-for="SurName" class="text-danger"></span>
+            </div>
 
-        <div class="form-group">
-            <label asp-for="Password" class="control-label"></label>
-            <input asp-for="Password" type="password" class="form-control" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
+            <div class="input-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
 
-        <button type="submit" class="btn btn-primary">Register</button>
-        <div id="html_element"></div>
+            <div class="input-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
 
-    </form>
-
-
-</body>
-</html>
-
-
+            <button type="submit" class="btn btn-primary">Register</button>
+            <div id="html_element" style="margin-top: 20px; margin-left: 20px;"></div>
+        </form>
+    </div>
+</div>
 
 <script type="text/javascript">
     var onloadCallback = function () {
@@ -71,8 +61,18 @@
 
     function onSubmit(event) {
         var token = grecaptcha.getResponse();
+        if (token.length === 0) {
+            event.preventDefault(); // reCAPTCHA doğrulaması yapılmamışsa form gönderimini engelle
+            alert('Lütfen reCAPTCHA doğrulamasını tamamlayın.');
+            return false;
+        }
         document.getElementById("recaptchaTokenId").value = token;
+        return true; // Token alındığında formu gönder
+
+
+
     }
 </script>
+
 
 <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>

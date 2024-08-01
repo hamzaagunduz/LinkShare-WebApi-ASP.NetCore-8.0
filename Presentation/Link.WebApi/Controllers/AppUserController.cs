@@ -19,11 +19,14 @@ namespace Link.WebApi.Controllers
     {
         private readonly IMediator _mediator;
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AppUserController(IMediator mediator, UserManager<AppUser> userManager)
+
+        public AppUserController(IMediator mediator, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _mediator = mediator;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -101,7 +104,7 @@ namespace Link.WebApi.Controllers
             else
             {
 
-                var errorMessages = new List<string> { "Şifre hatalı" };
+                var errorMessages = new List<string> { "Kullanıcı Adı veya Şifre Hatalı" };
 
                 var errorDictionary = new Dictionary<string, List<string>>
                 {
@@ -125,6 +128,17 @@ namespace Link.WebApi.Controllers
             }
 
             return Ok(new { UserId = userId, Username = User.Identity.Name });
+        }
+
+
+
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            Response.Cookies.Delete("access_token");
+
+            return Ok(new { Message = "User logged out successfully." });
         }
     }
 }

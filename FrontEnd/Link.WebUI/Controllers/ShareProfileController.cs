@@ -24,7 +24,7 @@ namespace Link.WebUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [HttpGet]
+        [HttpGet("Profile/{id}")]
         public async Task<IActionResult> Index(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -32,6 +32,18 @@ namespace Link.WebUI.Controllers
 
             return View(combinedResponse);
         }
+
+        [HttpGet("Profile")]
+        public async Task<IActionResult> Index()
+        
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var id = int.Parse(userId);
+            var combinedResponse = await GetCombinedResponse(id, userId);
+
+            return View(combinedResponse);
+        }
+
 
         private async Task<CombinedResponseDto> GetCombinedResponse(int id, string userId)
         {
@@ -105,7 +117,7 @@ namespace Link.WebUI.Controllers
 
             var token = Request.Cookies["access_token"];
 
-            if (!string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(token)&& User.Identity.IsAuthenticated)
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 commentDto.AppUserID = id;
@@ -123,6 +135,11 @@ namespace Link.WebUI.Controllers
                 {
                     ModelState.AddModelError(string.Empty, "Yorum eklenirken bir hata oluştu.");
                 }
+            }
+            else
+            {
+                return RedirectToAction("Index","Login");
+
             }
 
             return RedirectToAction("Index");
