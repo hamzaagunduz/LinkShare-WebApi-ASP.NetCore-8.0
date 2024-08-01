@@ -12,7 +12,7 @@ namespace Link.Application.Features.Mediator.Validations.AppUserValidation
     {
         public UpdateAppUserValidation()
         {
-            RuleFor(x => x.AppUserID)
+            RuleFor(x => x.Id)
             .NotEmpty().WithMessage("Kullanıcı ID boş olamaz.");
 
             RuleFor(x => x.FirstName)
@@ -33,6 +33,7 @@ namespace Link.Application.Features.Mediator.Validations.AppUserValidation
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Şifre alanı boş olamaz.");
+
         }
     }
 }

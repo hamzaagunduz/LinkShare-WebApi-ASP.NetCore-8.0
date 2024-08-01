@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
 {
-    public class UpdateAppUserCommandHandler : IRequestHandler<UpdateAppUserCommand, CustomResult<AppUser>>
+    public class UpdateAppUserCommandHandler : IRequestHandler<UpdateAppUserCommand, CustomResult<string>>
     {
         private readonly IRepository<AppUser> _repository;
         private readonly UserManager<AppUser> _userManager;
@@ -24,45 +24,53 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
             _userManager = userManager;
         }
 
-        public async Task<CustomResult<AppUser>> Handle(UpdateAppUserCommand request, CancellationToken cancellationToken)
+        public async Task<CustomResult<string>> Handle(UpdateAppUserCommand request, CancellationToken cancellationToken)
         {
-            var user = await _repository.GetByIdAsync(request.AppUserID);
+            var user = await _repository.GetByIdAsync(request.Id);
 
             if (user == null)
             {
-                return new CustomResult<AppUser>(null, HttpStatusCode.NotFound);
+                return new CustomResult<string>(null, HttpStatusCode.NotFound);
             }
 
             try
             {
-                // Update user properties
-                user.FirstName = request.FirstName;
-                user.SurName = request.SurName;
-                user.UserName = request.UserName;
-                user.About = request.About;
-                user.Email = request.Email;
-                user.FollowersCount = request.FollowersCount;
-                user.FollowingCount = request.FollowingCount;
-                user.PostCount = request.PostCount;
-                user.View = request.View;
-                user.ImageUrl = request.ImageUrl;
+
+                if (await _userManager.CheckPasswordAsync(user, request.Password))
+                {
+
+                    user.FirstName = request.FirstName;
+                    user.SurName = request.SurName;
+                    user.UserName = request.UserName;
+                    user.About = request.About;
+                    user.Email = request.Email;
+                    user.ImageUrl = request.ImageUrl;
+                    await _repository.UpdateAsync(user);
+
+                    return new CustomResult<string>("güncelleme yapıldı.", HttpStatusCode.OK);
 
 
 
+                }
 
-                // Remove old password and set new password
-                var removePasswordResult = await _userManager.RemovePasswordAsync(user);
-                var addPasswordResult = await _userManager.AddPasswordAsync(user, request.Password);
 
-                // Update user in repository
-                await _repository.UpdateAsync(user);
 
-                return new CustomResult<AppUser>(user, HttpStatusCode.OK);
+                var errorMessages = new List<string> { "Şifre hatalı" };
+
+                var errorDictionary = new Dictionary<string, List<string>>
+                {
+                    { "password", errorMessages }
+                };
+
+                // CustomResult ile hata mesajlarını ve status kodunu döndürün
+                return new CustomResult<string>(null, HttpStatusCode.BadRequest, null, errorDictionary);
+
+
             }
             catch (Exception ex)
             {
                 // Handle exception, log the error, etc.
-                return new CustomResult<AppUser>(null, HttpStatusCode.InternalServerError);
+                return new CustomResult<string>(null, HttpStatusCode.InternalServerError);
             }
         }
     }

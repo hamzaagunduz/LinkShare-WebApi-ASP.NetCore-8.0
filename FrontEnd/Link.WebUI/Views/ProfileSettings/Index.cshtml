@@ -1,0 +1,111 @@
+﻿@model SettingsViewModel
+
+@{
+    ViewData["Title"] = "Profile Settings";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+<div class="card dark">
+
+
+    <div class="updatephoto">
+        <div class="photo-info">
+            <h3>Profil Fotoğrafı</h3>
+            <h5>Hesabınızı kişiselleştirmek için bir profil fotoğrafı yükleyin.</h5>
+        </div>
+        <div class="user-photoset">
+            <img src="/Linkhtml/assets/user.jpg" alt="user">
+            <div class="change-photo">
+                <label for="upload-photo" class="change-photo-label">
+                    <i class="fas fa-camera"></i>
+                    Upload Photo
+                </label>
+                <input type="file" id="upload-photo" style="display: none;">
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-info">
+        <h3>Profil Bilgileri</h3>
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="input-group">
+                <label for="firstName">İsim</label>
+                <input asp-for="UpdateSettings.firstName" id="firstName" class="form-control" />
+                @if (ViewData.ModelState["firstName"] != null)
+                {
+                    @foreach (var error in ViewData.ModelState["firstName"].Errors)
+                    {
+                        <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                    }
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="userName">Kullanıcı Adı</label>
+                <input asp-for="UpdateSettings.userName" id="userName" class="form-control" />
+                @if (ViewData.ModelState["userName"] != null)
+                {
+                    @foreach (var error in ViewData.ModelState["userName"].Errors)
+                    {
+                        <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                    }
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="surName">Soyisim</label>
+                <input asp-for="UpdateSettings.surName" id="surName" class="form-control" />
+                @if (ViewData.ModelState["surName"] != null)
+                {
+                    @foreach (var error in ViewData.ModelState["surName"].Errors)
+                    {
+                        <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                    }
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input asp-for="UpdateSettings.email" id="email" class="form-control" />
+                @if (ViewData.ModelState["email"] != null)
+                {
+                    @foreach (var error in ViewData.ModelState["email"].Errors)
+                    {
+                        <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                    }
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="about">Hakkında</label>
+                <textarea asp-for="UpdateSettings.about" id="about" class="form-control" rows="4"></textarea>
+                @if (ViewData.ModelState["about"] != null)
+                {
+                    @foreach (var error in ViewData.ModelState["about"].Errors)
+                    {
+                        <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                    }
+                }
+            </div>
+
+            <div class="input-group">
+                <label for="password">Şifre</label>
+                <input asp-for="UpdateSettings.password" id="password" type="password" class="form-control" />
+                @if (ViewData.ModelState["password"] != null)
+                {
+                    @foreach (var error in ViewData.ModelState["password"].Errors)
+                    {
+                        <span class="field-validation-error text-danger">@error.ErrorMessage</span>
+                    }
+                }
+            </div>
+
+
+
+            <input asp-for="UpdateSettings.Id" type="hidden" />
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+</div>

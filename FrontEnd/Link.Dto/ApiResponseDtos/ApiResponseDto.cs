@@ -11,7 +11,8 @@ namespace Link.Dto.ApiResponseDtos
         public T Data { get; set; }
         public string Message { get; set; }
         public bool Success { get; set; }
-        public List<string> Errors { get; set; } = new List<string>();
+        public Dictionary<string, List<string>> Errors { get; set; }
+
 
     }
 }

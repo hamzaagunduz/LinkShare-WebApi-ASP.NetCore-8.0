@@ -12,7 +12,7 @@ public class CreateAppUserValidation : AbstractValidator<CreateAppUserCommand>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Şifre alanı boş olamaz.")
-            .MinimumLength(60).WithMessage("Şifre en az 6 karakter uzunluğunda olmalıdır.");
+            .MinimumLength(6).WithMessage("Şifre en az 6 karakter uzunluğunda olmalıdır.");
 
         RuleFor(x => x.SurName)
             .NotEmpty().WithMessage("Soyad alanı boş olamaz.")

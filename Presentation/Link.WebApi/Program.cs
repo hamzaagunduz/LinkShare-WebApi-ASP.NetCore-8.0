@@ -28,6 +28,9 @@ using Link.Application.Middleware;
 using Link.Persistence.Repository.CommentRepositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -107,7 +110,8 @@ builder.Services.AddHttpClient<RecaptchaService>();
 
 
 
-
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 
 
@@ -137,11 +141,12 @@ builder.Services.AddScoped<LinkContext>();
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
-    //options.User.RequireUniqueEmail = false;
-
+    options.SignIn.RequireConfirmedEmail = true;
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 })
-.AddEntityFrameworkStores<LinkContext>();
+.AddEntityFrameworkStores<LinkContext>()
+.AddDefaultTokenProviders();
+
 
 
 

@@ -658,6 +658,10 @@ margin-left: 1.2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+    .profile-info button {
+        background-color: rgb(90, 195, 227);
+    }
+
 
 .profile-info h3 {
   font-size: 1.5rem;

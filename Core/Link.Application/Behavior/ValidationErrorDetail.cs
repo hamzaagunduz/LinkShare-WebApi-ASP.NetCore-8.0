@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Link.Application.Behavior
 {
-    public class ValidationErrorDetail
-    {
-        public string PropertyName { get; set; }
-        public string ErrorMessage { get; set; }
-    }
+    //public class ValidationErrorDetail
+    //{
+    //    public string PropertyName { get; set; }
+    //    public string ErrorMessage { get; set; }
+    //}
 }

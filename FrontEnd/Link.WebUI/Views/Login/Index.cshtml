@@ -12,14 +12,23 @@
     <title>Index</title>
 </head>
 <body>
+
     <form class="user" method="post" onsubmit="onSubmit(event)">
+        <div asp-validation-summary="ModelOnly"></div>
+
         <input type="hidden" id="recaptchaTokenId" asp-for="RecaptchaToken" />
         <div class="form-group">
             <input type="text" class="form-control form-control-user" id="exampleInputEmail" placeholder="Kullanıcı Adı" asp-for="UserName">
         </div>
+
+
         <div class="form-group">
             <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Şifre" asp-for="Password">
+            <span asp-validation-for="Password" class="text-danger"></span>
+
         </div>
+
+
         <button class="btn btn-success btn-block waves-effect waves-light">Giriş Yap</button>
 
         <div id="html_element"></div>

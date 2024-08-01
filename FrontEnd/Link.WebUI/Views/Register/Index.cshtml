@@ -1,6 +1,8 @@
 ﻿@model RegisterDto
 
+@inject IConfiguration configuration
 @{
+    var sitekey = configuration["RecaptchaSettings:SiteKey"];
     Layout = null;
 }
 
@@ -9,15 +11,16 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Register</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@*     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script> *@
 
 </head>
 <body>
-    <form asp-action="Index" method="post">
+    <form asp-action="Index" method="post" onsubmit="onSubmit(event)">
         <div asp-validation-summary="ModelOnly"></div>
 
+        <input type="hidden" id="recaptchaTokenId" asp-for="RecaptchaToken" />
         <div class="form-group">
             <label asp-for="FirstName" class="control-label"></label>
             <input asp-for="FirstName" class="form-control" />
@@ -49,6 +52,27 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Register</button>
+        <div id="html_element"></div>
+
     </form>
+
+
 </body>
 </html>
+
+
+
+<script type="text/javascript">
+    var onloadCallback = function () {
+        grecaptcha.render('html_element', {
+            'sitekey': '@sitekey'
+        });
+    };
+
+    function onSubmit(event) {
+        var token = grecaptcha.getResponse();
+        document.getElementById("recaptchaTokenId").value = token;
+    }
+</script>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>

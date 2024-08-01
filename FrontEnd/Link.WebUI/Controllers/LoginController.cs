@@ -9,6 +9,9 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.Tasks;
+using Link.Dto.ApiResponseDtos;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Link.WebUI.Controllers
 {
@@ -51,7 +54,7 @@ namespace Link.WebUI.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var tokenModel = JsonSerializer.Deserialize<JwtResponseModel>(jsonData, new JsonSerializerOptions
+                var tokenModel = System.Text.Json.JsonSerializer.Deserialize<JwtResponseModel>(jsonData, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
@@ -90,7 +93,31 @@ namespace Link.WebUI.Controllers
                 }
             }
 
-            return Content(content.ToString());
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(responseContent);
+
+
+                if (apiResponse.Errors != null)
+                {
+                    foreach (var error in apiResponse.Errors)
+                    {
+                        // Her bir hata anahtar ve mesajlarını ModelState'e ekle
+                        foreach (var errorMessage in error.Value)
+                        {
+                            ModelState.AddModelError(error.Key, errorMessage);
+                        }
+                    }
+                }
+
+            }
+
+
+
+            return View(loginAppUserDto);
         }
     }
 }

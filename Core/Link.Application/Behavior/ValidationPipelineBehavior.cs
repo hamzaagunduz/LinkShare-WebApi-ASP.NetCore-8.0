@@ -13,7 +13,6 @@ namespace Link.Application.Behavior
     public class ValidationPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
         where TResponse : CustomResult<string> // Burada TResponse'ı CustomResult<string> ile kısıtlıyoruz
-
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
 
@@ -39,8 +38,14 @@ namespace Link.Application.Behavior
 
                 if (failures.Any())
                 {
-                    var errorMessages = failures.Select(f => f.ErrorMessage).ToList();
-                    var errorResponse = new CustomResult<string>(null, HttpStatusCode.BadRequest, errorMessages);
+                    var errorDictionary = failures
+                        .GroupBy(f => f.PropertyName)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(f => f.ErrorMessage).ToList()
+                        );
+
+                    var errorResponse = new CustomResult<string>(null, HttpStatusCode.BadRequest, null, errorDictionary);
                     return (TResponse)(object)errorResponse;
                 }
             }

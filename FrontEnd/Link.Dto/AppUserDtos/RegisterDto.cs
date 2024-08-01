@@ -8,7 +8,7 @@ namespace Link.Dto.AppUserDtos
 {
     public class RegisterDto
     {
-
+        public string RecaptchaToken { get; set; }
         public string FirstName { get; set; }
         public string Password { get; set; }
         public string SurName { get; set; }

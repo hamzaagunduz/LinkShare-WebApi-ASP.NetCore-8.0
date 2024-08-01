@@ -150,18 +150,31 @@ namespace Link.WebUI.Controllers
                 else
                 {
                     // API'den dönen hataları ModelState'e ekleyin
-                    var errorResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(await responseMessage.Content.ReadAsStringAsync());
-                    foreach (var error in errorResponse.Errors)
+                    var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                    var errorResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(responseContent);
+
+                    if (errorResponse.Errors != null)
                     {
-                        ModelState.AddModelError(string.Empty, error);
+                        foreach (var error in errorResponse.Errors)
+                        {
+                            // Her bir hata anahtar ve mesajlarını ModelState'e ekle
+                            foreach (var errorMessage in error.Value)
+                            {
+                                ModelState.AddModelError(error.Key, errorMessage);
+                            }
+                        }
                     }
+
+                    // combinedResponse elde etmek için gerekli olan metodu çağırın
+                    var combinedResponse = await GetCombinedResponse(int.Parse(userId), userId);
+                    return View("Index", combinedResponse);
                 }
             }
 
-            var combinedResponse = await GetCombinedResponse(int.Parse(userId), userId); // combinedResponse elde etmek için
-            return View("Index", combinedResponse);
+            // Token yoksa veya başka bir hata durumunda, formu yeniden gösterin
+            var fallbackResponse = await GetCombinedResponse(int.Parse(userId), userId);
+            return View("Index", fallbackResponse);
         }
-
 
 
 

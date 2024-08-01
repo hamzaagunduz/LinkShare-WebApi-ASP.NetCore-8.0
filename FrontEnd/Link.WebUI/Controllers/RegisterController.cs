@@ -11,10 +11,13 @@ namespace Link.WebUI.Controllers
     public class RegisterController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly RecaptchaService _recaptchaService;
 
-        public RegisterController(IHttpClientFactory httpClientFactory)
+
+        public RegisterController(IHttpClientFactory httpClientFactory, RecaptchaService recaptchaService)
         {
             _httpClientFactory = httpClientFactory;
+            _recaptchaService = recaptchaService;
         }
 
         [HttpGet]
@@ -26,7 +29,12 @@ namespace Link.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(RegisterDto registerDto)
         {
-
+            var isRecaptchaValid = await _recaptchaService.VerifyRecaptchaAsync(registerDto.RecaptchaToken);
+            if (!isRecaptchaValid)
+            {
+                ModelState.AddModelError(string.Empty, "reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
+                return View(registerDto);
+            }
 
 
             var client = _httpClientFactory.CreateClient();
@@ -39,23 +47,21 @@ namespace Link.WebUI.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-
             else
             {
                 // API'den dönen hataları ModelState'e ekleyin
-                var errorResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(await responseMessage.Content.ReadAsStringAsync());
-                foreach (var error in errorResponse.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error);
-                }
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(responseContent);
 
-                foreach (var state in ModelState)
+                if (errorResponse.Errors != null)
                 {
-                    var key = state.Key;
-                    var errors = state.Value.Errors;
-                    foreach (var error in errors)
+                    foreach (var error in errorResponse.Errors)
                     {
-                        Console.WriteLine($"Key: {key}, Error: {error.ErrorMessage}");
+                        // Her bir hata anahtar ve mesajlarını ModelState'e ekle
+                        foreach (var errorMessage in error.Value)
+                        {
+                            ModelState.AddModelError(error.Key, errorMessage);
+                        }
                     }
                 }
 
