@@ -326,13 +326,7 @@ body {
   
 }
 
-.questionshome {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
-}
+
 
 .questionhome {
   background-color: var(--white);
@@ -812,3 +806,36 @@ button[type="submit"]:hover {
         .dropdown-menu ul li:hover {
             background-color: #f1f1f1;
         }
+
+
+.search-container {
+    margin-bottom: 50px;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    word-wrap: break-word;
+}
+
+.usersearch {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px; /* İç boşluk */
+    cursor: pointer; /* İşaretçi işareti */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Geçiş efekti */
+}
+
+    .usersearch:hover {
+        background-color: #f0f0f0; /* Hover rengi */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.30); /* Hover'da gölge efekti */
+    }
+
+.questionshome {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+}

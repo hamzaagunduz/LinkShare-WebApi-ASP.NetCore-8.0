@@ -27,6 +27,16 @@ builder.Services.AddHttpClient<RecaptchaService>();
 
 
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigin",
+//        policy =>
+//        {
+//            policy.WithOrigins("https://localhost:7132") // Frontend'in URL'si
+//                  .AllowAnyHeader()
+//                  .AllowAnyMethod();
+//        });
+//});
 
 
 

@@ -113,9 +113,25 @@ builder.Services.AddHttpClient<RecaptchaService>();
 builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7132") // Frontend'in URL'si
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 
 
 ///////////
+///
+
+
+
+
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestResponseLoggingBehavior<,>));
 
@@ -202,6 +218,7 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionHandler("/Home/Error");
 app.UseHsts();
 
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 //app.Use(async (context, next) =>
