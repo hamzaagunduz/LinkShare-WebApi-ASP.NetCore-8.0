@@ -30,7 +30,7 @@ body {
     gap: 5rem;
 }
 .icons {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 23px;
   display: flex;
@@ -170,7 +170,6 @@ body {
   place-content: center;
   border-radius: 12px;
   text-decoration: none; /* Bağlantının alt çizgisini kaldırır */
-
   align-items: center;
   box-shadow: 5px 5px 20px rgb(139, 135, 155);
   /* background-image: linear-gradient(to right, #b1237a, #dc4185); */
@@ -761,3 +760,55 @@ button[type="submit"]:hover {
     .icons button:hover {
         background: none; /* Saydam kare rengi */
     }
+
+.menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    position: absolute;
+    top: 50px; /* Bu değeri ihtiyaç duyduğunuz konuma göre ayarlayın */
+    right: 17px; /* Sağdan hizalama */
+    width: 120px;
+    background-color: var(--white);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: none; /* Başlangıçta gizle */
+    z-index: 1000; /* Diğer içeriklerin üzerinde görünsün */
+}
+
+#menu-toggle {
+    position: relative; /* Dropdown menüyü konumlandırmak için */
+}
+
+
+.dropdown-menu.show {
+    display: block; /* Menü açıldığında göster */
+}
+
+.dropdown-menu.show {
+    display: block; /* Show the menu when the class "show" is added */
+}
+
+.dropdown-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .dropdown-menu ul li {
+        padding: 8px 16px;
+    }
+
+        .dropdown-menu ul li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+        }
+
+        .dropdown-menu ul li:hover {
+            background-color: #f1f1f1;
+        }

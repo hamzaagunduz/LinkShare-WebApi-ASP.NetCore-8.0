@@ -20,10 +20,16 @@ namespace Link.WebUI.Controllers
             _recaptchaService = recaptchaService;
         }
 
-        [HttpGet]
+        [HttpGet("Register")]
         public IActionResult Index()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View();
+
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

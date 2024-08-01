@@ -20,7 +20,7 @@ namespace Link.WebUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        [HttpGet]
+        [HttpGet("Settings")]
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

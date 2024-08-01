@@ -26,11 +26,16 @@ namespace Link.WebUI.Controllers
             _recaptchaService = recaptchaService;
         }
 
-        [HttpGet]
+        [HttpGet("Login")]
         public IActionResult Index()
         {
-            // Eylemin içeriği
-            return View();
+           if (!User.Identity.IsAuthenticated)
+            {
+                return View();
+
+            }
+
+           return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

@@ -14,6 +14,7 @@ namespace Link.Application.Interfaces.CommentRepository
         Task<List<GetCommentsWithAppUserQueryResult>> GetCommentsWithAppUserByUserIDAsync(int appUserID);
         Task<List<GetAnswersForCommentQueryResult>> GetAnswersForCommentByIdAsync(int profileCommentID);
         Task<ProfileComment> GetCommentByProfileCommentIDAsync(int profileCommentID); // Yeni metot
+        Task<List<GetCommentAndAnwerQueryResult>> GetProfileCommentsWithAnswersAsync(int page, int pageSize);
 
 
     }

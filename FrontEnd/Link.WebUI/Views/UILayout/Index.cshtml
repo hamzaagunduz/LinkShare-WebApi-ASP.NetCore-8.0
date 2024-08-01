@@ -20,24 +20,56 @@
     @if (User.Identity.IsAuthenticated)
     {
         <div class="icons">
-            <a href="Home.html" class="icon-link"><i class="ri-home-line"></i></a>
-            <a href="#" class="icon-link"><i class="ri-user-line"></i></a>
+            <a href="https://localhost:7132/Home" class="icon-link"><i class="ri-home-line"></i></a>
+            <a href="https://localhost:7132/Profile" class="icon-link"><i class="ri-user-line"></i></a>
             <a href="#" class="icon-link"><i class="ri-notification-line"></i></a>
-            <form id="apiCallForm" action="/UILayout/CallApi" method="post">
-                <button type="submit" class="icon-link"><i class="ri-logout-box-line"></i></button>
-            </form>
+            <a href="#" class="icon-link" id="menu-toggle">
+                <i class="ri-menu-line"></i>
+            </a>
+            <div class="menu-container">
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <ul>
+
+                        <li><a href="https://localhost:7132/Settings">Ayarlar</a></li>
+                        <li>
+                            <form id="apiCallForm" action="/UILayout/CallApi" method="post">
+                                <button type="submit" class="icon-link">Çıkış Yap</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+ 
+  
+
+
         </div>
     }
 
     else
     {
         <div class="icons">
-            <a href="Home.html" class="icon-link"><i class="ri-menu-line"></i></a>
+            <a href="#" class="icon-link" id="menu-toggle">
+                <i class="ri-menu-line"></i>
+            </a>
+            <div class="menu-container">
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <ul>
+                        <li><a href="https://localhost:7132/Home">Anasayfa</a></li>
+                        <li><a href="https://localhost:7132/Register">Kayıt Ol</a></li>
+                        <li><a href="https://localhost:7132/Login">Giriş Yap</a></li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
 
     }
 
     @RenderBody() <!-- Body içeriğini buraya yerleştirin -->
+    @RenderSection("Scripts", required: false)
+    <script src="/Linkhtml/Script/scripts.js"></script>
+
+
 </body>
 </html>

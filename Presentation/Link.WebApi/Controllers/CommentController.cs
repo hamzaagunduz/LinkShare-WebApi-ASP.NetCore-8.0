@@ -87,6 +87,15 @@ namespace Link.WebApi.Controllers
 
         }
 
+        [HttpGet("GetCommentAndAnswers")]//yaptığı yorumlar
+        public async Task<IActionResult> GetCommentAndAnswers([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            var query = new GetCommentAndAnwerQuery(page,pageSize);
+            var result = await _mediator.Send(query);
+            return result;
+
+        }
+
 
 
     }

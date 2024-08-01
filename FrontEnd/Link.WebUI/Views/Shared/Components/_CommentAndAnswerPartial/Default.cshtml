@@ -1,0 +1,39 @@
+﻿@model List<Link.Dto.CommentDtos.CommentAndAnswerDto>
+
+@foreach (var comment in Model)
+{
+    <div class="questionhome">
+        <div class="userhome-info">
+            <img src="/Linkhtml/assets/user.jpg" alt="@comment.WriterUserName" class="userhome-photo">
+            <div class="userhome-infotext">
+                <p class="usernamehome">@comment.WriterFirstName @comment.WriterSurName</p>
+                <p class="userName"><a href="https://localhost:7132/profile/@comment.WriterID">#@comment.WriterUserName</a></p>
+            </div>
+        </div>
+        <p class="questionhome-text">@comment.Comment</p>
+        <div class="detailhome">
+            <a href="#" class="icon-link"><i class="ri-heart-line"></i> </a>
+            <a href="#" class="icon-link"><i class="ri-eye-line"></i> @comment.View</a>
+            <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @comment.Time.ToString("HH:mm")</a>
+        </div>
+
+        @if (comment.AnswerID.HasValue)
+        {
+            <div class="answer">
+                <div class="user-info">
+                    <img src="/Linkhtml/assets/user.jpg" alt="@comment.UserName" class="user-photo">
+                    <div class="userhome-infotext">
+                        <p class="usernamehome">@comment.FirstName @comment.SurName</p>
+                        <p class="userName"><a href="https://localhost:7132/profile/@comment.AppUserID">#@comment.UserName</a></p>
+                    </div>
+                </div>
+                <p class="answer-text">@comment.AnswerText</p>
+                <div class="detailhome">
+                    <a href="#" class="icon-link"><i class="ri-heart-line"></i> </a>
+                    <a href="#" class="icon-link"><i class="ri-eye-line"></i> @comment.AnserView</a>
+                    <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @comment.AnswerTime.ToString("HH:mm")</a>
+                </div>
+            </div>
+        }
+    </div>
+}
