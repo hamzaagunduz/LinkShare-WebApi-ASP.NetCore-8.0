@@ -3,18 +3,23 @@
 @foreach (var comment in Model)
 {
     <div class="questionhome">
-        <div class="userhome-info">
-            <img src="/Linkhtml/assets/user.jpg" alt="@comment.WriterUserName" class="userhome-photo">
-            <div class="userhome-infotext">
-                <p class="usernamehome">@comment.WriterFirstName @comment.WriterSurName</p>
-                <p class="userName"><a href="https://localhost:7132/profile/@comment.WriterID">#@comment.WriterUserName</a></p>
+
+        <div class="question-container">
+
+            <div class="userhome-info">
+                <img src="/Linkhtml/assets/user.jpg" alt="@comment.WriterUserName" class="userhome-photo">
+                <div class="userhome-infotext">
+                    <p class="usernamehome">@comment.WriterFirstName @comment.WriterSurName</p>
+                    <p class="userName"><a href="https://localhost:7132/profile/@comment.WriterID">#@comment.WriterUserName</a></p>
+                </div>
             </div>
-        </div>
-        <p class="questionhome-text">@comment.Comment</p>
-        <div class="detailhome">
-            <a href="#" class="icon-link"><i class="ri-heart-line"></i> </a>
-            <a href="#" class="icon-link"><i class="ri-eye-line"></i> @comment.View</a>
-            <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @comment.Time.ToString("HH:mm")</a>
+            <p class="questionhome-text">@comment.Comment</p>
+            <div class="detailhome">
+                <a href="#" class="icon-link"><i class="ri-heart-line"></i> </a>
+                <a href="#" class="icon-link"><i class="ri-eye-line"></i> @comment.View</a>
+                <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @comment.Time.ToString("HH:mm")</a>
+            </div>
+
         </div>
 
         @if (comment.AnswerID.HasValue)

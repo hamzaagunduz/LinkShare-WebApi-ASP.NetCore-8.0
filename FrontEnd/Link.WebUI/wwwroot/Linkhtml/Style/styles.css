@@ -232,7 +232,7 @@ body {
   width: 100%;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
-
+  padding:10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #1da1f2;
@@ -240,15 +240,11 @@ body {
 .answer .user-photo{
   max-width: 40px; /* Maksimum genişlik */
   max-height: 40px;
-  margin-top: 7px;
-  margin-left: 7px;
+
 
 }
 
-.answer-text{
-  margin-top: 10px;/* Metnin sola yatık olması için */
-  margin-left: 10px;/
-}
+
 
 
 
@@ -326,25 +322,29 @@ body {
   
 }
 
-
+.question-container {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 7px
+}
 
 .questionhome {
-  background-color: var(--white);
-  margin-bottom: 50px;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 600px;
-  word-wrap: break-word; 
+    background-color: var(--white);
+    margin-bottom: 50px;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.01);
+    width: 90%;
+    max-width: 600px;
+    word-wrap: break-word;
 }
 .questionhome-text {
   margin-top: 20px;/* Metnin sola yatık olması için */
 }
 .userhome-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 .userhome-infotext .userName{
   font-size: 10px;
@@ -421,11 +421,11 @@ body {
   margin-left: auto; /* Bu bağlantıyı sağa hizalar */
 }
 
-.homeicons .icon-link:nth-child(1) {
-  background-color: rgb(49, 228, 216); /* Pembe arka plan rengi */
-  padding: 0.7rem; /* İkon etrafına boşluk vermek için */
-  border-radius: 8px; /* Yuvarlak şekil için */
-}
+/*.homeicons .icon-link:nth-child(1) {
+  background-color: rgb(49, 228, 216);*/ /* Pembe arka plan rengi */
+  /*padding: 0.7rem;*/ /* İkon etrafına boşluk vermek için */
+  /*border-radius: 8px;*/ /* Yuvarlak şekil için */
+/*}*/
 
 
 

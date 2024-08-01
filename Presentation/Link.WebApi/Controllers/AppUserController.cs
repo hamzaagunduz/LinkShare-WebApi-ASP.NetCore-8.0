@@ -45,6 +45,17 @@ namespace Link.WebApi.Controllers
             return result;
 
         }
+        [HttpGet("GetRandomUser")]
+        public async Task<IActionResult> GetRandomUser(int count)
+        {
+
+            var query = new GetRandomUsersQuery(count);
+            var result = await _mediator.Send(query);
+            return result;
+
+        }
+
+
         [HttpGet("confirmemail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {

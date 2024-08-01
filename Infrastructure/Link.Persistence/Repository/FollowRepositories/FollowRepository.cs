@@ -30,5 +30,43 @@ namespace Link.Persistence.Repository.FollowRepositories
                 .Where(f => f.AppUserID == userId)
                 .ToListAsync();
         }
+
+
+        public async Task<List<AppUser>> GetRandomUsers(int count)
+        {
+            Random random = new Random();
+            int totalUserCount =  _context.Users.Count();
+
+            // Toplam kullanıcı sayısı belirtilen sayıdan az ise, tüm kullanıcıları getir
+            if (totalUserCount <= count)
+            {
+                return _context.Users.ToList();
+            }
+            else
+            {
+                // Tüm kullanıcıların ID'lerini al
+                var allUserIds = _context.Users.Select(u => u.Id).ToList();
+
+                // Rastgele kullanıcı ID'leri seç
+                HashSet<int> selectedIds = new HashSet<int>();
+                while (selectedIds.Count < count)
+                {
+                    int randomIdIndex = random.Next(allUserIds.Count);
+                    int randomId = allUserIds[randomIdIndex];
+                    if (!selectedIds.Contains(randomId))
+                    {
+                        selectedIds.Add(randomId);
+                    }
+                }
+
+                // Seçilen ID'lere göre kullanıcıları getir
+                var selectedUsers = _context.Users
+                    .Where(u => selectedIds.Contains(u.Id))
+                    .ToList();
+
+                return selectedUsers;
+            }
+        }
+
     }
 }
