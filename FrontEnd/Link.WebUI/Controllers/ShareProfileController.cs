@@ -29,19 +29,20 @@ namespace Link.WebUI.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var combinedResponse = await GetCombinedResponse(id, userId);
-
             return View(combinedResponse);
         }
 
         [HttpGet("Profile")]
-        public async Task<IActionResult> Index()
-        
+        public async Task<IActionResult> Index()       
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var id = int.Parse(userId);
-            var combinedResponse = await GetCombinedResponse(id, userId);
+            if (User.Identity.IsAuthenticated) {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var id = int.Parse(userId);
+                var combinedResponse = await GetCombinedResponse(id, userId);
 
-            return View(combinedResponse);
+                return View(combinedResponse);
+            }
+            return RedirectToAction("Index", "Login");
         }
 
 

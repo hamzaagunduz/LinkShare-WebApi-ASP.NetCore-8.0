@@ -17,14 +17,26 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
-    <div class="icons">
-        <a href="Home.html" class="icon-link"><i class="ri-home-line"></i></a>
-        <a href="#" class="icon-link"><i class="ri-user-line"></i></a>
-        <a href="#" class="icon-link"><i class="ri-notification-line"></i></a>
-        <form id="apiCallForm" action="/UILayout/CallApi" method="post">
-            <button type="submit" class="icon-link"><i class="ri-menu-line"></i></button>
-        </form>
-    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="icons">
+            <a href="Home.html" class="icon-link"><i class="ri-home-line"></i></a>
+            <a href="#" class="icon-link"><i class="ri-user-line"></i></a>
+            <a href="#" class="icon-link"><i class="ri-notification-line"></i></a>
+            <form id="apiCallForm" action="/UILayout/CallApi" method="post">
+                <button type="submit" class="icon-link"><i class="ri-logout-box-line"></i></button>
+            </form>
+        </div>
+    }
+
+    else
+    {
+        <div class="icons">
+            <a href="Home.html" class="icon-link"><i class="ri-menu-line"></i></a>
+
+        </div>
+
+    }
 
     @RenderBody() <!-- Body içeriğini buraya yerleştirin -->
 </body>

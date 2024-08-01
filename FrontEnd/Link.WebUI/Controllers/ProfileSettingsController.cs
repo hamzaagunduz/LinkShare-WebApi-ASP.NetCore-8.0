@@ -26,31 +26,50 @@ namespace Link.WebUI.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync($"https://localhost:7048/api/AppUser/{userId}");
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<ApiResponseDto<GetSettingsDto>>(jsonData);
+            var token = Request.Cookies["access_token"];
 
-                var viewModel = new SettingsViewModel
+
+                if (response.IsSuccessStatusCode&&!string.IsNullOrEmpty(token) && User.Identity.IsAuthenticated)
                 {
-                    GetSettings = values.Data,
-                    UpdateSettings = new UpdateSettingsDto
-                    {
-                        Id=values.Data.Id,
-                        firstName = values.Data.FirstName,
-                        userName = values.Data.UserName,
-                        surName = values.Data.SurName,
-                        email = values.Data.Email,
-                        about = values.Data.About,
-                        password = values.Data.Password // Şifreyi almanız gerekebilir, güvenliğini sağlayın
-                    }
-                };
+                    var jsonData = await response.Content.ReadAsStringAsync();
+                    var values = JsonConvert.DeserializeObject<ApiResponseDto<GetSettingsDto>>(jsonData);
 
-                return View(viewModel);
+                        var viewModel = new SettingsViewModel
+                        {
+                            GetSettings = values.Data,
+                            UpdateSettings = new UpdateSettingsDto
+                            {
+                                Id=values.Data.Id,
+                                firstName = values.Data.FirstName,
+                                userName = values.Data.UserName,
+                                surName = values.Data.SurName,
+                                email = values.Data.Email,
+                                about = values.Data.About,
+                                password = values.Data.Password // Şifreyi almanız gerekebilir, güvenliğini sağlayın
+                            }
+
+                        };
+                    return View(viewModel);
+
+                }
+            else
+                {
+                return RedirectToAction("Index","Login");
+
             }
 
-            return View(new SettingsViewModel());
+
+
+
         }
+
+
+
+
+
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> Index(SettingsViewModel viewModel)

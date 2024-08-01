@@ -46,6 +46,11 @@ body {
   border-radius: 5px; /* Kare şekli için */
   text-decoration: none; /* Link alt çizgisini kaldırır */
 }
+.icons i form button{
+        background: rgba(20, 218, 228, 0.189) !important; /* Saydam kare rengi */
+        text-decoration: none !important; /* Link alt çizgisini kaldırır */
+        border: none !important;
+}
 
 .icon-link {
 
@@ -697,7 +702,7 @@ margin-left: 1.2rem;
   resize: vertical;
 }
 
-button[type="submit"] {
+.profile-info button[type="submit"] {
   padding: 10px 20px;
   font-size: 1rem;
   border: none;
@@ -748,3 +753,11 @@ button[type="submit"]:hover {
     background-color: darkred;
 }
 
+.icons button {
+    background: none; /* Saydam kare rengi */
+    border: none;
+    cursor: pointer;
+}
+    .icons button:hover {
+        background: none; /* Saydam kare rengi */
+    }
