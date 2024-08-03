@@ -839,3 +839,29 @@ button[type="submit"]:hover {
     align-items: center;
     text-align: left;
 }
+
+#follow-button {
+    background-color: #393c3e; /* Butonun arka plan rengi */
+    color: #fff; /* Yazı rengi */
+    border: none; /* Kenarlık kaldırılır */
+    padding: 10px 20px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border-radius: 5px; /* Kenar yuvarlama */
+    cursor: pointer; /* İmleç tipi */
+    transition: background-color 0.3s, color 0.3s; /* Geçiş efektleri */
+    display: flex; /* İçerik hizalama */
+    align-items: center; /* Dikey hizalama */
+    gap: 5px; /* İkon ile metin arasındaki boşluk */
+}
+
+    /* Hover efekti */
+    #follow-button:hover {
+        background-color: #0056b3; /* Hover arka plan rengi */
+        color: #e0e0e0; /* Hover yazı rengi */
+    }
+
+    /* Tıklama efekti */
+    #follow-button:active {
+        background-color: #004080; /* Tıklama arka plan rengi */
+        color: #d0d0d0; /* Tıklama yazı rengi */
+    }

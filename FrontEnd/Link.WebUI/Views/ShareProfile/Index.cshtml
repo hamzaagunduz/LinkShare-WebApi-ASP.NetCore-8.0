@@ -1,34 +1,150 @@
-﻿  
-@{
+﻿@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/UILayout/Index.cshtml";
 }
 
-
-
-
-
-
-    <div class="card dark">
-        <div class="header">
+<div class="card dark">
+    <div class="header">
         <span><i class="ri-arrow-left-line"></i></span>
-        <span><i class="ri-heart-line">Takip Et</i></span>
+        <button id="follow-button" data-following-id="@Model.GetAppUserDto.Id" onclick="followUser(@Model.GetAppUserDto.Id)">
+            <i class="ri-heart-line"></i> 
+        </button>
     </div>
+
     <img src="/Linkhtml/assets/user.jpg" alt="user" />
     <h1 class="name">@Model.GetAppUserDto.FirstName</h1>
     <p class="userName">@Model.GetAppUserDto.UserName</p>
     <p class="designation">@Model.GetAppUserDto.Email</p>
     <p class="about">@Model.GetAppUserDto.About</p>
-    @await Component.InvokeAsync("_ShareProfileLinkComponentPartial") 
 
-
+    @await Component.InvokeAsync("_ShareProfileLinkComponentPartial")
     @await Component.InvokeAsync("_ShareProfileCommentComponentPartial")
+</div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', async function () {
+        const userIdToFollow = document.getElementById('follow-button').getAttribute('data-following-id');
 
+        // İlk olarak FollowUser metodunu çağırarak token'i alıyoruz
+        const response = await fetch('@Url.Action("FollowUser", "ShareProfile")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userIdToFollow })
+        });
 
+        const data = await response.json();
 
+        if (!response.ok) {
+            console.error('Hata:', data);
+            return;
+        }
 
-    </div>
+        const token = data.token;
 
+        if (!token) {
+            console.error('Token bulunamadı');
+            return;
+        }
 
+        // Takip durumunu kontrol et
+        const statusResponse = await fetch(`https://localhost:7048/api/Follow/CheckFollowStatus?followingUserId=${userIdToFollow}`, {
+            method: 'GET',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
+        const statusData = await statusResponse.json();
+
+        if (!statusResponse.ok) {
+            console.error('Hata:', statusData);
+            return;
+        }
+
+        const isFollowing = statusData.isFollowing;
+        const button = document.getElementById('follow-button');
+
+        // Butonun metnini takip durumuna göre değiştir
+        if (isFollowing) {
+            button.innerHTML = '<i class="ri-heart-fill"></i> Takipten Çık';
+        } else {
+            button.innerHTML = '<i class="ri-heart-line"></i> Takip Et';
+        }
+    });
+
+    async function followUser(userIdToFollow) {
+        // İlk olarak FollowUser metodunu çağırarak token'i alıyoruz
+        const response = await fetch('@Url.Action("FollowUser", "ShareProfile")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userIdToFollow })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Hata:', data);
+            return;
+        }
+
+        const token = data.token;
+
+        if (!token) {
+            console.error('Token bulunamadı');
+            return;
+        }
+
+        // Şimdi token ile FollowRequest isteğini yapıyoruz
+        const followRequest = {
+            FollowingUserId: userIdToFollow
+        };
+
+        const followResponse = await fetch('https://localhost:7048/api/Follow/follow', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(followRequest)
+        });
+
+        const followData = await followResponse.json();
+
+        if (followResponse.ok) {
+            console.log('FollowUser metodu başarıyla çağrıldı.', followData);
+        } else {
+            console.error('Hata:', followData);
+        }
+
+        // Takip durumunu güncelle
+        const statusResponse = await fetch(`https://localhost:7048/api/Follow/CheckFollowStatus?followingUserId=${userIdToFollow}`, {
+            method: 'GET',
+            headers: {
+                'Accept': '*/*',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        const statusData = await statusResponse.json();
+
+        if (!statusResponse.ok) {
+            console.error('Hata:', statusData);
+            return;
+        }
+
+        const isFollowing = statusData.isFollowing;
+        const button = document.getElementById('follow-button');
+
+        // Butonun metnini takip durumuna göre değiştir
+        if (isFollowing) {
+            button.innerHTML = '<i class="ri-heart-fill"></i> Takipten Çık';
+        } else {
+            button.innerHTML = '<i class="ri-heart-line"></i> Takip Et';
+        }
+    }
+</script>

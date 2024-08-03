@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
@@ -44,6 +45,26 @@ namespace Link.WebUI.Controllers
             }
             return RedirectToAction("Index", "Login");
         }
+        [HttpPost]
+        public async Task<IActionResult> FollowUser(int userIdToFollow)
+        {
+            Console.WriteLine("FollowUser metodu çağrıldı");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var token = Request.Cookies["access_token"];
+
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("Token bulunamadı");
+                return BadRequest(new { message = "Token bulunamadı." });
+            }
+
+            Console.WriteLine($"Takip edilen kullanıcı ID: {userIdToFollow}");
+
+            return Ok(new { message = "FollowUser metodu başarıyla çağrıldı.", token });
+        }
+
+
+
 
 
         private async Task<CombinedResponseDto> GetCombinedResponse(int id, string userId)
@@ -145,6 +166,11 @@ namespace Link.WebUI.Controllers
 
             return RedirectToAction("Index");
         }
+
+
+
+
+
 
         [HttpPost]
         public async Task<IActionResult> AddLink(AddLinkDto linkDto)
@@ -254,5 +280,7 @@ namespace Link.WebUI.Controllers
 
             return RedirectToAction("Index", new { id = userId });
         }
+
+
     }
 }
