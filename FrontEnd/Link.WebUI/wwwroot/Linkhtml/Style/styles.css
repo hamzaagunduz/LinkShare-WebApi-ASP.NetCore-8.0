@@ -854,14 +854,64 @@ button[type="submit"]:hover {
     gap: 5px; /* İkon ile metin arasındaki boşluk */
 }
 
-    /* Hover efekti */
-    #follow-button:hover {
+    #follow-button:hover, #followers-button:hover, #following-button:hover {
         background-color: #0056b3; /* Hover arka plan rengi */
         color: #e0e0e0; /* Hover yazı rengi */
     }
 
-    /* Tıklama efekti */
-    #follow-button:active {
+    #follow-button:active, #followers-button:active, #following-button:active {
         background-color: #004080; /* Tıklama arka plan rengi */
         color: #d0d0d0; /* Tıklama yazı rengi */
+    }
+
+#followers-button, #following-button {
+    background-color: #393c3e; /* Butonun arka plan rengi */
+    color: #fff; /* Yazı rengi */
+    border: none; /* Kenarlık kaldırılır */
+    padding: 10px 20px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border-radius: 5px; /* Kenar yuvarlama */
+    cursor: pointer; /* İmleç tipi */
+    transition: background-color 0.3s, color 0.3s; /* Geçiş efektleri */
+    gap: 5px; /* İkon ile metin arasındaki boşluk */
+    margin-top: -50px;
+    margin-bottom: 50px;
+}
+
+#followers-button {
+    margin-right: 20px; /* Sağdaki butona mesafe ekler */
+}
+
+textarea[name="AnswerText"] {
+    width: 100%; /* Formun genişliğine uyum sağlar */
+    height: 100px; /* Yüksekliği ayarlar */
+    padding: 10px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border: 1px solid #ccc; /* Kenarlık rengi */
+    border-radius: 5px; /* Kenar yuvarlama */
+    resize: vertical; /* Yalnızca dikey olarak yeniden boyutlandırmaya izin verir */
+    box-sizing: border-box; /* Padding ve border dahil olmak üzere toplam genişliği hesaplar */
+    transition: border-color 0.3s; /* Kenarlık renginde geçiş efekti */
+}
+
+    textarea[name="AnswerText"]:focus {
+        border-color: #0056b3; /* Odaklandığında kenarlık rengini değiştirir */
+        outline: none; /* Varsayılan odak çerçevesini kaldırır */
+    }
+
+textarea[name="Comment"] {
+    width: 100%; /* Formun genişliğine uyum sağlar */
+    height: 100px; /* Yüksekliği ayarlar */
+    padding: 10px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border: 1px solid #ccc; /* Kenarlık rengi */
+    border-radius: 5px; /* Kenar yuvarlama */
+    resize: vertical; /* Yalnızca dikey olarak yeniden boyutlandırmaya izin verir */
+    box-sizing: border-box; /* Padding ve border dahil olmak üzere toplam genişliği hesaplar */
+    transition: border-color 0.3s; /* Kenarlık renginde geçiş efekti */
+}
+
+    textarea[name="Comment"]:focus {
+        border-color: #0056b3; /* Odaklandığında kenarlık rengini değiştirir */
+        outline: none; /* Varsayılan odak çerçevesini kaldırır */
     }

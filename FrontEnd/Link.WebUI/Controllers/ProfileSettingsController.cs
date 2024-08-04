@@ -71,7 +71,7 @@ namespace Link.WebUI.Controllers
 
 
 
-        [HttpPost]
+        [HttpPost("Settings")]
         public async Task<IActionResult> Index(SettingsViewModel viewModel)
         {
             if (!ModelState.IsValid)
@@ -80,6 +80,7 @@ namespace Link.WebUI.Controllers
             }
 
             var client = _httpClientFactory.CreateClient();
+            
             var jsonContent = JsonConvert.SerializeObject(viewModel.UpdateSettings);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await client.PutAsync("https://localhost:7048/api/AppUser", content);

@@ -1,15 +1,20 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Index";
     Layout = "~/Views/UILayout/Index.cshtml";
 }
 
 <div class="card dark">
-    <div class="header">
+
+
+    <div class="header @(!Model.ShowForm ? "" : "hidden")">
         <span><i class="ri-arrow-left-line"></i></span>
-        <button id="follow-button" data-following-id="@Model.GetAppUserDto.Id" onclick="followUser(@Model.GetAppUserDto.Id)">
-            <i class="ri-heart-line"></i> 
+        <button id="follow-button" data-following-id="@Model.GetAppUserDto.Id" onclick="followUser()">
+            <i class="ri-heart-line"></i>
         </button>
     </div>
+
+   
 
     <img src="/Linkhtml/assets/user.jpg" alt="user" />
     <h1 class="name">@Model.GetAppUserDto.FirstName</h1>
@@ -17,13 +22,30 @@
     <p class="designation">@Model.GetAppUserDto.Email</p>
     <p class="about">@Model.GetAppUserDto.About</p>
 
+    <div class="TakipListe">
+        <button id="followers-button">Takipçiler</button>
+        <button id="following-button">Takip Edilenler</button>
+    </div>
+
+
+
     @await Component.InvokeAsync("_ShareProfileLinkComponentPartial")
     @await Component.InvokeAsync("_ShareProfileCommentComponentPartial")
 </div>
 
+<!-- Pop-up için HTML yapısı -->
+<div id="popup" class="popup hidden">
+    <div class="popup-content">
+        <span id="popup-close" class="popup-close">&times;</span>
+        <div id="popup-body"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', async function () {
-        const userIdToFollow = document.getElementById('follow-button').getAttribute('data-following-id');
+        const followButton = document.getElementById('follow-button');
+        const userIdToFollow = followButton.getAttribute('data-following-id'); // Dinamik kullanıcı ID'si
 
         // İlk olarak FollowUser metodunu çağırarak token'i alıyoruz
         const response = await fetch('@Url.Action("FollowUser", "ShareProfile")', {
@@ -37,14 +59,14 @@
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('Hata:', data);
+            Swal.fire('Hata', 'Bir hata oluştu: ' + data.message, 'error');
             return;
         }
 
         const token = data.token;
 
         if (!token) {
-            console.error('Token bulunamadı');
+            Swal.fire('Hata', 'Token bulunamadı', 'error');
             return;
         }
 
@@ -60,7 +82,7 @@
         const statusData = await statusResponse.json();
 
         if (!statusResponse.ok) {
-            console.error('Hata:', statusData);
+            Swal.fire('Hata', 'Bir hata oluştu: ' + statusData.message, 'error');
             return;
         }
 
@@ -73,9 +95,52 @@
         } else {
             button.innerHTML = '<i class="ri-heart-line"></i> Takip Et';
         }
+
+        // Takipçiler butonuna tıklama olayı
+        document.getElementById('followers-button').addEventListener('click', async function () {
+            const followersResponse = await fetch(`https://localhost:7048/api/Follow/GetFollowersById/${userIdToFollow}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': '*/*',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const followersData = await followersResponse.json();
+
+            if (!followersResponse.ok) {
+                Swal.fire('Hata', 'Bir hata oluştu: ' + followersData.message, 'error');
+                return;
+            }
+
+            showAlert('Takipçiler', followersData.Data);
+        });
+
+        // Takip edilenler butonuna tıklama olayı
+        document.getElementById('following-button').addEventListener('click', async function () {
+            const followingResponse = await fetch(`https://localhost:7048/api/Follow/GetFollowingById/${userIdToFollow}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': '*/*',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const followingData = await followingResponse.json();
+
+            if (!followingResponse.ok) {
+                Swal.fire('Hata', 'Bir hata oluştu: ' + followingData.message, 'error');
+                return;
+            }
+
+            showAlert('Takip Edilenler', followingData.Data);
+        });
     });
 
-    async function followUser(userIdToFollow) {
+    async function followUser() {
+        const followButton = document.getElementById('follow-button');
+        const userIdToFollow = followButton.getAttribute('data-following-id'); // Dinamik kullanıcı ID'si
+
         // İlk olarak FollowUser metodunu çağırarak token'i alıyoruz
         const response = await fetch('@Url.Action("FollowUser", "ShareProfile")', {
             method: 'POST',
@@ -88,14 +153,14 @@
         const data = await response.json();
 
         if (!response.ok) {
-            console.error('Hata:', data);
+            Swal.fire('Hata', 'Bir hata oluştu: ' + data.message, 'error');
             return;
         }
 
         const token = data.token;
 
         if (!token) {
-            console.error('Token bulunamadı');
+            Swal.fire('Hata', 'Token bulunamadı', 'error');
             return;
         }
 
@@ -116,9 +181,9 @@
         const followData = await followResponse.json();
 
         if (followResponse.ok) {
-            console.log('FollowUser metodu başarıyla çağrıldı.', followData);
+            Swal.fire('Başarı', 'Kullanıcı başarıyla takip edildi.', 'success');
         } else {
-            console.error('Hata:', followData);
+            Swal.fire('Hata', 'Bir hata oluştu: ' + followData.message, 'error');
         }
 
         // Takip durumunu güncelle
@@ -133,7 +198,7 @@
         const statusData = await statusResponse.json();
 
         if (!statusResponse.ok) {
-            console.error('Hata:', statusData);
+            Swal.fire('Hata', 'Bir hata oluştu: ' + statusData.message, 'error');
             return;
         }
 
@@ -146,5 +211,32 @@
         } else {
             button.innerHTML = '<i class="ri-heart-line"></i> Takip Et';
         }
+    }
+
+    function showAlert(title, data) {
+        const userList = data.map(user => `
+                        <div class="usersearch" data-id="${user.AppUserFollowerID}" style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; cursor: pointer;">
+                            <img src="/Linkhtml/assets/user.jpg" alt="${user.Name}" class="userhome-photo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                        <div class="userhome-infotext">
+                                <p class="usernamehome" style="margin: 0; font-weight: bold;">${user.Name}</p>
+    <p class="userName" style="text-align: left; margin-left: 0; padding-left: 0; color: gray;">#${user.UserName}</p>
+                            </div>
+                    </div>
+                `).join('');
+
+        Swal.fire({
+            title: title,
+            html: `<div style="max-height: 300px; overflow-y: auto;">${userList}</div>`,
+            width: '30%',
+            confirmButtonText: 'Tamam'
+        });
+
+        // Kullanıcı tıklama olayını burada ekliyoruz
+        document.querySelectorAll('.usersearch').forEach(item => {
+            item.addEventListener('click', function () {
+                const userId = this.getAttribute('data-id');
+                window.location.href = `https://localhost:7132/profile/${userId}`;
+            });
+        });
     }
 </script>
