@@ -3,6 +3,7 @@ using Link.Application.Features.Mediator.Commands.AnswerCommands;
 using Link.Application.Features.Mediator.Commands.Comment;
 using Link.Application.Features.Mediator.Commands.CommentCommands;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
+using Link.Application.Features.Mediator.Commands.LikeCommands;
 using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Features.Mediator.Queries.CommentQueries;
@@ -95,7 +96,12 @@ namespace Link.WebApi.Controllers
             return result;
 
         }
-
+        [HttpPost("CreateLike")]
+        public async Task<IActionResult> CreateLike([FromBody] CreateLikeCommand request)
+        {
+            var result = await _mediator.Send(request);
+            return result;
+        }
 
 
     }
