@@ -26,6 +26,11 @@ using Link.Application.Exceptions;
 using Link.Application.ExceptionsHandlers;
 using Link.Application.Middleware;
 using Link.Persistence.Repository.CommentRepositories;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Identity;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -83,10 +88,46 @@ builder.Services.AddExceptionHandler<TransactionExceptionHandler>();
 builder.Services.AddAutoMapper(typeof(LinkProfile).Assembly);
 
 
+//////////////
+builder.Services.AddControllers(
+    options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
+
+builder.Services.AddRateLimiter(configure =>
+{
+    configure.AddFixedWindowLimiter("fixed", optinos =>
+    {
+        optinos.PermitLimit = 20;
+        optinos.Window = TimeSpan.FromSeconds(1);
+        optinos.QueueLimit=1;
+        optinos.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+});
 
 
 
 
+builder.Services.AddHttpClient<RecaptchaService>();
+
+
+
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:7132") // Frontend'in URL'si
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
+
+///////////
+///
 
 
 
@@ -116,11 +157,12 @@ builder.Services.AddScoped<LinkContext>();
 
 builder.Services.AddIdentity<AppUser, AppRole>(options =>
 {
-    //options.User.RequireUniqueEmail = false;
-
+    options.SignIn.RequireConfirmedEmail = true;
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 })
-.AddEntityFrameworkStores<LinkContext>();
+.AddEntityFrameworkStores<LinkContext>()
+.AddDefaultTokenProviders();
+
 
 
 
@@ -159,6 +201,7 @@ builder.Services.AddApplicationService(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseRateLimiter();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -171,9 +214,11 @@ if (app.Environment.IsDevelopment())
 }
 
 
+// Genel hata iþleme yapýlandýrmasý
+app.UseExceptionHandler("/Home/Error");
+app.UseHsts();
 
-app.UseExceptionHandler();
-
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 //app.Use(async (context, next) =>
@@ -189,7 +234,7 @@ app.UseAuthorization();
 //app.UseMiddleware<AccessTokenMiddleware>();
 
 
-app.MapControllers();
+app.MapControllers()/*.RequireRateLimiting("fixed")*/;
 
 
 app.Run();

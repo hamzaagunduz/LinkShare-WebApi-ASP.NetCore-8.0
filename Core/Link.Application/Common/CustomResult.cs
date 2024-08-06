@@ -11,13 +11,13 @@ namespace Link.Application.Common
     {
         private readonly T _data;
         private readonly HttpStatusCode _statusCode;
-        public List<string> Errors { get; }
+        public Dictionary<string, List<string>> Errors { get; }
 
-        public CustomResult(T data, HttpStatusCode statusCode, List<string> errors = null)
+        public CustomResult(T data, HttpStatusCode statusCode, List<string> errors = null, Dictionary<string, List<string>> errorDictionary = null)
         {
             _data = data;
             _statusCode = statusCode;
-            Errors = errors;
+            Errors = errorDictionary ?? (errors != null ? new Dictionary<string, List<string>> { { "general", errors } } : null);
         }
 
         public async Task ExecuteResultAsync(ActionContext context)
@@ -26,7 +26,7 @@ namespace Link.Application.Common
             {
                 Data = _data,
                 Status = (int)_statusCode,
-                Errors = Errors // Hataları doğrudan burada döndürün
+                Errors = Errors // Hataları burada döndürün
             };
 
             // Hata varsa status kodunu 400 Bad Request olarak ayarlayın
@@ -49,6 +49,6 @@ namespace Link.Application.Common
     {
         public T Data { get; set; }
         public int Status { get; set; }
-        public List<string> Errors { get; set; }
+        public Dictionary<string, List<string>> Errors { get; set; }
     }
 }

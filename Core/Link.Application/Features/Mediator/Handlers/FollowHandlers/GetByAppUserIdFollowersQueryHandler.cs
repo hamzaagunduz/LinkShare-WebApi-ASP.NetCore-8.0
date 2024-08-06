@@ -29,6 +29,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             {
                 UserName = f.UserName,
                 Name = f.Name,
+                AppUserFollowerID=f.AppUserFollowerID,
 
             }).ToList();
 

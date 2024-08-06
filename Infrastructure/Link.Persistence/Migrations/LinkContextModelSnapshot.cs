@@ -137,6 +137,9 @@ namespace Link.Persistence.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<DateTime?>("LastLinkAddedTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -263,6 +266,37 @@ namespace Link.Persistence.Migrations
                     b.HasIndex("AppUserID");
 
                     b.ToTable("Followings");
+                });
+
+            modelBuilder.Entity("Link.Domain.Entities.Like", b =>
+                {
+                    b.Property<int>("LikeID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LikeID"));
+
+                    b.Property<int?>("AnswerID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AppUserID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProfileCommentID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("LikeID");
+
+                    b.HasIndex("AnswerID");
+
+                    b.HasIndex("AppUserID");
+
+                    b.HasIndex("ProfileCommentID");
+
+                    b.ToTable("Like");
                 });
 
             modelBuilder.Entity("Link.Domain.Entities.Linke", b =>
@@ -483,6 +517,29 @@ namespace Link.Persistence.Migrations
                     b.Navigation("AppUser");
                 });
 
+            modelBuilder.Entity("Link.Domain.Entities.Like", b =>
+                {
+                    b.HasOne("Link.Domain.Entities.Answer", "Answer")
+                        .WithMany("Likes")
+                        .HasForeignKey("AnswerID");
+
+                    b.HasOne("Link.Domain.Entities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Link.Domain.Entities.ProfileComment", "ProfileComment")
+                        .WithMany("Likes")
+                        .HasForeignKey("ProfileCommentID");
+
+                    b.Navigation("Answer");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("ProfileComment");
+                });
+
             modelBuilder.Entity("Link.Domain.Entities.Linke", b =>
                 {
                     b.HasOne("Link.Domain.Entities.AppUser", "AppUser")
@@ -556,6 +613,11 @@ namespace Link.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Link.Domain.Entities.Answer", b =>
+                {
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("Link.Domain.Entities.AppUser", b =>
                 {
                     b.Navigation("Followers");
@@ -570,6 +632,8 @@ namespace Link.Persistence.Migrations
             modelBuilder.Entity("Link.Domain.Entities.ProfileComment", b =>
                 {
                     b.Navigation("Answers");
+
+                    b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
         }

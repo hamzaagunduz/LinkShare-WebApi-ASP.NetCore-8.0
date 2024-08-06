@@ -28,6 +28,7 @@ namespace Link.Application.Features.Mediator.Handlers.FollowHandlers
             {
                 UserName = f.UserName,
                 Name = f.Name,
+                AppUserFollowerID = f.AppUserFollowingID,
             }).ToList();
 
             return new CustomResult<List<GetByAppUserIdFollowingQueryResult>>(result, HttpStatusCode.OK);

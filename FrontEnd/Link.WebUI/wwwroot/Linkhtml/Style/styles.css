@@ -16,8 +16,12 @@
 body {
     font-family: "Poppins", sans-serif;
     min-height: 100vh;
-    background: linear-gradient( to right, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5) ), url("/assets/bg.jpg");
-    background-position: center center;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)
+    ),
+    url("../assets/bg.jpg");    background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
     display: flex;
@@ -26,7 +30,7 @@ body {
     gap: 5rem;
 }
 .icons {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 23px;
   display: flex;
@@ -42,6 +46,11 @@ body {
   border-radius: 5px; /* Kare şekli için */
   text-decoration: none; /* Link alt çizgisini kaldırır */
 }
+.icons i form button{
+        background: rgba(20, 218, 228, 0.189) !important; /* Saydam kare rengi */
+        text-decoration: none !important; /* Link alt çizgisini kaldırır */
+        border: none !important;
+}
 
 .icon-link {
 
@@ -50,7 +59,7 @@ body {
 
 
 .card {
-  width: 440px;
+  width: 470px;
   padding: 2rem 1rem;
   border-radius: 10px;
   margin-top: 50px;
@@ -161,7 +170,6 @@ body {
   place-content: center;
   border-radius: 12px;
   text-decoration: none; /* Bağlantının alt çizgisini kaldırır */
-
   align-items: center;
   box-shadow: 5px 5px 20px rgb(139, 135, 155);
   /* background-image: linear-gradient(to right, #b1237a, #dc4185); */
@@ -206,13 +214,14 @@ body {
   max-width: 600px;
   word-wrap: break-word; 
 }
-.question-text {
-  margin-top: 20px;/* Metnin sola yatık olması için */
-}
+
 .user-info {
   display: flex;
-  align-items: center;
   gap: 1rem;
+}
+.user-info text {
+    display: flex;
+    gap: 1rem;
 }
 
 .user-photo{
@@ -222,25 +231,33 @@ body {
 }
 .answer{
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 0.5rem;
-
+  padding:10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #1da1f2;
-}
-.answer .user-photo{
-  max-width: 40px; /* Maksimum genişlik */
-  max-height: 40px;
-  margin-top: 7px;
-  margin-left: 7px;
 
 }
 
-.answer-text{
-  margin-top: 10px;/* Metnin sola yatık olması için */
-  margin-left: 10px;/
+.questions .answer .user-photo {
+margin-top:15px;
 }
+.questions .answers .answer .userhome-infotext {
+    margin-top: -3px;
+
+}
+.questions .answers .answer .answer-text {
+    margin-top: 10px;
+}
+
+
+.answer .user-photo {
+    max-width: 40px; /* Maksimum genişlik */
+    max-height: 40px;
+}
+
+
 
 
 
@@ -318,31 +335,29 @@ body {
   
 }
 
-.questionshome {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: left;
+.question-container {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 7px
 }
 
 .questionhome {
-  background-color: var(--white);
-  margin-bottom: 50px;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 600px;
-  word-wrap: break-word; 
+    background-color: var(--white);
+    margin-bottom: 50px;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.01);
+    width: 90%;
+    max-width: 600px;
+    word-wrap: break-word;
 }
 .questionhome-text {
   margin-top: 20px;/* Metnin sola yatık olması için */
 }
 .userhome-info {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 .userhome-infotext .userName{
   font-size: 10px;
@@ -350,11 +365,14 @@ body {
   color: var(--text-dark);
   margin-top: -5px;
 }
-.userhome-info .userName{
-  font-size: 10px;
-  font-weight: 1000;
-  color: var(--text-dark);
-  margin-top: -5px;
+
+
+
+.userhome-info .userName {
+    font-size: 10px;
+    font-weight: 1000;
+    color: var(--text-dark);
+    margin-top: -5px;
 }
 
 .questionshome .userhome-photo{
@@ -419,11 +437,11 @@ body {
   margin-left: auto; /* Bu bağlantıyı sağa hizalar */
 }
 
-.homeicons .icon-link:nth-child(1) {
-  background-color: rgb(49, 228, 216); /* Pembe arka plan rengi */
-  padding: 0.7rem; /* İkon etrafına boşluk vermek için */
-  border-radius: 8px; /* Yuvarlak şekil için */
-}
+/*.homeicons .icon-link:nth-child(1) {
+  background-color: rgb(49, 228, 216);*/ /* Pembe arka plan rengi */
+  /*padding: 0.7rem;*/ /* İkon etrafına boşluk vermek için */
+  /*border-radius: 8px;*/ /* Yuvarlak şekil için */
+/*}*/
 
 
 
@@ -654,6 +672,10 @@ margin-left: 1.2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+    .profile-info button {
+        background-color: rgb(90, 195, 227);
+    }
+
 
 .profile-info h3 {
   font-size: 1.5rem;
@@ -689,7 +711,7 @@ margin-left: 1.2rem;
   resize: vertical;
 }
 
-button[type="submit"] {
+.profile-info button[type="submit"] {
   padding: 10px 20px;
   font-size: 1rem;
   border: none;
@@ -723,8 +745,8 @@ button[type="submit"]:hover {
 
 .question .user-info button {
     position: absolute;
-    top: 10px; /* Üstten 10px */
-    right: 10px; /* Sağdan 10px */
+    top: -3px; /* Üstten 10px */
+    right: 20px; /* Sağdan 10px */
     background-color: red;
     color: white;
     border: none;
@@ -738,4 +760,194 @@ button[type="submit"]:hover {
 }
 .question .user-info button:hover {
     background-color: darkred;
+}
+
+.icons button {
+    background: none; /* Saydam kare rengi */
+    border: none;
+    cursor: pointer;
+}
+    .icons button:hover {
+        background: none; /* Saydam kare rengi */
+    }
+
+.menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    position: absolute;
+    top: 50px; /* Bu değeri ihtiyaç duyduğunuz konuma göre ayarlayın */
+    right: 17px; /* Sağdan hizalama */
+    width: 120px;
+    background-color: var(--white);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: none; /* Başlangıçta gizle */
+    z-index: 1000; /* Diğer içeriklerin üzerinde görünsün */
+}
+
+#menu-toggle {
+    position: relative; /* Dropdown menüyü konumlandırmak için */
+}
+
+
+.dropdown-menu.show {
+    display: block; /* Menü açıldığında göster */
+}
+
+.dropdown-menu.show {
+    display: block; /* Show the menu when the class "show" is added */
+}
+
+.dropdown-menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .dropdown-menu ul li {
+        padding: 8px 16px;
+    }
+
+        .dropdown-menu ul li a {
+            text-decoration: none;
+            color: black;
+            display: block;
+        }
+
+        .dropdown-menu ul li:hover {
+            background-color: #f1f1f1;
+        }
+
+
+.search-container {
+    margin-bottom: 50px;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    word-wrap: break-word;
+}
+
+.usersearch {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px; /* İç boşluk */
+    cursor: pointer; /* İşaretçi işareti */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Geçiş efekti */
+}
+
+    .usersearch:hover {
+        background-color: #f0f0f0; /* Hover rengi */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.30); /* Hover'da gölge efekti */
+    }
+
+.questionshome {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+}
+
+#follow-button {
+    background-color: #393c3e; /* Butonun arka plan rengi */
+    color: #fff; /* Yazı rengi */
+    border: none; /* Kenarlık kaldırılır */
+    padding: 10px 20px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border-radius: 5px; /* Kenar yuvarlama */
+    cursor: pointer; /* İmleç tipi */
+    transition: background-color 0.3s, color 0.3s; /* Geçiş efektleri */
+    display: flex; /* İçerik hizalama */
+    align-items: center; /* Dikey hizalama */
+    gap: 5px; /* İkon ile metin arasındaki boşluk */
+}
+
+    #follow-button:hover, #followers-button:hover, #following-button:hover {
+        background-color: #0056b3; /* Hover arka plan rengi */
+        color: #e0e0e0; /* Hover yazı rengi */
+    }
+
+    #follow-button:active, #followers-button:active, #following-button:active {
+        background-color: #004080; /* Tıklama arka plan rengi */
+        color: #d0d0d0; /* Tıklama yazı rengi */
+    }
+
+#followers-button, #following-button {
+    background-color: #393c3e; /* Butonun arka plan rengi */
+    color: #fff; /* Yazı rengi */
+    border: none; /* Kenarlık kaldırılır */
+    padding: 10px 20px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border-radius: 5px; /* Kenar yuvarlama */
+    cursor: pointer; /* İmleç tipi */
+    transition: background-color 0.3s, color 0.3s; /* Geçiş efektleri */
+    gap: 5px; /* İkon ile metin arasındaki boşluk */
+    margin-top: -50px;
+    margin-bottom: 50px;
+}
+
+#followers-button {
+    margin-right: 20px; /* Sağdaki butona mesafe ekler */
+}
+
+textarea[name="AnswerText"] {
+    width: 100%; /* Formun genişliğine uyum sağlar */
+    height: 100px; /* Yüksekliği ayarlar */
+    padding: 10px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border: 1px solid #ccc; /* Kenarlık rengi */
+    border-radius: 5px; /* Kenar yuvarlama */
+    resize: vertical; /* Yalnızca dikey olarak yeniden boyutlandırmaya izin verir */
+    box-sizing: border-box; /* Padding ve border dahil olmak üzere toplam genişliği hesaplar */
+    transition: border-color 0.3s; /* Kenarlık renginde geçiş efekti */
+}
+
+    textarea[name="AnswerText"]:focus {
+        border-color: #0056b3; /* Odaklandığında kenarlık rengini değiştirir */
+        outline: none; /* Varsayılan odak çerçevesini kaldırır */
+    }
+
+textarea[name="Comment"] {
+    width: 100%; /* Formun genişliğine uyum sağlar */
+    height: 100px; /* Yüksekliği ayarlar */
+    padding: 10px; /* İç boşluk */
+    font-size: 16px; /* Yazı boyutu */
+    border: 1px solid #ccc; /* Kenarlık rengi */
+    border-radius: 5px; /* Kenar yuvarlama */
+    resize: vertical; /* Yalnızca dikey olarak yeniden boyutlandırmaya izin verir */
+    box-sizing: border-box; /* Padding ve border dahil olmak üzere toplam genişliği hesaplar */
+    transition: border-color 0.3s; /* Kenarlık renginde geçiş efekti */
+}
+
+    textarea[name="Comment"]:focus {
+        border-color: #0056b3; /* Odaklandığında kenarlık rengini değiştirir */
+        outline: none; /* Varsayılan odak çerçevesini kaldırır */
+    }
+
+
+
+.question .userhome-infotext .usernamehome {
+    margin-top: 20px;
+}
+.question .userhome-infotext .userName {
+    margin-top: -25px;
+}
+.question .question-container .user-info img {
+    width: 50px;
+    height:50px;
+}
+.question .question-container .userhome-infotext{
+    margin-top:-10px;
+    margin-bottom:20px;
+}
+.question .answer .user-info {
+    margin-top: -10px;
 }

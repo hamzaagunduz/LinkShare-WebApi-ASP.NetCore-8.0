@@ -7,36 +7,59 @@ using System.Text;
 using Link.WebUI.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.Tasks;
+using Link.Dto.ApiResponseDtos;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Link.WebUI.Controllers
 {
     public class LoginController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public LoginController(IHttpClientFactory httpClientFactory)
+        private readonly RecaptchaService _recaptchaService;
+
+        public LoginController(IHttpClientFactory httpClientFactory, RecaptchaService recaptchaService)
         {
             _httpClientFactory = httpClientFactory;
+            _recaptchaService = recaptchaService;
         }
 
-        [HttpGet]
+        [HttpGet("Login")]
         public IActionResult Index()
         {
-            // Eylemin içeriği
-            return View();
+           if (!User.Identity.IsAuthenticated)
+            {
+                return View();
+
+            }
+
+           return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
+        [EnableRateLimiting("fixed")]
         public async Task<IActionResult> Index(LoginAppUserDto loginAppUserDto)
         {
+            // reCAPTCHA doğrulaması
+            
+            var isRecaptchaValid = await _recaptchaService.VerifyRecaptchaAsync(loginAppUserDto.RecaptchaToken);
+            if (!isRecaptchaValid)
+            {
+                ModelState.AddModelError(string.Empty, "reCAPTCHA doğrulaması başarısız oldu. Lütfen tekrar deneyin.");
+                return View(loginAppUserDto);
+            }
+
             var client = _httpClientFactory.CreateClient();
             var content = new StringContent(JsonSerializer.Serialize(loginAppUserDto), Encoding.UTF8, "application/json");
-
+            Console.WriteLine(loginAppUserDto.RecaptchaToken);
             var response = await client.PostAsync("https://localhost:7048/api/AppUser/LoginToken", content);
 
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var tokenModel = JsonSerializer.Deserialize<JwtResponseModel>(jsonData, new JsonSerializerOptions
+                var tokenModel = System.Text.Json.JsonSerializer.Deserialize<JwtResponseModel>(jsonData, new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
                 });
@@ -46,8 +69,6 @@ namespace Link.WebUI.Controllers
                     JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
                     var token = handler.ReadJwtToken(tokenModel.Token);
                     var claims = token.Claims.ToList();
-
-
 
                     if (tokenModel.Token != null)
                     {
@@ -72,14 +93,36 @@ namespace Link.WebUI.Controllers
 
                         await HttpContext.SignInAsync(JwtBearerDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProps);
 
-
-
-                        return RedirectToAction("Index", "Profile");
+                        return RedirectToAction("Index", "ShareProfile");
                     }
                 }
             }
 
-            return Content(content.ToString());
+            else
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+
+                var apiResponse = JsonConvert.DeserializeObject<ApiResponseDto<object>>(responseContent);
+
+
+                if (apiResponse.Errors != null)
+                {
+                    foreach (var error in apiResponse.Errors)
+                    {
+                        // Her bir hata anahtar ve mesajlarını ModelState'e ekle
+                        foreach (var errorMessage in error.Value)
+                        {
+                            ModelState.AddModelError(error.Key, errorMessage);
+                        }
+                    }
+                }
+
+            }
+
+
+
+            return View(loginAppUserDto);
         }
     }
 }

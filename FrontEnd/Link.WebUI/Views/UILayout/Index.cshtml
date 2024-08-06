@@ -1,28 +1,75 @@
 ﻿
-@{
-    Layout = null;
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css"
-          rel="stylesheet" />
-    <link rel="stylesheet" href="/Linkhtml/Style/styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/Linkhtml/Style/styles.css" asp-append-version="true"/>
     <title>Kullanıcı Profili</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
 </head>
 <body>
-    <div class="icons">
-        <a href="Home.html" class="icon-link"><i class="ri-home-line"></i></a>
-        <a href="#" class="icon-link"><i class="ri-user-line"></i></a>
-        <a href="#" class="icon-link"><i class="ri-notification-line"></i></a>
-        <a href="#" class="icon-link"><i class="ri-menu-line"></i></a>
-    </div>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="icons">
+            <a href="https://localhost:7132/Home" class="icon-link"><i class="ri-home-line"></i></a>
+            <a href="https://localhost:7132/Profile" class="icon-link"><i class="ri-user-line"></i></a>
+            <a href="https://localhost:7132/Search" class="icon-link"><i class="ri-search-line"></i></a>
+            <a href="#" class="icon-link" id="menu-toggle">
+                <i class="ri-menu-line"></i>
+            </a>
+            <div class="menu-container">
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <ul>
+
+                        <li><a href="https://localhost:7132/Settings">Ayarlar</a></li>
+                        <li>
+                            <form id="apiCallForm" action="/UILayout/CallApi" method="post">
+                                <button type="submit" class="icon-link">Çıkış Yap</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+ 
+  
+
+
+        </div>
+    }
+
+    else
+    {
+        <div class="icons">
+            <a href="#" class="icon-link" id="menu-toggle">
+                <i class="ri-menu-line"></i>
+            </a>
+            <div class="menu-container">
+                <div class="dropdown-menu" id="dropdown-menu">
+                    <ul>
+                        <li><a href="https://localhost:7132/Home">Anasayfa</a></li>
+                        <li><a href="https://localhost:7132/Register">Kayıt Ol</a></li>
+                        <li><a href="https://localhost:7132/Login">Giriş Yap</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    }
+
+    @RenderBody() <!-- Body içeriğini buraya yerleştirin -->
+    @RenderSection("Scripts", required: false)
+    <script src="/Linkhtml/Script/scripts.js"></script>
+
 
 </body>
-
-@RenderBody()
-
 </html>

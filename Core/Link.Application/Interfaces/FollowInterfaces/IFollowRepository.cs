@@ -11,5 +11,6 @@ namespace Link.Application.Interfaces.FollowInterfaces
     {
         Task<List<Follower>> GetFollowersAsync(int userId);
         Task<List<Following>> GetFollowingAsync(int userId);
+        Task<List<AppUser>> GetRandomUsers(int count);
     }
 }

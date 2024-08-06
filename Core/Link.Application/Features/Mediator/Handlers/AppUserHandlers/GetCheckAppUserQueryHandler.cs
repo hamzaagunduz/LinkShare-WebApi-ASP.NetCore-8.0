@@ -35,11 +35,16 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
             {
                 var passwordVerificationResult = _userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
-                if (passwordVerificationResult == PasswordVerificationResult.Success)
+                if (passwordVerificationResult == PasswordVerificationResult.Success) {
                     values.IsExist = true;
-                values.UserName = user.UserName;
-                values.Id = user.Id;
-                var userRoles = await _userManager.GetRolesAsync(user);
+                    values.UserName = user.UserName;
+                    values.Id = user.Id;
+                    var userRoles = await _userManager.GetRolesAsync(user);
+                }
+                else
+                {
+
+                }
 
             }
             return values;

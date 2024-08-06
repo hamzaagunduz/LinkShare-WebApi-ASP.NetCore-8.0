@@ -51,10 +51,14 @@ namespace Link.Application.Features.Mediator.Handlers.CommentHandler
                 Like = 0,
                 Time = DateTime.Now,
             };
+            if(comment.AppUserID != comment.WriterID)
+            {
+                await _repository.CreateAsync(comment);
 
-            await _repository.CreateAsync(comment);
+                return new CustomResult<string>("Yorum Başarıyla Eklendi.", HttpStatusCode.OK);
+            }
 
-            return new CustomResult<string>("Yorum Başarıyla Eklendi.", HttpStatusCode.OK);
+            return new CustomResult<string>("Kendine Yorum Yapamazsın.", HttpStatusCode.BadRequest);
         }
     }
 }

@@ -16,5 +16,7 @@ namespace Link.Domain.Entities
         public DateTime Time { get; set; }
         public int? ProfileCommentID { get; set; }
         public ProfileComment? ProfileComment { get; set; }
+
+        public List<Like> Likes { get; set; } = new List<Like>();
     }
 }

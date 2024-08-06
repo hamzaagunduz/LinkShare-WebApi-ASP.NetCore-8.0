@@ -1,8 +1,67 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<Link.Dto.CommentDtos.CommentAndAnswerDto>
+
+@{
+    ViewData["Title"] = "Profile Settings";
+    Layout = "~/Views/UILayout/Index.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="cardhome dark">
+    <div class="homeicons">
+        <a href="https://localhost:7132/Home" class="icon-link" style="
+    background-color: rgb(49, 228, 216);
+    padding: 0.7rem;
+    border-radius: 8px;
+">
+            <i class="ri-home-line"></i> Home
+        </a>
+
+
+
+        <a href="https://localhost:7132/Search" class="icon-link"><i class="ri-user-line"></i> User</a>
+        <a href="Trend.html" class="icon-link"><i class="ri-notification-line"></i> Trend</a>
+    </div>
+
+    <div class="questionshome">
+        @await Html.PartialAsync("Components/_CommentAndAnswerPartial/Default", Model)
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        let page = 1;
+        const pageSize = 5;
+        let isLoading = false;
+
+        async function loadMoreComments() {
+            if (isLoading) return;
+
+            isLoading = true;
+            page++;
+
+            try {
+                const response = await $.ajax({
+                    url: `/Home/LoadMoreComments?page=${page}&pageSize=${pageSize}`,
+                    method: 'GET'
+                });
+
+                if (response.trim().length === 0) {
+                    console.log("No more comments to load.");
+                } else {
+                    $('.questionshome').append(response);
+                }
+            } catch (error) {
+                console.error('Error loading more comments:', error);
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        $(window).scroll(function () {
+            if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100) {
+                loadMoreComments();
+            }
+        });
+    </script>
+}
+

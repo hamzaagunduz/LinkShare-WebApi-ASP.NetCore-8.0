@@ -13,18 +13,21 @@ using System;
 using System.Collections.Generic;
 using Link.Application.Common;
 using System.Net;
+using Microsoft.AspNetCore.Identity;
 
 namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 {
     public class CreateLinkCommandHandler : IRequestHandler<CreateLinkCommand, CustomResult<string>>
     {
         private readonly IRepository<Linke> _repository;
+        private readonly IRepository<AppUser> _userRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CreateLinkCommandHandler(IRepository<Linke> repository, IHttpContextAccessor httpContextAccessor)
+        public CreateLinkCommandHandler(IRepository<Linke> repository, IHttpContextAccessor httpContextAccessor, IRepository<AppUser> repositoryUser)
         {
             _repository = repository;
             _httpContextAccessor = httpContextAccessor;
+            _userRepository = repositoryUser;
         }
 
         public async Task<CustomResult<string>> Handle(CreateLinkCommand request, CancellationToken cancellationToken)
@@ -39,7 +42,17 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
 
                 }
 
-            var newLink = new Linke
+            var userId = int.Parse(userIdClaim.Value);
+            var user = await _userRepository.GetByIdAsync(userId);
+            var now = DateTime.UtcNow;
+
+            if (user.LastLinkAddedTime.HasValue && (now - user.LastLinkAddedTime.Value).TotalSeconds < 3)
+
+            {
+                return new CustomResult<string>("Lütfen tekrar yorum eklemeden önce 2 saniye bekleyin.", HttpStatusCode.BadRequest);
+            }
+            else {
+                var newLink = new Linke
                 {
                     AppUserID = int.Parse(userIdClaim.Value),
                     LinkName = request.LinkName,
@@ -47,11 +60,12 @@ namespace Link.Application.Features.Mediator.Handlers.LinkHandlers
                 };
 
 
-
-                // Save the new link to the repository
                 await _repository.CreateAsync(newLink);
+                user.LastLinkAddedTime = now;
+                await _userRepository.UpdateAsync(user);
+            }
 
-                return new CustomResult<string>("Link Oluşturma successfully.", HttpStatusCode.OK);
+            return new CustomResult<string>("Link Oluşturma successfully.", HttpStatusCode.OK);
             }
 
 

@@ -6,6 +6,7 @@ using Link.Application.Features.Mediator.Results.FollowResults;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Link.WebApi.Controllers
 {
@@ -52,6 +53,23 @@ namespace Link.WebApi.Controllers
             var result = await _mediator.Send(query);
             return result;
 
+        }
+
+        [HttpGet("CheckFollowStatus")]
+        public async Task<IActionResult> CheckFollowStatus([FromQuery] int followingUserId)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+
+            var loginUserId = int.Parse(userIdClaim.Value);
+
+            var isFollowing = await _mediator.Send(new CheckFollowStatusQuery(loginUserId, followingUserId));
+
+            return Ok(new { isFollowing });
         }
 
 

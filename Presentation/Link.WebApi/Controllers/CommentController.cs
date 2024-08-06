@@ -3,6 +3,7 @@ using Link.Application.Features.Mediator.Commands.AnswerCommands;
 using Link.Application.Features.Mediator.Commands.Comment;
 using Link.Application.Features.Mediator.Commands.CommentCommands;
 using Link.Application.Features.Mediator.Commands.FollowCommands;
+using Link.Application.Features.Mediator.Commands.LikeCommands;
 using Link.Application.Features.Mediator.Commands.LinkCommands;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Features.Mediator.Queries.CommentQueries;
@@ -85,6 +86,32 @@ namespace Link.WebApi.Controllers
             var result = await _mediator.Send(query);
             return result;
 
+        }
+
+        [HttpGet("GetCommentAndAnswers")]//yaptığı yorumlar
+        public async Task<IActionResult> GetCommentAndAnswers([FromQuery] int page, [FromQuery] int pageSize)
+        {
+            var query = new GetCommentAndAnwerQuery(page,pageSize);
+            var result = await _mediator.Send(query);
+            return result;
+
+        }
+        [HttpPost("CreateLike")]
+        public async Task<IActionResult> CreateLike([FromBody] CreateLikeCommand request)
+        {
+            var result = await _mediator.Send(request);
+            return result;
+        }
+        [HttpGet("GetLikers")]
+        public async Task<IActionResult> GetLikers([FromQuery] int entityId, [FromQuery] EntityType entityType)
+        {
+            var query = new GetLikersQuery
+            {
+                EntityId = entityId,
+                EntityType = entityType
+            };
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
 

@@ -28,6 +28,7 @@ namespace Link.Application.Features.Mediator.Handlers.AppUserHandlers
             var result = values.Select(x => new GetAppUserQueryResult
             {
                 Id = x.Id,
+                UserName=x.UserName,
                 FirstName = x.FirstName,
                 Email = x.Email,
                 View = x.View,

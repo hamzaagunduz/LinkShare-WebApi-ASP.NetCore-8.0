@@ -79,12 +79,82 @@ namespace Link.Persistence.Repository.CommentRepositories
                                  .FirstOrDefaultAsync(c => c.ProfileCommentID == profileCommentID);
         }
 
-        //public async Task<List<Answer>> GetAnswersForCommentByIdAsync(int profileCommentID)
-        //{
-        //    return await _context.Answers
-        //                         .Where(a => a.ProfileCommentID == profileCommentID)
-        //                         .ToListAsync();
-        //}
+
+        public async Task<List<GetCommentAndAnwerQueryResult>> GetProfileCommentsWithAnswersAsync(int page, int pageSize)
+        {
+            var commentsWithAnswers = await (from comment in _context.ProfileComments
+                                             join answer in _context.AppUsers on comment.WriterID equals answer.Id
+                                             join writer in _context.Answers on comment.ProfileCommentID equals writer.ProfileCommentID into answers
+                                             from writer in answers.DefaultIfEmpty()
+                                             join answerUser in _context.AppUsers on writer.AppUserID equals answerUser.Id into answerUsers
+                                             from answerUser in answerUsers.DefaultIfEmpty()
+                                             where comment.Hidden == false // Yalnızca yanıtı olan yorumları getir
+                                             orderby comment.Time descending
+                                             select new GetCommentAndAnwerQueryResult
+                                             {
+                                                 ProfileCommentID = comment.ProfileCommentID,
+                                                 Comment = comment.Comment,
+                                                 View = comment.View,
+                                                 Like = comment.Like,
+                                                 WriterID = comment.WriterID,
+                                                 Hidden = comment.Hidden,
+                                                 Time = comment.Time,
+                                                 AppUserID = comment.AppUserID,
+                                                 // Writer bilgileri, yorumun yazarı için
+                                                 WriterFirstName = answer.FirstName,
+                                                 WriterSurName = answer.SurName,
+                                                 WriterUserName = answer.UserName,
+                                                 // Yanıt bilgileri, yanıtın yazarı için
+                                                 AnswerID = writer.AnswerID,
+                                                 AnswerText = writer.AnswerText,
+                                                 AnserView = writer.View,
+                                                 LikeCount = writer.LikeCount,
+                                                 AnswerTime = writer.Time,
+                                                 FirstName = answerUser.FirstName,
+                                                 SurName = answerUser.SurName,
+                                                 UserName = answerUser.UserName
+                                             }).Skip((page - 1) * pageSize) // Sayfa başına atlama işlemi
+                                                 .Take(pageSize) // Sayfa boyutuna göre al
+                                                 .ToListAsync();
+
+            return commentsWithAnswers;
+        }
+
+
+        public async Task<List<GetLikersQueryResult>> GetLikersForCommentAsync(int profileCommentID)
+        {
+            var likers = await (from like in _context.Like
+                                join user in _context.AppUsers on like.AppUserID equals user.Id
+                                where like.ProfileCommentID == profileCommentID
+                                select new GetLikersQueryResult
+                                {
+                                    UserID = user.Id,
+                                    UserName = user.UserName,
+                                    FirstName = user.FirstName,
+                                    SurName = user.SurName
+                                }).ToListAsync();
+
+            return likers;
+        }
+
+        public async Task<List<GetLikersQueryResult>> GetLikersForAnswerAsync(int answerID)
+        {
+            var likers = await (from like in _context.Like
+                                join user in _context.AppUsers on like.AppUserID equals user.Id
+                                where like.AnswerID == answerID
+                                select new GetLikersQueryResult
+                                {
+                                    UserID = user.Id,
+                                    UserName = user.UserName,
+                                    FirstName = user.FirstName,
+                                    SurName = user.SurName
+                                }).ToListAsync();
+
+            return likers;
+        }
+
+
+
 
     }
 }

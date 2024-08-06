@@ -11,7 +11,6 @@ namespace Link.Application.Features.Mediator.Commands.FollowCommands
 {
     public class CreateFollowCommand: IRequest<CustomResult<string>>
     {
-        //public int FollowerUserId { get; set; } // Takip eden kullanıcının ID'si
         public int FollowingUserId { get; set; } // Takip edilen kullanıcının ID'si
 
     }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Link.Application.Features.Mediator.Commands.AppUserCommands;
+using Link.Dto.AppUserDtos;
 
 public class CreateAppUserValidation : AbstractValidator<CreateAppUserCommand>
 {

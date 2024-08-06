@@ -1,10 +1,14 @@
-﻿using Link.Application.Features.Mediator.Commands.AppUserCommands;
+﻿using Link.Application.Common;
+using Link.Application.Features.Mediator.Commands.AppUserCommands;
 using Link.Application.Features.Mediator.Queries.AppUserQueries;
 using Link.Application.Tools;
+using Link.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 
 namespace Link.WebApi.Controllers
@@ -14,10 +18,15 @@ namespace Link.WebApi.Controllers
     public class AppUserController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AppUserController(IMediator mediator)
+
+        public AppUserController(IMediator mediator, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
             _mediator = mediator;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         [HttpGet]
@@ -36,11 +45,40 @@ namespace Link.WebApi.Controllers
             return result;
 
         }
+        [HttpGet("GetRandomUser")]
+        public async Task<IActionResult> GetRandomUser(int count)
+        {
+
+            var query = new GetRandomUsersQuery(count);
+            var result = await _mediator.Send(query);
+            return result;
+
+        }
+
+
+        [HttpGet("confirmemail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return BadRequest("Invalid user");
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return Redirect("https://localhost:7132/login/index"); // Ana sayfa URL'sini buraya yazın
+            }
+
+            return BadRequest("Error confirming email");
+        }
 
         [HttpPost]
         public async Task<IActionResult> CreateAppUser(CreateAppUserCommand command)
         {
             var result = await _mediator.Send(command);
+            
             return result;
 
 
@@ -76,7 +114,16 @@ namespace Link.WebApi.Controllers
             }
             else
             {
-                return BadRequest("Kullanıcı adı veya şifre hatalıdır");
+
+                var errorMessages = new List<string> { "Kullanıcı Adı veya Şifre Hatalı" };
+
+                var errorDictionary = new Dictionary<string, List<string>>
+                {
+                    { "password", errorMessages }
+                };
+
+                // CustomResult ile hata mesajlarını ve status kodunu döndürün
+                return new CustomResult<string>(null, HttpStatusCode.BadRequest, null, errorDictionary);
             }
         }
 
@@ -92,6 +139,17 @@ namespace Link.WebApi.Controllers
             }
 
             return Ok(new { UserId = userId, Username = User.Identity.Name });
+        }
+
+
+
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            Response.Cookies.Delete("access_token");
+
+            return Ok(new { Message = "User logged out successfully." });
         }
     }
 }
