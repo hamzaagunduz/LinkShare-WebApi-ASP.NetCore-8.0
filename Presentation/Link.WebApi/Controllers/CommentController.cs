@@ -102,6 +102,18 @@ namespace Link.WebApi.Controllers
             var result = await _mediator.Send(request);
             return result;
         }
+        [HttpGet("GetLikers")]
+        public async Task<IActionResult> GetLikers([FromQuery] int entityId, [FromQuery] EntityType entityType)
+        {
+            var query = new GetLikersQuery
+            {
+                EntityId = entityId,
+                EntityType = entityType
+            };
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
 
 
     }

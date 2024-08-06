@@ -21,5 +21,10 @@ namespace Link.Domain.Entities
 
         public Answer? Answers { get; set; }
 
+        public List<Like> Likes { get; set; } = new List<Like>();
     }
+
+
+
+
 }

@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace Link.Domain.Entities
 {
-    public class Answer
+    public class Like
     {
-        public int AnswerID { get; set; }
+        public int LikeID { get; set; }
         public int AppUserID { get; set; }
-        public string AnswerText { get; set; }
-        public int View { get; set; }
-        public int LikeCount { get; set; }
-        public DateTime Time { get; set; }
+        public AppUser AppUser { get; set; }
+
         public int? ProfileCommentID { get; set; }
         public ProfileComment? ProfileComment { get; set; }
 
-        public List<Like> Likes { get; set; } = new List<Like>();
+        public int? AnswerID { get; set; }
+        public Answer? Answer { get; set; }
+
+        public DateTime Time { get; set; }
     }
 }

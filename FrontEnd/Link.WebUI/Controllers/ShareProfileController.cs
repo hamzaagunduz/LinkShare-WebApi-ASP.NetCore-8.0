@@ -281,6 +281,16 @@ namespace Link.WebUI.Controllers
             return RedirectToAction("Index", new { id = userId });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetToken()
+        {
+
+            var token = Request.Cookies["access_token"];
+
+
+            return Ok(new { message = "FollowUser metodu başarıyla çağrıldı.", token });
+        }
+
 
     }
 }

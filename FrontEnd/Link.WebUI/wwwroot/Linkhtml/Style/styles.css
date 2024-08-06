@@ -59,7 +59,7 @@ body {
 
 
 .card {
-  width: 440px;
+  width: 470px;
   padding: 2rem 1rem;
   border-radius: 10px;
   margin-top: 50px;
@@ -214,13 +214,14 @@ body {
   max-width: 600px;
   word-wrap: break-word; 
 }
-.question-text {
-  margin-top: 20px;/* Metnin sola yatık olması için */
-}
+
 .user-info {
   display: flex;
-  align-items: center;
   gap: 1rem;
+}
+.user-info text {
+    display: flex;
+    gap: 1rem;
 }
 
 .user-photo{
@@ -230,18 +231,30 @@ body {
 }
 .answer{
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 2rem;
   margin-bottom: 0.5rem;
   padding:10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #1da1f2;
+
 }
-.answer .user-photo{
-  max-width: 40px; /* Maksimum genişlik */
-  max-height: 40px;
+
+.questions .answer .user-photo {
+margin-top:15px;
+}
+.questions .answers .answer .userhome-infotext {
+    margin-top: -3px;
+
+}
+.questions .answers .answer .answer-text {
+    margin-top: 10px;
+}
 
 
+.answer .user-photo {
+    max-width: 40px; /* Maksimum genişlik */
+    max-height: 40px;
 }
 
 
@@ -352,11 +365,14 @@ body {
   color: var(--text-dark);
   margin-top: -5px;
 }
-.userhome-info .userName{
-  font-size: 10px;
-  font-weight: 1000;
-  color: var(--text-dark);
-  margin-top: -5px;
+
+
+
+.userhome-info .userName {
+    font-size: 10px;
+    font-weight: 1000;
+    color: var(--text-dark);
+    margin-top: -5px;
 }
 
 .questionshome .userhome-photo{
@@ -729,8 +745,8 @@ button[type="submit"]:hover {
 
 .question .user-info button {
     position: absolute;
-    top: 10px; /* Üstten 10px */
-    right: 10px; /* Sağdan 10px */
+    top: -3px; /* Üstten 10px */
+    right: 20px; /* Sağdan 10px */
     background-color: red;
     color: white;
     border: none;
@@ -915,3 +931,23 @@ textarea[name="Comment"] {
         border-color: #0056b3; /* Odaklandığında kenarlık rengini değiştirir */
         outline: none; /* Varsayılan odak çerçevesini kaldırır */
     }
+
+
+
+.question .userhome-infotext .usernamehome {
+    margin-top: 20px;
+}
+.question .userhome-infotext .userName {
+    margin-top: -25px;
+}
+.question .question-container .user-info img {
+    width: 50px;
+    height:50px;
+}
+.question .question-container .userhome-infotext{
+    margin-top:-10px;
+    margin-bottom:20px;
+}
+.question .answer .user-info {
+    margin-top: -10px;
+}

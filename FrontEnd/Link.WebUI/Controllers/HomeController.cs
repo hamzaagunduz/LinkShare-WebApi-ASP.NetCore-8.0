@@ -70,6 +70,15 @@ namespace Link.WebUI.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> GetToken()
+        {
+
+            var token = Request.Cookies["access_token"];
+
+
+            return Ok(new { message = "FollowUser metodu başarıyla çağrıldı.", token });
+        }
 
 
 

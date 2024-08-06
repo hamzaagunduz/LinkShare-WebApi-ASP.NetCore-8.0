@@ -47,7 +47,6 @@
         const followButton = document.getElementById('follow-button');
         const userIdToFollow = followButton.getAttribute('data-following-id'); // Dinamik kullanıcı ID'si
 
-        // İlk olarak FollowUser metodunu çağırarak token'i alıyoruz
         const response = await fetch('@Url.Action("FollowUser", "ShareProfile")', {
             method: 'POST',
             headers: {

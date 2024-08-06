@@ -1,35 +1,46 @@
 ﻿@model CombinedResponseDto
 
 
-
-
-
-
-
-
 @if (Model.ShowForm)
 {
 
 
 
-    <div class="questions">
-        @foreach (var comment in Model.Comments)
-        {
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="questions">
+
 
             <div class="question">
+                <div class="question-container">
 
-                <div class="user-info">
+                    <div class="user-info">
 
-                    <img src="/Linkhtml/assets/user.jpg" alt="Kullanıcı Adı" class="user-photo" />
-                    <p class="username">@comment.FirstName @comment.SurName</p><br />
-                    <p class="username">@comment.UserName</p>
-                    <form action="/ShareProfile/RemoveComment" method="post">
-                        <input type="hidden" name="id" value="@comment.ProfileCommentID" />
-                        <button type="submit" class="remove-comment-button">X</button>
-                    </form>
+                        <img src="/Linkhtml/assets/user.jpg" alt="Kullanıcı Adı" class="user-photo" />
+
+                        <div class="userhome-infotext">
+                            <p class="usernamehome">@comment.FirstName @comment.SurName</p><br />
+                            <p class="userName"><a href="https://localhost:7132/profile/@comment.AppUserID">#@comment.UserName</a></p>
+                        </div>
+
+                        <form action="/ShareProfile/RemoveComment" method="post">
+                            <input type="hidden" name="id" value="@comment.ProfileCommentID" />
+                            <button type="submit" class="remove-comment-button">X</button>
+                        </form>
+
+                    </div>
+                    <p class="question-text">@comment.Comment</p>
+                    <div class="detailhome">
+                        <a href="#" class="icon-link like-button" data-id="@comment.ProfileCommentID" data-entity-type="Comment"><i class="ri-heart-line"></i></a>
+                        <a href="#" class="icon-link like-count" data-id="@comment.ProfileCommentID">@comment.Like</a>
+                        <a href="#" class="like-list" data-id="@comment.ProfileCommentID" data-entity-type="Comment">beğenenleri gör</a>
+
+                        <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @DateTime.Now.ToString("HH:mm")</a>
+
+                    </div>
 
                 </div>
-                <p class="question-text">@comment.Comment</p>
+
 
                 <div class="answers">
                     @if (Model.CommentAnswers.ContainsKey(comment.ProfileCommentID))
@@ -38,12 +49,24 @@
                         {
                             <div class="answer">
                                 <div class="user-info">
-                                    <img src="/Linkhtml/assets/user.jpg" alt="@answer.FirstName" class="user-photo" />
-                                    <p class="username">@answer.FirstName</p> <br />
-                                    <p class="username">@answer.UserName</p>
+                                    <img src="/Linkhtml/assets/user.jpg" alt="@answer.UserName" class="user-photo">
+                                    <div class="userhome-infotext">
+                                        <p class="usernamehome">@answer.FirstName @answer.SurName</p><br />
+                                        <p class="userName"><a href="https://localhost:7132/profile/@comment.AppUserID">#@answer.UserName</a></p>
+                                    </div>
                                 </div>
                                 <p class="answer-text">@answer.AnswerText</p>
+
+                                <div class="detailhome">
+                                    <a href="#" class="icon-link like-button" data-id="@answer.AnswerID" data-entity-type="Answer"><i class="ri-heart-line"></i></a>
+                                    <a href="#" class="icon-link like-count" data-id="@answer.AnswerID">@answer.LikeCount</a>
+                                    <a href="#" class="like-list" data-id="@answer.AnswerID" data-entity-type="Answer">beğenenleri gör</a>
+
+                                    <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @DateTime.Now.ToString("HH:mm")</a>
+
+                                </div>
                             </div>
+
                         }
                     }
                     else
@@ -63,8 +86,9 @@
                     </form>
                 }
             </div>
-        }
-    </div>
+        </div>
+
+    }
 }
 else
 {
@@ -80,20 +104,46 @@ else
         @foreach (var comment in Model.Comments.Where(c => !c.Hidden))
         {
             <div class="question">
-                <div class="user-info">
-                    <img src="/Linkhtml/assets/user.jpg" alt="@comment.UserName" class="user-photo">
-                    <p class="username">@comment.UserName</p>
-                </div>
-                <p class="question-text">@comment.Comment</p>
+                <div class="question-container">
 
+                    <div class="user-info">
+                        <img src="/Linkhtml/assets/user.jpg" alt="@comment.UserName" class="user-photo">
+                        <div class="userhome-infotext">
+                            <p class="usernamehome">@comment.FirstName @comment.SurName</p><br />
+                            <p class="userName"><a href="https://localhost:7132/profile/@comment.AppUserID">#@comment.UserName</a></p>
+                        </div>
+
+                    </div>
+                    <p class="question-text">@comment.Comment</p>
+                    <div class="detailhome">
+                        <a href="#" class="icon-link like-button" data-id="@comment.ProfileCommentID" data-entity-type="Comment"><i class="ri-heart-line"></i></a>
+                        <a href="#" class="icon-link like-count" data-id="@comment.ProfileCommentID">@comment.Like</a>
+                        <a href="#" class="like-list" data-id="@comment.ProfileCommentID" data-entity-type="Comment">beğenenleri gör</a>
+
+                        <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @DateTime.Now.ToString("HH:mm")</a>
+
+                    </div>
+                </div>
                 <div class="answer">
                     @foreach (var answer in Model.CommentAnswers.GetValueOrDefault(comment.ProfileCommentID, new List<AnswerDto>()))
                     {
                         <div class="user-info">
                             <img src="/Linkhtml/assets/user.jpg" alt="@answer.UserName" class="user-photo">
-                            <p class="username">@answer.UserName</p>
+                            <div class="userhome-infotext">
+                                <p class="usernamehome">@answer.FirstName @answer.SurName</p><br />
+                                <p class="userName"><a href="https://localhost:7132/profile/@comment.AppUserID">#@answer.UserName</a></p>
+                            </div>
                         </div>
                         <p class="answer-text">@answer.AnswerText</p>
+
+                        <div class="detailhome">
+                            <a href="#" class="icon-link like-button" data-id="@answer.AnswerID" data-entity-type="Answer"><i class="ri-heart-line"></i></a>
+                            <a href="#" class="icon-link like-count" data-id="@answer.AnswerID">@answer.LikeCount</a>
+                            <a href="#" class="like-list" data-id="@answer.AnswerID" data-entity-type="Answer">beğenenleri gör</a>
+
+                            <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @DateTime.Now.ToString("HH:mm")</a>
+
+                        </div>
                     }
                 </div>
             </div>
@@ -101,31 +151,101 @@ else
     </div>
 }
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // X butonlarına tıklama olayını dinle
-        document.querySelectorAll('.remove-comment-button').forEach(button => {
-            button.addEventListener('click', function (event) {
-                event.preventDefault(); // Formun normal submit işlemini engelle
+        // Token almak için GET isteği
+        fetch('/Home/GetToken', {
+            method: 'POST',
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Token:', data.token);
 
-                const form = this.closest('form');
-                const commentId = this.closest('form').querySelector('input[name="id"]').value;
+                // Beğeni eklemek için POST isteği
+                function sendLikeRequest(id, entityType) {
+                    const likeCommand = {
+                        Id: id,
+                        EntityType: entityType
+                    };
 
-                Swal.fire({
-                    title: 'Emin misiniz?',
-                    text: `Bu yorumu kaldırmak istediğinizden emin misiniz?`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Evet, kaldır!',
-                    cancelButtonText: 'Hayır, iptal et'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit(); // Onaylandıysa formu gönder
+                    fetch('https://localhost:7048/api/Comment/CreateLike', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${data.token}`
+                        },
+                        body: JSON.stringify(likeCommand)
+                    })
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log(result.message);
+                            // Beğeni işlemi başarılı olursa, sayfada gerekli güncellemeleri yapabilirsiniz
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                // Beğeni verilerini almak için GET isteği
+                function fetchLikes(id, entityType) {
+                    fetch(`https://localhost:7048/api/Comment/GetLikers?entityId=${id}&entityType=${entityType}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${data.token}`
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(likers => {
+                            showAlert('Beğenenler', likers);
+                        })
+                        .catch(error => {
+                            console.error('Error fetching likers:', error);
+                            Swal.fire('Hata', 'Beğenenleri alırken bir hata oluştu.', 'error');
+                        });
+                }
+
+                // Kullanıcıları göstermek için fonksiyon
+                function showAlert(title, users) {
+                    const userList = users.map(user => `
+                        <div class="usersearch" data-id="${user.userID}" style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; cursor: pointer;">
+                            <img src="/Linkhtml/assets/user.jpg" alt="${user.firstName} ${user.surName}" class="userhome-photo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                            <div class="userhome-infotext">
+                                <p class="usernamehome" style="margin: 0; font-weight: bold;">${user.firstName} ${user.surName}</p>
+                                <p class="userName" style="text-align: left; margin-left: 0; padding-left: 0; color: gray;">#${user.userName}</p>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    Swal.fire({
+                        title: title,
+                        html: `<div style="max-height: 300px; overflow-y: auto;">${userList}</div>`,
+                        width: '30%',
+                        confirmButtonText: 'Tamam'
+                    });
+                }
+
+                // Event delegation kullanarak beğenme ve beğenileri görme işlemlerini yapılandırma
+                document.body.addEventListener('click', function (event) {
+                    const likeButton = event.target.closest('.like-button');
+                    if (likeButton) {
+                        event.preventDefault(); // Burada tıklama olayını iptal ediyoruz
+                        const id = parseInt(likeButton.getAttribute('data-id'));
+                        const entityType = likeButton.getAttribute('data-entity-type');
+                        console.log('Like button clicked:', id, entityType);
+                        sendLikeRequest(id, entityType);
+                    }
+
+                    const likeList = event.target.closest('.like-list');
+                    if (likeList) {
+                        event.preventDefault(); // Linkin varsayılan işlevini engelle
+                        const id = parseInt(likeList.getAttribute('data-id'));
+                        const entityType = likeList.getAttribute('data-entity-type');
+                        fetchLikes(id, entityType);
                     }
                 });
-            });
-        });
+            })
+            .catch(error => console.error('Error fetching token:', error));
     });
 </script>
+
+

@@ -121,6 +121,38 @@ namespace Link.Persistence.Repository.CommentRepositories
         }
 
 
+        public async Task<List<GetLikersQueryResult>> GetLikersForCommentAsync(int profileCommentID)
+        {
+            var likers = await (from like in _context.Like
+                                join user in _context.AppUsers on like.AppUserID equals user.Id
+                                where like.ProfileCommentID == profileCommentID
+                                select new GetLikersQueryResult
+                                {
+                                    UserID = user.Id,
+                                    UserName = user.UserName,
+                                    FirstName = user.FirstName,
+                                    SurName = user.SurName
+                                }).ToListAsync();
+
+            return likers;
+        }
+
+        public async Task<List<GetLikersQueryResult>> GetLikersForAnswerAsync(int answerID)
+        {
+            var likers = await (from like in _context.Like
+                                join user in _context.AppUsers on like.AppUserID equals user.Id
+                                where like.AnswerID == answerID
+                                select new GetLikersQueryResult
+                                {
+                                    UserID = user.Id,
+                                    UserName = user.UserName,
+                                    FirstName = user.FirstName,
+                                    SurName = user.SurName
+                                }).ToListAsync();
+
+            return likers;
+        }
+
 
 
 
