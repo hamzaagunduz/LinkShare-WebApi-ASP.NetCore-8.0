@@ -44,16 +44,24 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Token almak için GET isteği
         fetch('/Home/GetToken', {
             method: 'POST',
             credentials: 'same-origin'
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Token:', data.token);
+                const token = data.token;
 
-                // Beğeni eklemek için POST isteği
+                let likerPage = 1;
+                const likerPageSize = 5;
+                let isLoadingLikers = false;
+                let allLikersLoaded = false;
+
+                let currentEntityId;
+                let currentEntityType;
+
+                let swalInstance;
+
                 function sendLikeRequest(id, entityType) {
                     const likeCommand = {
                         Id: id,
@@ -64,73 +72,99 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${data.token}`
+                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify(likeCommand)
                     })
                         .then(response => response.json())
                         .then(result => {
                             console.log(result.message);
-                            // Beğeni işlemi başarılı olursa, sayfada gerekli güncellemeleri yapabilirsiniz
                         })
                         .catch(error => console.error('Error:', error));
                 }
 
-                // Beğeni verilerini almak için GET isteği
                 function fetchLikes(id, entityType) {
-                    fetch(`https://localhost:7048/api/Comment/GetLikers?entityId=${id}&entityType=${entityType}`, {
+                    if (isLoadingLikers || allLikersLoaded) return;
+
+                    isLoadingLikers = true;
+
+                    fetch(`https://localhost:7048/api/Comment/GetLikersInf?entityId=${id}&entityType=${entityType}&page=${likerPage}&pageSize=${likerPageSize}`, {
                         method: 'GET',
                         headers: {
-                            'Authorization': `Bearer ${data.token}`
+                            'Authorization': `Bearer ${token}`
                         }
                     })
                         .then(response => response.json())
                         .then(likers => {
-                            showAlert('Beğenenler', likers);
+                            if (likers.length < likerPageSize) {
+                                allLikersLoaded = true;
+                            } else {
+                                likerPage++;
+                            }
+                            updateLikersInUI(likers);
+                            isLoadingLikers = false;
                         })
                         .catch(error => {
                             console.error('Error fetching likers:', error);
                             Swal.fire('Hata', 'Beğenenleri alırken bir hata oluştu.', 'error');
+                            isLoadingLikers = false;
                         });
                 }
 
-                // Kullanıcıları göstermek için fonksiyon
-                function showAlert(title, users) {
-                    const userList = users.map(user => `
-                    <div class="usersearch" data-id="${user.userID}" style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; cursor: pointer;">
-                        <img src="/Linkhtml/assets/user.jpg" alt="${user.firstName} ${user.surName}" class="userhome-photo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-                        <div class="userhome-infotext">
-                            <p class="usernamehome" style="margin: 0; font-weight: bold;">${user.firstName} ${user.surName}</p>
-                            <p class="userName" style="text-align: left; margin-left: 0; padding-left: 0; color: gray;">#${user.userName}</p>
-                        </div>
-                    </div>
-                `).join('');
+                function updateLikersInUI(likers) {
+                    const userList = likers.map(user => `
+                            <div class="usersearch" data-id="${user.userID}" style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; cursor: pointer;">
+                                <img src="/Linkhtml/assets/user.jpg" alt="${user.firstName} ${user.surName}" class="userhome-photo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                                <div class="userhome-infotext">
+                                    <p class="usernamehome" style="margin: 0; font-weight: bold;">${user.firstName} ${user.surName}</p>
+                                    <p class="userName" style="text-align: left; margin-left: 0; padding-left: 0; color: gray;">#${user.userName}</p>
+                                </div>
+                            </div>
+                        `).join('');
 
-                    Swal.fire({
-                        title: title,
-                        html: `<div style="max-height: 300px; overflow-y: auto;">${userList}</div>`,
-                        width: '30%',
-                        confirmButtonText: 'Tamam'
-                    });
+                    if (!swalInstance) {
+                        swalInstance = Swal.fire({
+                            title: 'Beğenenler',
+                            html: `<div class="liker-list-container" style="max-height: 300px; overflow-y: auto;">${userList}</div>`,
+                            width: '30%',
+                            confirmButtonText: 'Tamam'
+                        });
+
+                        document.querySelector('.liker-list-container').addEventListener('scroll', function () {
+                            if (this.scrollTop + this.clientHeight >= this.scrollHeight - 100) {
+                                fetchLikes(currentEntityId, currentEntityType);
+                            }
+                        });
+                    } else {
+                        const container = document.querySelector('.liker-list-container');
+                        container.innerHTML += userList;
+                    }
                 }
 
-                // Event delegation kullanarak beğenme ve beğenileri görme işlemlerini yapılandırma
                 document.body.addEventListener('click', function (event) {
                     const likeButton = event.target.closest('.like-button');
                     if (likeButton) {
-                        event.preventDefault(); // Burada tıklama olayını iptal ediyoruz
+                        event.preventDefault();
                         const id = parseInt(likeButton.getAttribute('data-id'));
                         const entityType = likeButton.getAttribute('data-entity-type');
-                        console.log('Like button clicked:', id, entityType);
                         sendLikeRequest(id, entityType);
                     }
 
                     const likeList = event.target.closest('.like-list');
                     if (likeList) {
-                        event.preventDefault(); // Linkin varsayılan işlevini engelle
-                        const id = parseInt(likeList.getAttribute('data-id'));
-                        const entityType = likeList.getAttribute('data-entity-type');
-                        fetchLikes(id, entityType);
+                        event.preventDefault();
+                        currentEntityId = parseInt(likeList.getAttribute('data-id'));
+                        currentEntityType = likeList.getAttribute('data-entity-type');
+                        likerPage = 1;
+                        allLikersLoaded = false;
+
+                        if (swalInstance) {
+                            swalInstance.close();
+                            swalInstance = null;
+                        }
+
+                        updateLikersInUI([]);
+                        fetchLikes(currentEntityId, currentEntityType);
                     }
                 });
             })

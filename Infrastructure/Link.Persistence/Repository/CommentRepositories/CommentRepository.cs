@@ -4,11 +4,14 @@ using Link.Domain.Entities;
 using Link.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Link.Application.Features.Mediator.Commands.LikeCommands;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EntityType = Link.Application.Features.Mediator.Commands.LikeCommands.EntityType;
 
 namespace Link.Persistence.Repository.CommentRepositories
 {
@@ -152,6 +155,29 @@ namespace Link.Persistence.Repository.CommentRepositories
 
             return likers;
         }
+
+        public async Task<List<GetLikersQueryResult>> GetLikersAsync(int entityId, Application.Features.Mediator.Commands.LikeCommands.EntityType entityType, int page, int pageSize)
+        {
+            var query = from like in _context.Like
+                        join user in _context.AppUsers on like.AppUserID equals user.Id
+                        where (entityType == EntityType.Answer && like.AnswerID == entityId) ||
+                              (entityType == EntityType.Comment && like.ProfileCommentID == entityId)
+                        select new GetLikersQueryResult
+                        {
+                            UserID = user.Id,
+                            UserName = user.UserName,
+                            FirstName = user.FirstName,
+                            SurName = user.SurName
+                        };
+
+            var pagedLikers = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return pagedLikers;
+        }
+
 
 
 

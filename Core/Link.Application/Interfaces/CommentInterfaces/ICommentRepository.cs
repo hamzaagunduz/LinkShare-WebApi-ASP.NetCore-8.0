@@ -17,6 +17,8 @@ namespace Link.Application.Interfaces.CommentRepository
         Task<List<GetCommentAndAnwerQueryResult>> GetProfileCommentsWithAnswersAsync(int page, int pageSize);
         Task<List<GetLikersQueryResult>> GetLikersForCommentAsync(int profileCommentID);
         Task<List<GetLikersQueryResult>> GetLikersForAnswerAsync(int answerID);
+        Task<List<GetLikersQueryResult>> GetLikersAsync(int entityId, Application.Features.Mediator.Commands.LikeCommands.EntityType entityType, int page, int pageSize);
+
 
 
     }

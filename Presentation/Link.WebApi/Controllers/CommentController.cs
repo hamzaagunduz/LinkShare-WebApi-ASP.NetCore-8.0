@@ -115,6 +115,22 @@ namespace Link.WebApi.Controllers
         }
 
 
+        [HttpGet("GetLikersInf")]
+        public async Task<IActionResult> GetLikersInf([FromQuery] int entityId, [FromQuery] EntityType entityType, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            var query = new GetLikersInfQuery
+            {
+                EntityId = entityId,
+                EntityType = entityType,
+                Page = page,
+                PageSize = pageSize
+            };
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+
+
+
 
     }
 }
