@@ -1,0 +1,202 @@
+﻿@model List<Link.Dto.CommentDtos.CommentAndAnswerDto>
+
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/UILayout/Index.cshtml";
+}
+
+<div class="cardhome dark">
+    <div class="homeicons">
+        <a href="https://localhost:7132/Home" class="icon-link" 
+            <i class="ri-home-line"></i> Anasayfa
+        </a>
+
+
+        <a href="https://localhost:7132/Trend" class="icon-link" style="
+    background-color: rgb(49, 228, 216);
+    padding: 0.7rem;
+    border-radius: 8px;
+">
+        <i class="ri-notification-line"></i> Haftanın Yorumları</a>
+
+        <a href="https://localhost:7132/Search" class="icon-link"><i class="ri-user-line"></i> Kullanıcı Ara</a>
+    </div>
+
+    <div class="questionshome">
+
+        @foreach (var comment in Model)
+        {
+            <div class="questionhome">
+                <div class="question-container">
+                    <div class="userhome-info">
+                        <img src="/Linkhtml/assets/user.jpg" alt="@comment.WriterUserName" class="userhome-photo">
+                        <div class="userhome-infotext">
+                            <p class="usernamehome">@comment.WriterFirstName @comment.WriterSurName</p>
+                            <p class="userName"><a href="https://localhost:7132/profile/@comment.WriterID">#@comment.WriterUserName</a></p>
+                        </div>
+                    </div>
+                    <p class="questionhome-text">@comment.Comment</p>
+                    <div class="detailhome">
+                        <a href="#" class="icon-link like-button" data-id="@comment.ProfileCommentID" data-entity-type="Comment"><i class="ri-heart-line"></i></a>
+                        <a href="#" class="icon-link like-count" data-id="@comment.ProfileCommentID">@comment.Like</a>
+                        <a href="#" class="like-list" data-id="@comment.ProfileCommentID" data-entity-type="Comment">beğenenleri gör</a>
+                        <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @comment.Time.ToString("HH:mm")</a>
+                    </div>
+                </div>
+                @if (comment.AnswerID.HasValue)
+                {
+                    <div class="answer">
+                        <div class="user-info">
+                            <img src="/Linkhtml/assets/user.jpg" alt="@comment.UserName" class="user-photo">
+                            <div class="userhome-infotext">
+                                <p class="usernamehome">@comment.FirstName @comment.SurName</p>
+                                <p class="userName"><a href="https://localhost:7132/profile/@comment.AppUserID">#@comment.UserName</a></p>
+                            </div>
+                        </div>
+                        <p class="answer-text">@comment.AnswerText</p>
+                        <div class="detailhome">
+                            <a href="#" class="icon-link like-button" data-id="@comment.AnswerID" data-entity-type="Answer"><i class="ri-heart-line"></i></a>
+                            <a href="#" class="icon-link like-count" data-id="@comment.AnswerID">@comment.LikeCount</a>
+                            <a href="#" class="like-list" data-id="@comment.AnswerID" data-entity-type="Answer">beğenenleri gör</a>
+                            <a href="#" class="icon-link right-icon"><i class="ri-star-line"></i> @comment.AnswerTime.ToString("HH:mm")</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch('/Home/GetToken', {
+            method: 'POST',
+            credentials: 'same-origin'
+        })
+            .then(response => response.json())
+            .then(data => {
+                const token = data.token;
+
+                let likerPage = 1;
+                const likerPageSize = 5;
+                let isLoadingLikers = false;
+                let allLikersLoaded = false;
+
+                let currentEntityId;
+                let currentEntityType;
+
+                let swalInstance;
+
+                function sendLikeRequest(id, entityType) {
+                    const likeCommand = {
+                        Id: id,
+                        EntityType: entityType
+                    };
+
+                    fetch('https://localhost:7048/api/Comment/CreateLike', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(likeCommand)
+                    })
+                        .then(response => response.json())
+                        .then(result => {
+                            console.log(result.message);
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+
+                function fetchLikes(id, entityType) {
+                    if (isLoadingLikers || allLikersLoaded) return;
+
+                    isLoadingLikers = true;
+
+                    fetch(`https://localhost:7048/api/Comment/GetLikersInf?entityId=${id}&entityType=${entityType}&page=${likerPage}&pageSize=${likerPageSize}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(likers => {
+                            if (likers.length < likerPageSize) {
+                                allLikersLoaded = true;
+                            } else {
+                                likerPage++;
+                            }
+                            updateLikersInUI(likers);
+                            isLoadingLikers = false;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching likers:', error);
+                            Swal.fire('Hata', 'Beğenenleri alırken bir hata oluştu.', 'error');
+                            isLoadingLikers = false;
+                        });
+                }
+
+                function updateLikersInUI(likers) {
+                    const userList = likers.map(user => `
+                            <div class="usersearch" data-id="${user.userID}" style="padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; cursor: pointer;">
+                                <img src="/Linkhtml/assets/user.jpg" alt="${user.firstName} ${user.surName}" class="userhome-photo" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
+                                <div class="userhome-infotext">
+                                    <p class="usernamehome" style="margin: 0; font-weight: bold;">${user.firstName} ${user.surName}</p>
+                                    <p class="userName" style="text-align: left; margin-left: 0; padding-left: 0; color: gray;">#${user.userName}</p>
+                                </div>
+                            </div>
+                        `).join('');
+
+                    if (!swalInstance) {
+                        swalInstance = Swal.fire({
+                            title: 'Beğenenler',
+                            html: `<div class="liker-list-container" style="max-height: 300px; overflow-y: auto;">${userList}</div>`,
+                            width: '30%',
+                            confirmButtonText: 'Tamam'
+                        });
+
+                        document.querySelector('.liker-list-container').addEventListener('scroll', function () {
+                            if (this.scrollTop + this.clientHeight >= this.scrollHeight - 100) {
+                                fetchLikes(currentEntityId, currentEntityType);
+                            }
+                        });
+                    } else {
+                        const container = document.querySelector('.liker-list-container');
+                        container.innerHTML += userList;
+                    }
+                }
+
+                document.body.addEventListener('click', function (event) {
+                    const likeButton = event.target.closest('.like-button');
+                    if (likeButton) {
+                        event.preventDefault();
+                        const id = parseInt(likeButton.getAttribute('data-id'));
+                        const entityType = likeButton.getAttribute('data-entity-type');
+                        sendLikeRequest(id, entityType);
+                    }
+
+                    const likeList = event.target.closest('.like-list');
+                    if (likeList) {
+                        event.preventDefault();
+                        currentEntityId = parseInt(likeList.getAttribute('data-id'));
+                        currentEntityType = likeList.getAttribute('data-entity-type');
+                        likerPage = 1;
+                        allLikersLoaded = false;
+
+                        if (swalInstance) {
+                            swalInstance.close();
+                            swalInstance = null;
+                        }
+
+                        updateLikersInUI([]);
+                        fetchLikes(currentEntityId, currentEntityType);
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching token:', error));
+    });
+</script>

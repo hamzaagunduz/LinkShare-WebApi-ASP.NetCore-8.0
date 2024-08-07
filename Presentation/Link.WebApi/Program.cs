@@ -31,6 +31,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Identity;
+using Link.Application.Interfaces.UserInterfaces;
+using Link.Persistence.Repository.UserRepositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -194,6 +196,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped(typeof(ILinkRepository), typeof(LinkRepository));
 builder.Services.AddScoped(typeof(IFollowRepository), typeof(FollowRepository));
 builder.Services.AddScoped(typeof(ICommentRepository), typeof(CommentRepository));
+builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 
 builder.Services.AddApplicationService(builder.Configuration);
 

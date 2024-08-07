@@ -151,5 +151,13 @@ namespace Link.WebApi.Controllers
 
             return Ok(new { Message = "User logged out successfully." });
         }
+
+        [HttpGet("SearchUsers")]
+        public async Task<IActionResult> SearchUsers([FromQuery] string query)
+        {
+            var searchQuery = new SearchUsersQuery { Query = query };
+            var result = await _mediator.Send(searchQuery);
+            return result;
+        }
     }
 }

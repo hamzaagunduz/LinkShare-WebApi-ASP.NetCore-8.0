@@ -129,7 +129,16 @@ namespace Link.WebApi.Controllers
             return Ok(result);
         }
 
-
+        [HttpGet("GetTopLikedCommentsWithAnswers")]
+        public async Task<IActionResult> GetTopLikedCommentsWithAnswers([FromQuery] int topCount)
+        {
+            var query = new GetTopLikedCommentsWithAnswersQuery
+            {
+                TopCount = topCount
+            };
+            var result = await _mediator.Send(query);
+            return result;
+        }
 
 
     }

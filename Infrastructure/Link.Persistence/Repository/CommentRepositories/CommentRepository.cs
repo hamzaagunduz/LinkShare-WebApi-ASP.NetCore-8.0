@@ -179,7 +179,45 @@ namespace Link.Persistence.Repository.CommentRepositories
         }
 
 
+        public async Task<List<GetCommentAndAnwerQueryResult>> GetTopLikedCommentsWithAnswersAsync(int topCount)
+        {
+            var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
 
+            var commentsWithAnswers = await (from comment in _context.ProfileComments
+                                             join answer in _context.Answers on comment.ProfileCommentID equals answer.ProfileCommentID into answers
+                                             from answer in answers.DefaultIfEmpty()
+                                             join answerUser in _context.AppUsers on answer.AppUserID equals answerUser.Id into answerUsers
+                                             from answerUser in answerUsers.DefaultIfEmpty()
+                                             join writer in _context.AppUsers on comment.WriterID equals writer.Id
+                                             where comment.Time >= oneWeekAgo // Son bir hafta içindeki yorumları getir
+                                             orderby comment.Like descending // Beğeniye göre sırala
+                                             select new GetCommentAndAnwerQueryResult
+                                             {
+                                                 ProfileCommentID = comment.ProfileCommentID,
+                                                 Comment = comment.Comment,
+                                                 View = comment.View,
+                                                 Like = comment.Like,
+                                                 WriterID = comment.WriterID,
+                                                 Hidden = comment.Hidden,
+                                                 Time = comment.Time,
+                                                 AppUserID = comment.AppUserID,
+                                                 WriterFirstName = writer.FirstName,
+                                                 WriterSurName = writer.SurName,
+                                                 WriterUserName = writer.UserName,
+                                                 AnswerID = answer.AnswerID,
+                                                 AnswerText = answer.AnswerText,
+                                                 AnserView = answer.View,
+                                                 LikeCount = answer.LikeCount,
+                                                 AnswerTime = answer.Time,
+                                                 FirstName = answerUser.FirstName,
+                                                 SurName = answerUser.SurName,
+                                                 UserName = answerUser.UserName
+                                             })
+                                             .Take(topCount) // En yüksek beğeniyi alan yorumları al
+                                             .ToListAsync();
+
+            return commentsWithAnswers;
+        }
 
 
     }
